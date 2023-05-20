@@ -5,7 +5,7 @@
         <v-row>
           <v-col cols="12">
             <p class="ml-5">
-              <span>
+              <span class="text-subtitle-2">
                 ※ 1/4/7/14 학습법
                 <v-tooltip activator="parent" location="end">
                   에빙하우스의 망각 곡선을 기반으로 자 <br />
@@ -37,7 +37,7 @@
         <v-row>
           <v-col cols="12">
             <p class="ml-5">
-              <span>
+              <span class="text-subtitle-2">
                 ※ 문제 출제
                 <v-tooltip activator="parent" location="end">
                   문제를 단어로 출제할지, 뜻으로 출제할지 선택하는 <br />
@@ -49,12 +49,7 @@
             </p>
           </v-col>
         </v-row>
-        <v-radio-group
-          inline
-          row
-          hide-details
-          color="primary"
-        >
+        <v-radio-group inline row hide-details color="primary">
           <v-col cols="6">
             <v-radio label="단어" :value="true"></v-radio>
           </v-col>
@@ -68,11 +63,21 @@
 
     <v-card-text>
       <v-select
+        label="Language"
+        :items="['English', 'Japanese']"
+        variant="underlined"
+        class="mb-2"
+        chips
+      >
+      </v-select>
+      <v-select
         label="TTS"
         variant="underlined"
         v-model="synthDefaultVoiceName"
         :items="synthVoiceNames"
-      ></v-select>
+        class="mb-2"
+      >
+      </v-select>
       <v-select
         label="Voca"
         v-model="learningStore.learningVocabularyTitle"
@@ -86,6 +91,7 @@
         v-model="learningStore.learningUnitName"
         :items="unitOptions"
         variant="underlined"
+        class="mb-2"
       >
       </v-select>
     </v-card-text>
