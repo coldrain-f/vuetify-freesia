@@ -6,7 +6,7 @@
           <v-col cols="12">
             <p class="ml-5">
               <span class="text-subtitle-2">
-                ※ 1/4/7/14 학습법
+                ※ 1/4/7/14 LEARNING
                 <v-tooltip activator="parent" location="end">
                   에빙하우스의 망각 곡선을 기반으로 자 <br />
                   연스럽게 단기 기억에서 장기 기억으로 <br />
@@ -38,7 +38,7 @@
           <v-col cols="12">
             <p class="ml-5">
               <span class="text-subtitle-2">
-                ※ 문제 출제
+                ※ STYLE
                 <v-tooltip activator="parent" location="end">
                   문제를 단어로 출제할지, 뜻으로 출제할지 선택하는 <br />
                   옵션입니다. 영어 단어장인 경우 문제 출제 옵션을 <br />
@@ -49,12 +49,18 @@
             </p>
           </v-col>
         </v-row>
-        <v-radio-group inline row hide-details color="primary">
+        <v-radio-group
+          inline
+          row
+          hide-details
+          color="primary"
+          v-model="learningStore.learningStyle"
+        >
           <v-col cols="6">
-            <v-radio label="단어" :value="true"></v-radio>
+            <v-radio label="단어" value="Word"></v-radio>
           </v-col>
           <v-col cols="6">
-            <v-radio label="뜻" :value="false"></v-radio>
+            <v-radio label="뜻" value="Meaning"></v-radio>
           </v-col>
         </v-radio-group>
       </v-col>
@@ -64,9 +70,10 @@
     <v-card-text>
       <v-select
         label="Language"
-        :items="['English', 'Japanese']"
         variant="underlined"
         class="mb-2"
+        :items="['English', 'Japanese']"
+        v-model="learningStore.learningLanguage"
         chips
       >
       </v-select>
