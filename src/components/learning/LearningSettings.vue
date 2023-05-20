@@ -102,7 +102,6 @@
       >
       </v-select>
     </v-card-text>
-
     <v-card-actions>
       <v-btn
         class="w-100"
