@@ -1,7 +1,6 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <!-- SELECT를 지우고 ADMIN 메뉴에서 고르도록 변경하면 깔끔할듯. -->
       <v-select
         label="Language"
         variant="underlined"
@@ -28,11 +27,13 @@
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
+                @click="vocaDialogControl.showDeleteDialog = true"
               ></v-btn>
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
+                @click="vocaDialogControl.showUpdateDialog = true"
               ></v-btn>
             </td>
           </tr>
@@ -52,10 +53,76 @@
       </v-btn>
     </v-card-actions>
   </v-card>
+
+  <!-- 단어장 삭제 다이얼로그 -->
+  <v-dialog v-model="vocaDialogControl.showDeleteDialog" width="500">
+    <v-card>
+      <template #title>
+        <span class="noto-sans"> ※ 단어장 삭제 </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="vocaDialogControl.showDeleteDialog = false"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="mt-5">
+        <v-text-field readonly label="No" model-value="1"></v-text-field>
+        <v-text-field
+          readonly
+          label="Title"
+          model-value="단어가 읽기다 기본편"
+        ></v-text-field>
+        <v-text-field
+          readonly
+          label="Language"
+          model-value="English"
+        ></v-text-field>
+      </v-card-text>
+      <v-card-actions class="d-flex justify-center">
+        <v-btn color="error" style="width: 48%"> DELETE </v-btn>
+        <v-btn
+          style="width: 48%"
+          @click="vocaDialogControl.showDeleteDialog = false"
+        >
+          CANCEL
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- 단어장 수정 다이얼로그 -->
+  <v-dialog v-model="vocaDialogControl.showUpdateDialog" width="500">
+    <v-card>
+      <v-card-text>Hello World!</v-card-text>
+      <v-card-actions>
+        <v-btn
+          color="primary"
+          block
+          @click="vocaDialogControl.showUpdateDialog = false"
+        >
+          Close Dialog
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
+
+// Todo
+// 1. 단어장 삭제 다이얼로그에 들어갈 내용 좀 더 고민 필요.
+// 2. 단어장, 유닛, 단어를 컴포넌트로 분리하여 관리할지 고민 필요.
+// 3. 다이얼로그 마다를 컴포넌트로 분리하여 관리할지 고민 필요.
+
+// 단어장 다이얼로그 컨트롤
+const vocaDialogControl = reactive({
+  showDeleteDialog: false,
+  showUpdateDialog: false,
+});
 
 const adminCategories = ref(["Vocabulary", "Unit", "Word"]);
 
@@ -67,3 +134,12 @@ const vocabularyList = ref([
   { id: 1, title: "JLPT N5", language: "Japanese" },
 ]);
 </script>
+
+<!-- 공통 스타일로 분리 예정  -->
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap");
+
+.noto-sans {
+  font-family: "Noto Sans KR", sans-serif;
+}
+</style>
