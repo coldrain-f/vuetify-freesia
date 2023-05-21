@@ -128,6 +128,9 @@
 
   <v-dialog v-model="showLearningTerminationDialog" width="auto">
     <v-card>
+      <template #title>
+        <span>Alarm</span>
+      </template>
       <v-card-text>정말 처음으로 돌아가시겠습니까?</v-card-text>
       <v-card-actions class="justify-end">
         <v-btn
@@ -184,6 +187,9 @@ import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useLearningStore } from "@/stores/learning";
 import { storeToRefs } from "pinia";
 import _ from "underscore";
+
+// Todo
+// 1. 틀린 단어가 증가할 때 아이콘 넣어줄지 고민 필요 (티가 안 나기 때문)
 
 // Pinia stores
 const synthStore = useSpeechSynthesisStore();
@@ -419,3 +425,12 @@ watch(
   { immediate: true }
 );
 </script>
+
+<!-- 공통 스타일로 분리 예정  -->
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap");
+
+.noto-sans {
+  font-family: "Noto Sans KR", sans-serif;
+}
+</style>
