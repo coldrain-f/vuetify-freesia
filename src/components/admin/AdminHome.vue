@@ -1,12 +1,28 @@
 <template>
   <v-container>
     <v-select
-      label="Language"
+      label="Category"
       variant="underlined"
       v-model="adminHomeStore.selectedAdminCategory"
       :items="adminHomeStore.adminCategories"
+      :hide-details="adminHomeStore.selectedAdminCategory === 'Vocabulary'"
       chips
+    />
+    <v-select
+      label="Voca"
+      variant="underlined"
+      v-show="adminHomeStore.isSubCategory()"
+      :hide-details="adminHomeStore.selectedAdminCategory === 'Unit'"
+      model-value="단어가 읽기다 기본편"
+      :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편', 'JLPT N5']"
+    />
+    <v-select
+      label="Unit"
+      variant="underlined"
+      v-show="adminHomeStore.selectedAdminCategory === 'Word'"
       hide-details
+      model-value="Unit 01 - 일상1"
+      :items="['Unit 01 - 일상1', 'Unit 02 - 학교생활1', 'Unit 03 - 학교생활2']"
     />
   </v-container>
   <VocabularyAdmin
