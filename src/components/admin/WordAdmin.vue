@@ -149,16 +149,9 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field
-          label="Word"
-          append-inner-icon="mdi-file-document-edit-outline"
-        />
-        <v-text-field
-          label="Meaning"
-          append-inner-icon="mdi-file-document-edit-outline"
-        />
+        <v-text-field label="Word" />
+        <v-text-field label="Meaning" />
         <v-select
-          append-inner-icon="mdi-file-document-edit-outline"
           model-value="adj"
           label="Part of speech"
           :items="['adj', 'v', 'n']"
