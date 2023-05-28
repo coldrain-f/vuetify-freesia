@@ -111,7 +111,7 @@
         variant="flat"
         color="primary"
         class="w-100"
-        size="large"
+        size="default"
         @click="learningStore.showLearningTerminationDialog = true"
       >
         <v-icon start icon="mdi-exit-to-app"></v-icon>

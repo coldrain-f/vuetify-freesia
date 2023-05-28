@@ -74,6 +74,7 @@
         class="mb-2"
         :items="['English', 'Japanese']"
         v-model="learningStore.learningLanguage"
+        density="compact"
         chips
       >
       </v-select>
@@ -82,6 +83,7 @@
         variant="underlined"
         v-model="synthDefaultVoiceName"
         :items="synthVoiceNames"
+        density="compact"
         class="mb-2"
       >
       </v-select>
@@ -90,6 +92,7 @@
         v-model="learningStore.learningVocabularyTitle"
         :items="vocabularyOptions"
         variant="underlined"
+        density="compact"
         class="mb-2"
       >
       </v-select>
@@ -98,6 +101,7 @@
         v-model="learningStore.learningUnitName"
         :items="unitOptions"
         variant="underlined"
+        density="compact"
         class="mb-2"
       >
       </v-select>
@@ -105,7 +109,7 @@
     <v-card-actions>
       <v-btn
         class="w-100"
-        size="large"
+        size="default"
         color="primary"
         variant="flat"
         @click="learningStore.isLearningStarted = true"
