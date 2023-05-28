@@ -12,7 +12,7 @@
         <tbody>
           <tr v-for="unit in unitList" :key="unit.id">
             <td style="width: 5%">{{ unit.id }}</td>
-            <td style="width: 50%">{{ unit.title }}</td>
+            <td style="width: 70%">{{ unit.title }}</td>
             <td style="width: 25%">
               <v-btn
                 variant="text"

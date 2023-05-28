@@ -5,15 +5,19 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Title</th>
+            <th>Word</th>
+            <th>Meaning</th>
+            <th>POS</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="unit in unitList" :key="unit.id">
-            <td style="width: 5%">{{ unit.id }}</td>
-            <td style="width: 50%">{{ unit.title }}</td>
-            <td style="width: 25%">
+          <tr v-for="word in wordList" :key="word.id">
+            <td style="width: 5%">{{ word.id }}</td>
+            <td style="width: 30%">{{ word.name }}</td>
+            <td style="width: 30%">{{ word.meaning }}</td>
+            <td style="width: 5%">{{ word.pos }}</td>
+            <td style="width: 30%">
               <v-btn
                 variant="text"
                 size="small"
@@ -170,9 +174,9 @@ const unitDialogControl = reactive({
   showAddDialog: false,
 });
 
-const unitList = ref([
-  { id: 3, title: "Unit 03 - 학교 생활2" },
-  { id: 2, title: "Unit 02 - 학교 생활1" },
-  { id: 1, title: "Unit 01 - 일상" },
+const wordList = ref([
+  { id: 3, name: "spice", meaning: "양념", pos: "n" },
+  { id: 2, name: "delicious", meaning: "맛있는", pos: "adj" },
+  { id: 1, name: "cook", meaning: "요리하다", pos: "v" },
 ]);
 </script>
