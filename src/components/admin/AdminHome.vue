@@ -12,10 +12,12 @@
   <VocabularyAdmin
     v-if="adminHomeStore.selectedAdminCategory === 'Vocabulary'"
   />
+  <UnitAdmin v-if="adminHomeStore.selectedAdminCategory === 'Unit'" />
 </template>
 
 <script setup>
 import VocabularyAdmin from "./VocabularyAdmin.vue";
+import UnitAdmin from "./UnitAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
 
 const adminHomeStore = useAdminHomeStore();
