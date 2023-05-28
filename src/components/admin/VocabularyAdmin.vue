@@ -4,7 +4,6 @@
       <v-table style="overflow-x: auto">
         <thead>
           <tr>
-            <th>#</th>
             <th>Title</th>
             <th>Language</th>
             <th>Actions</th>
@@ -12,8 +11,7 @@
         </thead>
         <tbody>
           <tr v-for="vocabulary in vocabularyList" :key="vocabulary.id">
-            <td style="width: 5%">{{ vocabulary.id }}</td>
-            <td style="width: 50%">{{ vocabulary.title }}</td>
+            <td style="width: 55%">{{ vocabulary.title }}</td>
             <td style="width: 20%">{{ vocabulary.language }}</td>
             <td style="width: 25%">
               <v-btn
@@ -68,7 +66,6 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field readonly label="No" model-value="1"></v-text-field>
         <v-text-field
           readonly
           label="Title"
@@ -113,7 +110,6 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field label="No" model-value="1" readonly></v-text-field>
         <v-text-field
           append-inner-icon="mdi-file-document-edit-outline"
           label="Title"

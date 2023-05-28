@@ -4,15 +4,13 @@
       <v-table style="overflow-x: auto">
         <thead>
           <tr>
-            <th>#</th>
             <th>Title</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="unit in unitList" :key="unit.id">
-            <td style="width: 5%">{{ unit.id }}</td>
-            <td style="width: 70%">{{ unit.title }}</td>
+            <td style="width: 75%">{{ unit.title }}</td>
             <td style="width: 25%">
               <v-btn
                 variant="text"
@@ -67,17 +65,8 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field readonly label="No" model-value="1"></v-text-field>
-        <v-text-field
-          readonly
-          label="Title"
-          model-value="Unit 01 - 일상1"
-        ></v-text-field>
-        <v-text-field
-          readonly
-          label="Subword"
-          model-value="40개"
-        ></v-text-field>
+        <v-text-field readonly label="Title" model-value="Unit 01 - 일상1" />
+        <v-text-field readonly label="Subword" model-value="40개" />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
         <v-btn color="error" style="width: 48%"> DELETE </v-btn>
@@ -106,17 +95,12 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field label="No" model-value="1" readonly></v-text-field>
         <v-text-field
-          append-inner-icon="mdi-file-document-edit-outline"
           label="Title"
+          append-inner-icon="mdi-file-document-edit-outline"
           model-value="Unit 01 - 일상1"
-        ></v-text-field>
-        <v-text-field
-          label="Subword"
-          model-value="40개"
-          readonly
-        ></v-text-field>
+        />
+        <v-text-field label="Subword" model-value="40개" readonly />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
         <v-btn color="info" style="width: 48%"> UPDATE </v-btn>
