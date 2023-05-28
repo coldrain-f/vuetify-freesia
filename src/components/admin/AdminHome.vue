@@ -8,32 +8,46 @@
       :hide-details="adminHomeStore.selectedAdminCategory === 'Vocabulary'"
       chips
     />
-    <v-select
-      label="Voca"
-      variant="underlined"
-      v-show="adminHomeStore.isSubCategory()"
-      :hide-details="adminHomeStore.selectedAdminCategory === 'Unit'"
-      model-value="단어가 읽기다 기본편"
-      :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편', 'JLPT N5']"
-    />
-    <v-select
-      label="Unit"
-      variant="underlined"
-      v-show="adminHomeStore.selectedAdminCategory === 'Word'"
-      hide-details
-      model-value="Unit 01 - 일상1"
-      :items="['Unit 01 - 일상1', 'Unit 02 - 학교생활1', 'Unit 03 - 학교생활2']"
-    />
+    <v-row>
+      <v-col cols="6">
+        <v-select
+          label="Voca"
+          variant="underlined"
+          v-show="adminHomeStore.isSubCategory()"
+          density="compact"
+          hide-details
+          model-value="단어가 읽기다 기본편"
+          :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편', 'JLPT N5']"
+        />
+      </v-col>
+      <v-col cols="6">
+        <v-select
+          label="Unit"
+          variant="underlined"
+          v-show="adminHomeStore.selectedAdminCategory === 'Word'"
+          density="compact"
+          hide-details
+          model-value="Unit 01 - 일상1"
+          :items="[
+            'Unit 01 - 일상1',
+            'Unit 02 - 학교생활1',
+            'Unit 03 - 학교생활2',
+          ]"
+        />
+      </v-col>
+    </v-row>
   </v-container>
   <VocabularyAdmin
     v-if="adminHomeStore.selectedAdminCategory === 'Vocabulary'"
   />
   <UnitAdmin v-if="adminHomeStore.selectedAdminCategory === 'Unit'" />
+  <WordAdmin v-if="adminHomeStore.selectedAdminCategory === 'Word'" />
 </template>
 
 <script setup>
 import VocabularyAdmin from "./VocabularyAdmin.vue";
 import UnitAdmin from "./UnitAdmin.vue";
+import WordAdmin from "./WordAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
 
 const adminHomeStore = useAdminHomeStore();
