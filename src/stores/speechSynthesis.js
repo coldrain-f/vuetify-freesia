@@ -5,37 +5,87 @@ export const useSpeechSynthesisStore = defineStore("speechSynthesis", () => {
   const synthDefaultVoiceName = ref(null);
   const synthVoiceNames = ref([]);
 
+  // Synth 전역 설정
+  const synth = ref(null);
+
   let isInitialized = false;
 
-  const initializeSynthDefaultVoiceName = (voices) => {
-    voices.forEach((voice) => {
-      if (voice.default) {
-        synthDefaultVoiceName.value = voice.name;
-        return;
-      }
-    });
+  const initializeCodeMap = (codeMap) => {
+    if (!codeMap) {
+      console.error("codeMap not found error.");
+    }
+    codeMap.set("English", "en");
+    codeMap.set("Japanese", "ja");
+    codeMap.set("Korean", "ko");
+  };
+
+  const convertLanguageCode = (lang) => {
+    const codeMap = new Map();
+    initializeCodeMap(codeMap);
+    const findLang = codeMap.get(lang);
+    if (!findLang) {
+      console.error("lang not found error.");
+    }
+    return findLang;
+  };
+
+  const getVoiceNamesByLang = (lang) => {
+    const code = convertLanguageCode(lang);
+    const voiceNames = synth.value
+      .getVoices()
+      .filter((v) => v.lang.startsWith(code))
+      .map((v) => v.name);
+
+    if (!voiceNames) {
+      console.error("text-to-speech not found.");
+      synthVoiceNames.value = "No data available";
+      return;
+    }
+    return voiceNames;
   };
 
   const initializeSpeechSynthesis = async () => {
     if ("speechSynthesis" in window) {
-      const synth = window.speechSynthesis;
+      synth.value = window.speechSynthesis;
 
       // 음성 데이터가 변경될 때까지 기다리는 Promise 생성
       await new Promise((resolve) => {
-        synth.onvoiceschanged = resolve;
+        synth.value.onvoiceschanged = resolve;
       });
 
-      // 음성 데이터 가져오기
-      const voices = synth.getVoices();
+      // 음성 데이터 가져오기 -- 임시 제거
+      // const voices = synth.value.getVoices();
 
-      // Default로 잡힌 voiceName 설정
-      initializeSynthDefaultVoiceName(voices);
+      // Default로 잡힌 voiceName 설정 -- 임시 제거
+      // initializeSynthDefaultVoiceName(voices);
 
-      // 음성 데이터의 이름만 추출하여 배열로 변환
-      const voiceNames = voices.map((voice) => voice.name);
+      // 음성 데이터의 이름만 추출하여 배열로 변환 -- 임시 제거
+      // const voiceNames = voices.map((voice) => voice.name);
 
-      // voiceNames에 음성 데이터 이름 배열 설정
+      // voiceNames에 음성 데이터 이름 배열 설정 -- 임시 제거
+      // synthVoiceNames.value = voiceNames;
+
+      // 영어를 Default로 설정한다.
+      const voiceNames = synth.value
+        .getVoices()
+        .filter((v) => v.lang.startsWith("en"))
+        .map((v) => v.name);
+
+      // 없으면 시스템 Default Voice로 설정
+      if (!voiceNames) {
+        synth.value.forEach((voice) => {
+          console.log(voice);
+          if (voice.default) {
+            synthDefaultVoiceName.value = voice.name;
+          }
+        });
+        isInitialized = true;
+        return;
+      }
+
       synthVoiceNames.value = voiceNames;
+      synthDefaultVoiceName.value = voiceNames[0];
+
       isInitialized = true;
     } else {
       console.log("SpeechSynthesis API is not supported.");
@@ -58,6 +108,7 @@ export const useSpeechSynthesisStore = defineStore("speechSynthesis", () => {
   return {
     synthDefaultVoiceName,
     synthVoiceNames,
+    getVoiceNamesByLang,
     initializeSpeechSynthesis,
     speakText,
   };

@@ -76,17 +76,15 @@
         v-model="learningStore.learningLanguage"
         density="compact"
         chips
-      >
-      </v-select>
-      <v-select
+      />
+      <!-- <v-select
         label="TTS"
         variant="underlined"
-        v-model="synthDefaultVoiceName"
-        :items="synthVoiceNames"
+        v-model="synthStore.synthDefaultVoiceName"
+        :items="synthStore.synthVoiceNames"
         density="compact"
         class="mb-2"
-      >
-      </v-select>
+      /> -->
       <v-select
         label="Voca"
         v-model="learningStore.learningVocabularyTitle"
@@ -94,8 +92,7 @@
         variant="underlined"
         density="compact"
         class="mb-2"
-      >
-      </v-select>
+      />
       <v-select
         label="Unit"
         v-model="learningStore.learningUnitName"
@@ -103,8 +100,7 @@
         variant="underlined"
         density="compact"
         class="mb-2"
-      >
-      </v-select>
+      />
     </v-card-text>
     <v-card-actions>
       <v-btn
@@ -123,16 +119,13 @@
 
 <script setup>
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
-import { storeToRefs } from "pinia";
 import { utils } from "@/common/utils";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useLearningStore } from "@/stores/learning";
 
 // Pinia stores
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
-
-const { synthDefaultVoiceName, synthVoiceNames } = storeToRefs(synthStore);
 
 const vocabularyOptions = ref([]);
 const unitOptions = ref([]);
@@ -155,6 +148,19 @@ const fetchUnits = () => {
     { id: 2, name: "Unit 02 - 학교" },
   ];
 };
+
+// Language 를 감시하고 있다가 해당하는 언어의 TTS Voice를 조회 후
+// TTS 음성을 조회한 맨 첫 번째 Voice로 설정한다.
+watch(
+  () => learningStore.learningLanguage,
+  () => {
+    const voiceNames = synthStore.getVoiceNamesByLang(
+      learningStore.learningLanguage
+    );
+    synthStore.synthVoiceNames = voiceNames;
+    synthStore.synthDefaultVoiceName = voiceNames[0];
+  }
+);
 
 const loadVocabularyOptions = () => {
   vocabularyList.value.forEach((vocabulary) => {

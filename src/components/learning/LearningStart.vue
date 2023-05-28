@@ -248,6 +248,8 @@ const words = ref([
   { id: 1, name: "spice", meaning: "양념" },
   { id: 2, name: "delicious", meaning: "맛있는" },
   { id: 3, name: "hot", meaning: "뜨거운" },
+  { id: 4, name: "感じる", meaning: "느끼다" },
+  { id: 5, name: "ファーストクラス", meaning: "퍼스트클래스" },
 ]);
 
 /** 학습 브레드크럼  */

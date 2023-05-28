@@ -9,7 +9,7 @@
       chips
     />
     <v-row>
-      <v-col cols="6">
+      <v-col :cols="6">
         <v-select
           label="Voca"
           variant="underlined"
