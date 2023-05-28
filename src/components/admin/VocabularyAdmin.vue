@@ -41,7 +41,13 @@
       <v-divider></v-divider>
     </v-card-text>
     <v-card-actions class="mt-5">
-      <v-btn variant="flat" size="default" class="w-100" color="primary">
+      <v-btn
+        variant="flat"
+        size="default"
+        class="w-100"
+        color="primary"
+        @click="vocaDialogControl.showAddDialog = true"
+      >
         <v-icon start icon="mdi-plus"></v-icon>
         Add item
       </v-btn>
@@ -96,7 +102,7 @@
   <v-dialog v-model="vocaDialogControl.showUpdateDialog" width="500">
     <v-card>
       <template #title>
-        <span class="noto-sans text-primary"> ※ 단어장 수정 </span>
+        <span class="noto-sans text-info"> ※ 단어장 수정 </span>
       </template>
       <template #append>
         <v-btn
@@ -126,10 +132,44 @@
         ></v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="primary" style="width: 48%"> UPDATE </v-btn>
+        <v-btn color="info" style="width: 48%"> UPDATE </v-btn>
         <v-btn
           style="width: 48%"
           @click="vocaDialogControl.showUpdateDialog = false"
+        >
+          CANCEL
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- 단어장 등록 다이얼로그 -->
+  <v-dialog v-model="vocaDialogControl.showAddDialog" width="500">
+    <v-card>
+      <template #title>
+        <span class="noto-sans text-primary"> ※ 단어장 등록 </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="vocaDialogControl.showAddDialog = false"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="mt-5">
+        <v-text-field label="Title"></v-text-field>
+        <v-select
+          label="Language"
+          :items="['English', 'Japanese']"
+          model-value="English"
+        ></v-select>
+      </v-card-text>
+      <v-card-actions class="d-flex justify-center">
+        <v-btn color="primary" style="width: 48%"> ADD </v-btn>
+        <v-btn
+          style="width: 48%"
+          @click="vocaDialogControl.showAddDialog = false"
         >
           CANCEL
         </v-btn>
@@ -145,6 +185,7 @@ import { reactive, ref } from "vue";
 const vocaDialogControl = reactive({
   showDeleteDialog: false,
   showUpdateDialog: false,
+  showAddDialog: false,
 });
 
 const vocabularyList = ref([
