@@ -1,13 +1,13 @@
 <template>
   <v-card class="mx-auto mt-10" max-width="500">
-    <v-system-bar app color="primary" class="pt-3" absolute>
+    <v-system-bar app :color="themeStore.theme" class="pt-3" absolute>
       <v-icon icon="mdi-wifi-strength-4"></v-icon>
       <v-icon icon="mdi-signal" class="ms-2"></v-icon>
       <v-icon icon="mdi-battery" class="ms-2"></v-icon>
 
       <span class="ms-2 mr-4">{{ currentDateTime }}</span>
     </v-system-bar>
-    <v-toolbar color="primary" class="mt-6">
+    <v-toolbar :color="themeStore.theme" class="mt-6">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-toolbar-title class="noto-sans">프리지아 보카</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -17,7 +17,23 @@
       </v-btn>
 
       <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
+        <v-icon icon="mdi-dots-vertical"></v-icon>
+        <v-menu
+          activator="parent"
+          location="end"
+          transition="slide-x-transition"
+        >
+          <v-list>
+            <v-list-item :value="1">
+              <v-list-item-title>TTS(Text-To-Speech)</v-list-item-title>
+            </v-list-item>
+            <v-list-item :value="2">
+              <v-list-item-title @click="() => (showThemeDialog = true)">
+                Theme
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-btn>
 
       <template v-slot:extension>
@@ -47,6 +63,33 @@
       </v-window-item>
     </v-window>
   </v-card>
+
+  <!-- Theme 설정 다이얼로그 -->
+  <v-dialog v-model="showThemeDialog" width="500">
+    <v-card>
+      <template #title>
+        <span class="noto-sans text-primary"> ※ Theme </span>
+      </template>
+      <template #append>
+        <v-btn variant="text" icon="mdi-close" @click="showThemeDialog = false">
+        </v-btn>
+      </template>
+      <v-card-text class="mt-5">
+        <v-select
+          v-model="selectedTheme"
+          :items="['primary', 'error', 'info', 'success', 'warning', 'dark']"
+        />
+      </v-card-text>
+      <v-card-actions class="d-flex justify-center">
+        <v-btn color="primary" style="width: 48%" @click="onClickThemeApply()">
+          APPLY
+        </v-btn>
+        <v-btn style="width: 48%" @click="showThemeDialog = false">
+          CANCEL
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -55,6 +98,7 @@ import LearningStart from "@/components/learning/LearningStart.vue";
 import AdminHome from "@/components/admin/AdminHome.vue";
 import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
+import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 
@@ -63,8 +107,18 @@ const tab = ref(null);
 // Pinia
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
+const themeStore = useThemeStore();
 
 const { isLearningStarted } = storeToRefs(learningStore);
+
+// Theme
+const showThemeDialog = ref(false);
+const selectedTheme = ref("primary");
+
+const onClickThemeApply = () => {
+  themeStore.theme = selectedTheme.value;
+  showThemeDialog.value = false;
+};
 
 // 한국의 현재 시간을 가지고 오는 함수
 // Format: 오후 9:31:25

@@ -10,18 +10,36 @@
     </v-breadcrumbs>
     <v-divider></v-divider>
     <v-card-text>
-      <v-progress-linear
-        v-model="progress"
-        height="15"
-        color="info"
-        class="mb-5 font-weight-bold"
-        striped
-      >
-        <p>
-          <span>{{ currentWordNumber }}/</span><span>{{ totalWordCount }}</span>
-        </p>
-      </v-progress-linear>
       <v-row>
+        <v-col cols="10"
+          ><v-progress-linear
+            v-model="progress"
+            height="15"
+            :color="themeStore.theme"
+            class="mb-5 font-weight-bold"
+            striped
+          >
+            <!-- <p :class="themeStore.theme === 'dark' ? 'text-white' : ''">
+          <span>{{ currentWordNumber }}/</span><span>{{ totalWordCount }}</span>
+        </p> -->
+          </v-progress-linear></v-col
+        >
+        <v-col cols="2">
+          <p class="text-center">
+            <span>{{ currentWordNumber }}/</span
+            ><span>{{ totalWordCount }}개</span>
+          </p>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <!-- <v-col>
+          <p>
+            <strong>진행도: </strong>
+            <span>{{ currentWordNumber }}/</span
+            ><span>{{ totalWordCount }}</span>
+          </p>
+        </v-col> -->
         <v-col cols="4">
           <strong>시도: </strong>
           <span>{{ tryCount }}회</span>
@@ -109,7 +127,7 @@
     <v-card-actions>
       <v-btn
         variant="flat"
-        color="primary"
+        :color="themeStore.theme"
         class="w-100"
         size="default"
         @click="learningStore.showLearningTerminationDialog = true"
@@ -185,6 +203,7 @@ import catNoImage from "@/assets/images/cat_no_opacity0.png";
 import { computed, ref, watch, reactive } from "vue";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useLearningStore } from "@/stores/learning";
+import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
 import _ from "underscore";
 
@@ -194,6 +213,7 @@ import _ from "underscore";
 // Pinia stores
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
+const themeStore = useThemeStore();
 
 // the action can just be destructured
 const { speakText } = synthStore;
@@ -248,8 +268,7 @@ const words = ref([
   { id: 1, name: "spice", meaning: "양념" },
   { id: 2, name: "delicious", meaning: "맛있는" },
   { id: 3, name: "hot", meaning: "뜨거운" },
-  { id: 4, name: "感じる", meaning: "느끼다" },
-  { id: 5, name: "ファーストクラス", meaning: "퍼스트클래스" },
+  { id: 4, name: "ファーストクラス", meaning: "퍼스트클래스" },
 ]);
 
 /** 학습 브레드크럼  */

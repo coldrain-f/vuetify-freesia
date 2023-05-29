@@ -41,7 +41,7 @@
         variant="flat"
         size="default"
         class="w-100"
-        color="primary"
+        :color="themeStore.theme"
         @click="unitDialogControl.showAddDialog = true"
       >
         <v-icon start icon="mdi-plus"></v-icon>
@@ -146,6 +146,8 @@
 
 <script setup>
 import { reactive, ref } from "vue";
+import { useThemeStore } from "@/stores/theme";
+const themeStore = useThemeStore();
 
 // Unit 다이얼로그 컨트롤
 const unitDialogControl = reactive({

@@ -22,7 +22,7 @@
           inline
           row
           hide-details
-          color="primary"
+          :color="themeStore.theme"
           v-model="learningStore.useLearning"
         >
           <v-col cols="5">
@@ -53,7 +53,7 @@
           inline
           row
           hide-details
-          color="primary"
+          :color="themeStore.theme"
           v-model="learningStore.learningStyle"
         >
           <v-col cols="6">
@@ -106,7 +106,7 @@
       <v-btn
         class="w-100"
         size="default"
-        color="primary"
+        :color="themeStore.theme"
         variant="flat"
         @click="learningStore.isLearningStarted = true"
       >
@@ -122,10 +122,12 @@ import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { utils } from "@/common/utils";
 import { ref, onMounted, watch } from "vue";
 import { useLearningStore } from "@/stores/learning";
+import { useThemeStore } from "@/stores/theme";
 
 // Pinia stores
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
+const themeStore = useThemeStore();
 
 const vocabularyOptions = ref([]);
 const unitOptions = ref([]);
