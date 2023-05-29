@@ -5,7 +5,7 @@
       <v-icon icon="mdi-signal" class="ms-2"></v-icon>
       <v-icon icon="mdi-battery" class="ms-2"></v-icon>
 
-      <span class="ms-2 mr-4">3:13PM</span>
+      <span class="ms-2 mr-4">{{ currentDateTime }}</span>
     </v-system-bar>
     <v-toolbar color="primary" class="mt-6">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
@@ -66,8 +66,29 @@ const learningStore = useLearningStore();
 
 const { isLearningStarted } = storeToRefs(learningStore);
 
+// 한국의 현재 시간을 가지고 오는 함수
+// Format: 오후 9:31:25
+const getCurrentDateTime = () => {
+  return new Intl.DateTimeFormat("ko-KR", {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  }).format();
+};
+
+// 1초 간격으로 현재 시간을 재설정 하는 Interval
+const intervalCurrentDateTime = () => {
+  setInterval(() => {
+    currentDateTime.value = getCurrentDateTime();
+  }, 1000);
+};
+
+// 현재 시간
+const currentDateTime = ref(getCurrentDateTime());
+
 onMounted(() => {
   synthStore.initializeSpeechSynthesis();
+  intervalCurrentDateTime();
 });
 </script>
 
