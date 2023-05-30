@@ -22,8 +22,8 @@
             <!-- <p :class="themeStore.theme === 'dark' ? 'text-white' : ''">
           <span>{{ currentWordNumber }}/</span><span>{{ totalWordCount }}</span>
         </p> -->
-          </v-progress-linear></v-col
-        >
+          </v-progress-linear>
+        </v-col>
         <v-col cols="2">
           <p class="text-center">
             <span>{{ currentWordNumber }}/</span
@@ -33,18 +33,11 @@
       </v-row>
 
       <v-row>
-        <!-- <v-col>
-          <p>
-            <strong>진행도: </strong>
-            <span>{{ currentWordNumber }}/</span
-            ><span>{{ totalWordCount }}</span>
-          </p>
-        </v-col> -->
         <v-col cols="4">
           <strong>시도: </strong>
           <span>{{ tryCount }}회</span>
         </v-col>
-        <v-col>
+        <v-col cols="8">
           <strong>틀린 단어: </strong><span>{{ incorrectWordCount }}개</span>
         </v-col>
       </v-row>

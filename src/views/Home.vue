@@ -24,8 +24,12 @@
           transition="slide-x-transition"
         >
           <v-list>
-            <v-list-item :value="1">
-              <v-list-item-title>TTS(Text-To-Speech)</v-list-item-title>
+            <v-list-item :value="1" disabled>
+              <v-list-item-title
+                @click="() => (textToSpeech.showTextToSpeechDialog = true)"
+              >
+                TTS(Text-To-Speech)
+              </v-list-item-title>
             </v-list-item>
             <v-list-item :value="2">
               <v-list-item-title @click="() => (showThemeDialog = true)">
@@ -40,7 +44,7 @@
         <v-tabs v-model="tab" align-tabs="title">
           <v-tab value="learn"> LEARN </v-tab>
           <v-tab value="admin"> ADMIN </v-tab>
-          <v-tab value="analyze"> ANALYZE </v-tab>
+          <v-tab value="analyze" disabled> ANALYZE </v-tab>
         </v-tabs>
       </template>
     </v-toolbar>
@@ -64,6 +68,35 @@
     </v-window>
   </v-card>
 
+  <!-- TTS(Text-to-Speech) 설정 다이얼로그 -->
+  <v-dialog v-model="textToSpeech.showTextToSpeechDialog" width="500">
+    <v-card>
+      <template #title>
+        <span class="noto-sans text-primary"> ※ TTS(Text-To-Speech) </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="textToSpeech.showTextToSpeechDialog = false"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="mt-5"> Under development. </v-card-text>
+      <v-card-actions class="d-flex justify-center">
+        <v-btn color="primary" style="width: 48%" @click="onClickThemeApply()">
+          APPLY
+        </v-btn>
+        <v-btn
+          style="width: 48%"
+          @click="textToSpeech.showTextToSpeechDialog = false"
+        >
+          CANCEL
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <!-- Theme 설정 다이얼로그 -->
   <v-dialog v-model="showThemeDialog" width="500">
     <v-card>
@@ -77,6 +110,7 @@
       <v-card-text class="mt-5">
         <v-select
           v-model="selectedTheme"
+          label="Theme"
           :items="['primary', 'error', 'info', 'success', 'warning', 'dark']"
         />
       </v-card-text>
@@ -100,7 +134,7 @@ import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 
 const tab = ref(null);
 
@@ -110,6 +144,11 @@ const learningStore = useLearningStore();
 const themeStore = useThemeStore();
 
 const { isLearningStarted } = storeToRefs(learningStore);
+
+// TTS(Text-to-Speech)
+const textToSpeech = reactive({
+  showTextToSpeechDialog: ref(false),
+});
 
 // Theme
 const showThemeDialog = ref(false);
@@ -126,7 +165,8 @@ const getCurrentDateTime = () => {
   return new Intl.DateTimeFormat("ko-KR", {
     hour: "numeric",
     minute: "numeric",
-    second: "numeric",
+    // second: "numeric",
+    hour12: true,
   }).format();
 };
 

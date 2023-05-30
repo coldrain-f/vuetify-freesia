@@ -5,7 +5,7 @@
         <v-row>
           <v-col cols="12">
             <p class="ml-5">
-              <span class="text-subtitle-2">
+              <span class="text-subtitle-2 noto-sans">
                 ※ 1/4/7/14 LEARNING
                 <v-tooltip activator="parent" location="end">
                   에빙하우스의 망각 곡선을 기반으로 자 <br />
@@ -208,3 +208,12 @@ onMounted(() => {
   initializeLearningSettings();
 });
 </script>
+
+<!-- 공통 스타일로 분리 예정  -->
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap");
+
+.noto-sans {
+  font-family: "Noto Sans KR", sans-serif;
+}
+</style>
