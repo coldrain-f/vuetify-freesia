@@ -1,4 +1,4 @@
-package edu.coldrain.freesiacorespring.controller;
+package edu.coldrain.freesia.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

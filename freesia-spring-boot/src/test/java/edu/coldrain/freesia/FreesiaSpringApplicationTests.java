@@ -1,10 +1,10 @@
-package edu.coldrain.freesiacorespring;
+package edu.coldrain.freesia;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FreesiacoreSpringApplicationTests {
+class FreesiaSpringApplicationTests {
 
     @Test
     void contextLoads() {

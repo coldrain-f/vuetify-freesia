@@ -1,13 +1,13 @@
-package edu.coldrain.freesiacorespring;
+package edu.coldrain.freesia;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FreesiacoreSpringApplication {
+public class FreesiaSpringApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FreesiacoreSpringApplication.class, args);
+        SpringApplication.run(FreesiaSpringApplication.class, args);
     }
 
 }
