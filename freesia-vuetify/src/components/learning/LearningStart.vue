@@ -200,9 +200,6 @@ import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
 import _ from "underscore";
 
-// Todo
-// 1. 틀린 단어가 증가할 때 아이콘 넣어줄지 고민 필요 (티가 안 나기 때문)
-
 // Pinia stores
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
