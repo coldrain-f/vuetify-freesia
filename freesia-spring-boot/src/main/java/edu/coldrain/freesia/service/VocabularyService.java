@@ -41,6 +41,10 @@ public class VocabularyService {
         vocabulary.changeTitle(request.getTitle());
     }
 
+    public void removeVocabularyById(Long vocabularyId) {
+        vocabularyRepository.deleteById(vocabularyId);
+    }
+
     public List<VocabularyDTO.Response> findAllVocabularyResponse() {
         return vocabularyRepository.findAll()
                 .stream()

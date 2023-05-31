@@ -24,6 +24,11 @@ public class VocabularyRestController {
         vocabularyService.modifyVocabulary(request, vocabularyId);
     }
 
+    @DeleteMapping("/{vocabularyId}")
+    public void removeVocabulary(@PathVariable Long vocabularyId) {
+        vocabularyService.removeVocabularyById(vocabularyId);
+    }
+
     @GetMapping
     public List<VocabularyDTO.Response> findAll() {
         return vocabularyService.findAllVocabularyResponse();
