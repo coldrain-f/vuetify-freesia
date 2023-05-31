@@ -1,12 +1,11 @@
 package edu.coldrain.freesia.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 public class VocabularyDTO {
 
     @Data
-    public class RegistrationRequest {
+    public static class RegistrationRequest {
 
         private String title;
 
@@ -19,7 +18,7 @@ public class VocabularyDTO {
     }
 
     @Data
-    public class Response {
+    public static class Response {
 
         private String title;
 
