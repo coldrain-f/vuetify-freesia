@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "code"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Language {
 
     @Id
@@ -21,12 +21,8 @@ public class Language {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String code;
-
     @Builder
-    public Language(String name, String code) {
+    public Language(String name) {
         this.name = name;
-        this.code = code;
     }
 }

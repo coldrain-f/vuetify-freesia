@@ -23,7 +23,6 @@ public class HomeController {
     public List<Language> languages() {
         final Language englishLanguage = Language.builder()
                 .name("English")
-                .code("en-GB")
                 .build();
 
         languageRepository.save(englishLanguage);
