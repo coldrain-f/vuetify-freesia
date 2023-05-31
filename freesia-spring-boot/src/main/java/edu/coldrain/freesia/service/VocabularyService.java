@@ -4,6 +4,7 @@ import edu.coldrain.freesia.dto.VocabularyDTO;
 import edu.coldrain.freesia.entity.Language;
 import edu.coldrain.freesia.entity.Vocabulary;
 import edu.coldrain.freesia.exception.LanguageNotFoundException;
+import edu.coldrain.freesia.exception.VocabularyNotFoundException;
 import edu.coldrain.freesia.repository.LanguageRepository;
 import edu.coldrain.freesia.repository.VocabularyRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,13 @@ public class VocabularyService {
 
         final Vocabulary savedVocabulary = vocabularyRepository.save(vocabulary);
         return savedVocabulary.getId();
+    }
+
+    public void modifyVocabulary(VocabularyDTO.ModifyRequest request, Long vocabularyId) {
+        final Vocabulary vocabulary = vocabularyRepository.findById(vocabularyId)
+                .orElseThrow(() -> new VocabularyNotFoundException("Vocabulary not found exception."));
+
+        vocabulary.changeTitle(request.getTitle());
     }
 
     public List<VocabularyDTO.Response> findAllVocabularyResponse() {

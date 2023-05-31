@@ -19,6 +19,11 @@ public class VocabularyRestController {
         return vocabularyService.registerVocabulary(request);
     }
 
+    @PatchMapping("/{vocabularyId}")
+    public void modifyVocabulary(@RequestBody VocabularyDTO.ModifyRequest request, @PathVariable Long vocabularyId) {
+        vocabularyService.modifyVocabulary(request, vocabularyId);
+    }
+
     @GetMapping
     public List<VocabularyDTO.Response> findAll() {
         return vocabularyService.findAllVocabularyResponse();

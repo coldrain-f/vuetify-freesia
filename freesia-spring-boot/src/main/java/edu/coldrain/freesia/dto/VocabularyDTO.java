@@ -18,6 +18,17 @@ public class VocabularyDTO {
     }
 
     @Data
+    public static class ModifyRequest {
+
+        private String title;
+
+        @Builder
+        public ModifyRequest(String title) {
+            this.title = title;
+        }
+    }
+
+    @Data
     public static class Response {
 
         private String title;

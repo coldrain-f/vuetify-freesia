@@ -29,4 +29,8 @@ public class Vocabulary {
         this.title = title;
         this.language = language;
     }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
 }
