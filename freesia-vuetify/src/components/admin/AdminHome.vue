@@ -17,7 +17,7 @@
           density="compact"
           hide-details
           model-value="단어가 읽기다 기본편"
-          :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편', 'JLPT N5']"
+          :items="vocabularyList"
         />
       </v-col>
       <v-col cols="6">
@@ -49,8 +49,13 @@ import VocabularyAdmin from "./VocabularyAdmin.vue";
 import UnitAdmin from "./UnitAdmin.vue";
 import WordAdmin from "./WordAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
+import { onMounted, ref } from "vue";
 
 const adminHomeStore = useAdminHomeStore();
+
+const vocabularyList = ref([]);
+
+onMounted(() => {});
 </script>
 
 <!-- 공통 스타일로 분리 예정  -->

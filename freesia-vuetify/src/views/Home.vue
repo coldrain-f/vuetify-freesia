@@ -134,7 +134,7 @@ import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
-import { onMounted, reactive, ref, watch } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 const tab = ref(null);
 

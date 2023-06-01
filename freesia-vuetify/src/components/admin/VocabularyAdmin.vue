@@ -175,8 +175,9 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useThemeStore } from "@/stores/theme";
+import { vocabularyService } from "@/service/vocabularyService";
 const themeStore = useThemeStore();
 
 // 단어장 다이얼로그 컨트롤
@@ -186,9 +187,9 @@ const vocaDialogControl = reactive({
   showAddDialog: false,
 });
 
-const vocabularyList = ref([
-  { id: 3, title: "단어가 읽기다 기본편", language: "English" },
-  { id: 2, title: "단어가 읽기다 실력편", language: "English" },
-  { id: 1, title: "JLPT N5", language: "Japanese" },
-]);
+const vocabularyList = ref([]);
+
+onMounted(async () => {
+  vocabularyList.value = await vocabularyService.findAll();
+});
 </script>
