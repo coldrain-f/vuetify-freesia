@@ -154,15 +154,17 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field label="Title"></v-text-field>
+        <v-text-field label="Title" v-model="vocabularyAddFormData.title" />
         <v-select
           label="Language"
           :items="['English', 'Japanese']"
-          model-value="English"
-        ></v-select>
+          v-model="vocabularyAddFormData.language"
+        />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="primary" style="width: 48%"> ADD </v-btn>
+        <v-btn color="primary" style="width: 48%" @click="onClickAddButton">
+          ADD
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="vocaDialogControl.showAddDialog = false"
@@ -187,9 +189,20 @@ const vocaDialogControl = reactive({
   showAddDialog: false,
 });
 
+const vocabularyAddFormData = reactive({
+  title: null,
+  language: "English",
+});
+
 const vocabularyList = ref([]);
 
+// 단어장 등록 버튼 클릭 이벤트
+const onClickAddButton = async () => {
+  await vocabularyService.registerVocabulary(vocabularyAddFormData);
+};
+
 onMounted(async () => {
+  // 단어장 DB 조회 후 Render
   vocabularyList.value = await vocabularyService.findAll();
 });
 </script>
