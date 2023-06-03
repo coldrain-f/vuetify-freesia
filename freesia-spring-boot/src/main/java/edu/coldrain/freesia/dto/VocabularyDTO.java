@@ -31,12 +31,14 @@ public class VocabularyDTO {
     @Data
     public static class Response {
 
+        private Long id;
         private String title;
 
         private String language;
 
         @Builder
-        public Response(String title, String language) {
+        public Response(Long id, String title, String language) {
+            this.id = id;
             this.title = title;
             this.language = language;
         }

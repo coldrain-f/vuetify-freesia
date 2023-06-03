@@ -50,6 +50,7 @@ public class VocabularyService {
                 .stream()
                 .map((v) -> VocabularyDTO.Response
                         .builder()
+                        .id(v.getId())
                         .title(v.getTitle())
                         .language(v.getLanguage().getName())
                         .build())
