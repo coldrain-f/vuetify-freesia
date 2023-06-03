@@ -10,18 +10,19 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(name = "VOCABULARY_SEQ_GENERATOR", sequenceName = "VOCABULARY_SEQ")
 public class Vocabulary {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vocabulary_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOCABULARY_SEQ_GENERATOR")
+    @Column(name = "VOCABULARY_ID")
     private Long id;
 
     @Column(nullable = false)
     private String title;
 
     @ManyToOne
-    @JoinColumn(name = "language_id", nullable = false, updatable = false)
+    @JoinColumn(name = "LANGUAGE_ID", nullable = false, updatable = false)
     private Language language;
 
     @Builder
