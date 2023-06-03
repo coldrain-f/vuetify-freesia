@@ -198,7 +198,16 @@ const vocabularyList = ref([]);
 
 // 단어장 등록 버튼 클릭 이벤트
 const onClickAddButton = async () => {
-  await vocabularyService.registerVocabulary(vocabularyAddFormData);
+  try {
+    await vocabularyService.registerVocabulary(vocabularyAddFormData);
+    vocabularyList.value = await vocabularyService.findAll();
+    vocaDialogControl.showAddDialog = false;
+    // Todo: 공통 Dialog로 Alert을 띄우도록 변경 필요.
+    alert("단어장 등록을 성공했습니다.");
+  } catch (err) {
+    console.error(err);
+    alert("단어장 등록을 실패했습니다.");
+  }
 };
 
 onMounted(async () => {

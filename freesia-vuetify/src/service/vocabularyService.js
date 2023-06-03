@@ -9,8 +9,11 @@ export const vocabularyService = {
 
   /** 단어장 등록 API */
   registerVocabulary: async (formData) => {
+    const { title, language } = formData;
+    console.log(title);
     const response = await $axios.post("/vocabulary", {
-      formData,
+      title,
+      language,
     });
     return response.data;
   },
