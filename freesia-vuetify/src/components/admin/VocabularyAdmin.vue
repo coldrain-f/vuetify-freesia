@@ -1,24 +1,24 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <v-table style="overflow-x: auto">
+      <v-table class="table-container">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Language</th>
-            <th>Actions</th>
+            <th style="width: 55%">Title</th>
+            <th style="width: 22.5%">Language</th>
+            <th style="width: 22.5%">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="vocabulary in vocabularyList" :key="vocabulary.id">
-            <td style="width: 55%">{{ vocabulary.title }}</td>
-            <td style="width: 20%">{{ vocabulary.language }}</td>
-            <td style="width: 25%">
+          <tr v-for="vocabulary in vocabularyPage.content" :key="vocabulary.id">
+            <td>{{ vocabulary.title }}</td>
+            <td>{{ vocabulary.language }}</td>
+            <td>
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
-                @click="vocaDialogControl.showDeleteDialog = true"
+                @click="onClickDeleteButton(vocabulary.id)"
               ></v-btn>
               <v-btn
                 variant="text"
@@ -33,7 +33,11 @@
 
       <v-row>
         <v-col cols="12">
-          <v-pagination :length="10" rounded="circle"></v-pagination>
+          <v-pagination
+            :length="vocabularyPage.totalPages"
+            @update:model-value="handlePageChange"
+            rounded="circle"
+          />
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -194,14 +198,25 @@ const vocabularyAddFormData = reactive({
   language: "English",
 });
 
-const vocabularyList = ref([]);
+const vocabularyPage = ref({});
+
+const handlePageChange = async (pageNumber) => {
+  vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage({
+    page: pageNumber - 1,
+    size: 3,
+  });
+};
 
 // 단어장 등록 버튼 클릭 이벤트
 const onClickAddButton = async () => {
   try {
     await vocabularyService.registerVocabulary(vocabularyAddFormData);
-    vocabularyList.value = await vocabularyService.findAll();
+
+    vocabularyPage.value =
+      await vocabularyService.searchVocabularyResponsePage();
+
     vocaDialogControl.showAddDialog = false;
+
     // Todo: 공통 Dialog로 Alert을 띄우도록 변경 필요.
     alert("단어장 등록을 성공했습니다.");
   } catch (err) {
@@ -210,8 +225,22 @@ const onClickAddButton = async () => {
   }
 };
 
+// 단어장 삭제 버튼 클릭 이벤트
+const onClickDeleteButton = async (vocabularyId) => {
+  vocaDialogControl.showDeleteDialog = true;
+};
+
 onMounted(async () => {
   // 단어장 DB 조회 후 Render
-  vocabularyList.value = await vocabularyService.findAll();
+  vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage();
 });
 </script>
+
+<style>
+.table-container {
+  overflow: auto;
+  white-space: nowrap;
+  height: 215px;
+  width: 100%;
+}
+</style>

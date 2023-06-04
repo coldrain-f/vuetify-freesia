@@ -1,5 +1,6 @@
 package edu.coldrain.freesia.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 public class VocabularyDTO {
@@ -37,6 +38,7 @@ public class VocabularyDTO {
         private String language;
 
         @Builder
+        @QueryProjection // new QVocabularyDTO_Response
         public Response(Long id, String title, String language) {
             this.id = id;
             this.title = title;

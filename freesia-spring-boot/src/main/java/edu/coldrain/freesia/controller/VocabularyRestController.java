@@ -3,6 +3,9 @@ package edu.coldrain.freesia.controller;
 import edu.coldrain.freesia.dto.VocabularyDTO;
 import edu.coldrain.freesia.service.VocabularyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +33,7 @@ public class VocabularyRestController {
     }
 
     @GetMapping
-    public List<VocabularyDTO.Response> findAll() {
-        return vocabularyService.findAllVocabularyResponse();
+    public Page<VocabularyDTO.Response> searchVocabularyResponsePage(@PageableDefault(size = 3) Pageable pageable) {
+        return vocabularyService.searchVocabularyResponsePage(pageable);
     }
 }
