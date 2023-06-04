@@ -31,4 +31,8 @@ public class Unit {
         this.subject = subject;
         this.vocabulary = vocabulary;
     }
+
+    public void changeSubject(String subject) {
+        this.subject = subject;
+    }
 }
