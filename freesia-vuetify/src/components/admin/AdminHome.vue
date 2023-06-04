@@ -16,7 +16,7 @@
           v-show="adminHomeStore.isSubCategory()"
           density="compact"
           hide-details
-          model-value="단어가 읽기다 기본편"
+          v-model="selectedVocabulary"
           :items="vocabularyList"
         />
       </v-col>
@@ -49,13 +49,45 @@ import VocabularyAdmin from "./VocabularyAdmin.vue";
 import UnitAdmin from "./UnitAdmin.vue";
 import WordAdmin from "./WordAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
+import { vocabularyService } from "@/service/vocabularyService";
 
 const adminHomeStore = useAdminHomeStore();
 
 const vocabularyList = ref([]);
+const selectedVocabulary = ref(null);
 
-onMounted(() => {});
+onMounted(async () => {});
+
+watch(
+  () => adminHomeStore.selectedAdminCategory,
+  async (selectedAdminCategory) => {
+    if (selectedAdminCategory === "Unit") {
+      // Total 조회
+      const vocabularyPage =
+        await vocabularyService.searchVocabularyResponsePage();
+      const totalElements = vocabularyPage.totalElements;
+
+      // Total 만큼 조회하여 단어장 목록을 설정한다.
+      vocabularyService
+        .searchVocabularyResponsePage({
+          page: 0,
+          size: totalElements,
+        })
+        .then((response) => {
+          vocabularyList.value = response.content;
+          if (!vocabularyList.value.length) {
+            selectedVocabulary.value = "No data available";
+            return;
+          }
+          selectedVocabulary.value = vocabularyList.value[0].title;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }
+);
 </script>
 
 <!-- 공통 스타일로 분리 예정  -->

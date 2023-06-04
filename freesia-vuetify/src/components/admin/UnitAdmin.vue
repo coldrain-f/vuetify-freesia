@@ -1,17 +1,17 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <v-table style="overflow-x: auto">
+      <v-table class="table-container">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Actions</th>
+            <th style="width: 75%">Title</th>
+            <th style="width: 25%">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="unit in unitList" :key="unit.id">
-            <td style="width: 75%">{{ unit.title }}</td>
-            <td style="width: 25%">
+            <td>{{ unit.title }}</td>
+            <td>
               <v-btn
                 variant="text"
                 size="small"
@@ -147,6 +147,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useThemeStore } from "@/stores/theme";
+
 const themeStore = useThemeStore();
 
 // Unit 다이얼로그 컨트롤
@@ -162,3 +163,15 @@ const unitList = ref([
   { id: 1, title: "Unit 01 - 일상" },
 ]);
 </script>
+
+<style>
+.table-container {
+  /* 가로, 세로 스크롤 생성 */
+  overflow: auto;
+  /* 테이블 데이터의 줄 바꿈 제거 */
+  white-space: nowrap;
+
+  height: 215px;
+  width: 100%;
+}
+</style>
