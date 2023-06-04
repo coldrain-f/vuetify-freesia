@@ -36,4 +36,9 @@ public class VocabularyRestController {
     public Page<VocabularyDTO.Response> searchVocabularyResponsePage(@PageableDefault(size = 3) Pageable pageable) {
         return vocabularyService.searchVocabularyResponsePage(pageable);
     }
+
+    @GetMapping("/{vocabularyId}")
+    public VocabularyDTO.Response searchOneVocabularyResponse(@PathVariable Long vocabularyId) {
+        return vocabularyService.searchOneVocabularyResponse(vocabularyId);
+    }
 }

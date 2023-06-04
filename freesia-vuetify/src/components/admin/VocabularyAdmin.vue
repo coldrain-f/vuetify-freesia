@@ -18,14 +18,14 @@
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
-                @click="onClickDeleteButton(vocabulary.id)"
-              ></v-btn>
+                @click="openDeleteDialog(vocabulary.id)"
+              />
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
                 @click="vocaDialogControl.showUpdateDialog = true"
-              ></v-btn>
+              />
             </td>
           </tr>
         </tbody>
@@ -35,6 +35,7 @@
         <v-col cols="12">
           <v-pagination
             :length="vocabularyPage.totalPages"
+            v-model="currentPage"
             @update:model-value="handlePageChange"
             rounded="circle"
           />
@@ -73,22 +74,24 @@
         <v-text-field
           readonly
           label="Title"
-          model-value="단어가 읽기다 기본편"
+          v-model="vocabularyDeleteFormData.title"
         ></v-text-field>
         <v-select
           label="Language"
           :items="['English', 'Japanese']"
-          model-value="English"
+          v-model="vocabularyDeleteFormData.language"
           readonly
         ></v-select>
         <v-text-field
           readonly
           label="Subunit"
-          model-value="40개"
+          v-model="vocabularyDeleteFormData.subunit"
         ></v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="error" style="width: 48%"> DELETE </v-btn>
+        <v-btn color="error" style="width: 48%" @click="onClickDeleteButton">
+          DELETE
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="vocaDialogControl.showDeleteDialog = false"
@@ -193,13 +196,27 @@ const vocaDialogControl = reactive({
   showAddDialog: false,
 });
 
+// 단어장 등록 FormData
 const vocabularyAddFormData = reactive({
   title: null,
   language: "English",
 });
 
+// 단어장 삭제 FormData
+const vocabularyDeleteFormData = reactive({
+  id: null,
+  title: null,
+  language: null,
+  subunit: 0,
+});
+
+// 단어장 Pageable
 const vocabularyPage = ref({});
 
+// Pagination Page
+const currentPage = ref(1);
+
+// Pagination PageChange 이벤트 핸들러
 const handlePageChange = async (pageNumber) => {
   vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage({
     page: pageNumber - 1,
@@ -215,31 +232,84 @@ const onClickAddButton = async () => {
     vocabularyPage.value =
       await vocabularyService.searchVocabularyResponsePage();
 
+    Object.assign(vocabularyAddFormData, {
+      title: null,
+      language: "English",
+    });
     vocaDialogControl.showAddDialog = false;
+    currentPage.value = 1;
 
-    // Todo: 공통 Dialog로 Alert을 띄우도록 변경 필요.
-    alert("단어장 등록을 성공했습니다.");
+    setTimeout(() => {
+      // Todo: 공통 Dialog로 Alert을 띄우도록 변경 필요.
+      alert("단어장 등록을 성공했습니다.");
+    }, 200);
   } catch (err) {
     console.error(err);
     alert("단어장 등록을 실패했습니다.");
   }
 };
 
-// 단어장 삭제 버튼 클릭 이벤트
-const onClickDeleteButton = async (vocabularyId) => {
+// 단어장 삭제 다이얼로그 Open
+const openDeleteDialog = async (vocabularyId) => {
+  Object.assign(
+    vocabularyDeleteFormData,
+    await vocabularyService.searchOneVocabularyResponse(vocabularyId)
+  );
   vocaDialogControl.showDeleteDialog = true;
 };
 
+// 단어장 삭제 버튼 클릭 이벤트
+const onClickDeleteButton = async () => {
+  try {
+    await vocabularyService.removeVocabulary(vocabularyDeleteFormData.id);
+    vocaDialogControl.showDeleteDialog = false;
+
+    Object.assign(vocabularyDeleteFormData, {
+      id: null,
+      title: null,
+      language: null,
+      subunit: 0,
+    });
+
+    // 삭제나 수정한 단어장의 페이지를 조회해 본다.
+    vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage(
+      {
+        page: currentPage.value - 1,
+        size: 3,
+      }
+    );
+
+    // 조회해본 페이지가 데이터가 없으면
+    if (vocabularyPage.value.content.length <= 0) {
+      // 앞 페이지로 이동하고, 조회해본 페이지가 1페이지 라면 앞 페이지가 없으므로 1페이지로 설정한다.
+      currentPage.value = currentPage.value === 1 ? 1 : currentPage.value - 1;
+    }
+
+    // 조회해본 페이지가 데이터가 있으면 그대로 조회
+    await handlePageChange(currentPage.value);
+
+    setTimeout(() => {
+      alert("단어장 삭제를 성공했습니다.");
+    }, 200);
+  } catch (err) {
+    console.error(err);
+    alert("단어장 삭제를 실패했습니다.");
+  }
+};
+
 onMounted(async () => {
-  // 단어장 DB 조회 후 Render
+  // 단어장 관리 초기 진입 시 단어장 Data Table Rendering.
   vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage();
 });
 </script>
 
 <style>
 .table-container {
+  /* 가로, 세로 스크롤 생성 */
   overflow: auto;
+  /* 테이블 데이터의 줄 바꿈 제거 */
   white-space: nowrap;
+
   height: 215px;
   width: 100%;
 }

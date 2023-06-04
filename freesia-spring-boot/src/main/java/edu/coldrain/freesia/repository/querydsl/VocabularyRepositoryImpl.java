@@ -43,4 +43,19 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
 
         return new PageImpl<>(content, pageable, total == null ? 0L : total);
     }
+
+    @Override
+    public VocabularyDTO.Response searchOneVocabularyResponse(Long vocabularyId) {
+        return query.select(
+                        new QVocabularyDTO_Response(
+                                vocabulary.id,
+                                vocabulary.title,
+                                language.name
+                        )
+                )
+                .from(vocabulary)
+                .innerJoin(vocabulary.language, language)
+                .where(vocabulary.id.eq(vocabularyId))
+                .fetchOne();
+    }
 }

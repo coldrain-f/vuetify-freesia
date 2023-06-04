@@ -62,4 +62,8 @@ public class VocabularyService {
     public Page<VocabularyDTO.Response> searchVocabularyResponsePage(Pageable pageable) {
         return vocabularyRepository.searchVocabularyResponsePage(pageable);
     }
+
+    public VocabularyDTO.Response searchOneVocabularyResponse(Long vocabularyId) {
+        return vocabularyRepository.searchOneVocabularyResponse(vocabularyId);
+    }
 }
