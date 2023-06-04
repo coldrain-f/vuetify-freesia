@@ -19,11 +19,11 @@ public class VocabularyDTO {
     }
 
     @Data
+    @NoArgsConstructor(access = AccessLevel.PROTECTED) // // (no delegate- or property-based creator)
     public static class ModifyRequest {
 
         private String title;
 
-        @Builder
         public ModifyRequest(String title) {
             this.title = title;
         }

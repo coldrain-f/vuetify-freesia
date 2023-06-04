@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class VocabularyService {
         return savedVocabulary.getId();
     }
 
+    @Transactional // 없으면 변경 감지 안 됨.
     public void modifyVocabulary(VocabularyDTO.ModifyRequest request, Long vocabularyId) {
         final Vocabulary vocabulary = vocabularyRepository.findById(vocabularyId)
                 .orElseThrow(() -> new VocabularyNotFoundException("Vocabulary not found exception."));

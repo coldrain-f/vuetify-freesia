@@ -28,4 +28,10 @@ export const vocabularyService = {
   removeVocabulary: async (vocabularyId) => {
     await $axios.delete(`/vocabulary/${vocabularyId}`);
   },
+
+  /** 단어장 수정 API */
+  modifyVocabulary: async (formData) => {
+    const { id, title } = formData;
+    await $axios.patch(`/vocabulary/${id}`, { title });
+  },
 };

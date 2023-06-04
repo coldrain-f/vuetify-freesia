@@ -18,13 +18,13 @@
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
-                @click="openDeleteDialog(vocabulary.id)"
+                @click="() => openDeleteDialog(vocabulary.id)"
               />
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
-                @click="vocaDialogControl.showUpdateDialog = true"
+                @click="() => openUpdateDialog(vocabulary.id)"
               />
             </td>
           </tr>
@@ -75,18 +75,18 @@
           readonly
           label="Title"
           v-model="vocabularyDeleteFormData.title"
-        ></v-text-field>
+        />
         <v-select
           label="Language"
           :items="['English', 'Japanese']"
           v-model="vocabularyDeleteFormData.language"
           readonly
-        ></v-select>
+        />
         <v-text-field
           readonly
           label="Subunit"
           v-model="vocabularyDeleteFormData.subunit"
-        ></v-text-field>
+        />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
         <v-btn color="error" style="width: 48%" @click="onClickDeleteButton">
@@ -120,22 +120,24 @@
         <v-text-field
           append-inner-icon="mdi-file-document-edit-outline"
           label="Title"
-          model-value="단어가 읽기다 기본편"
-        ></v-text-field>
+          v-model="vocabularyUpdateFormData.title"
+        />
         <v-select
           label="Language"
           :items="['English', 'Japanese']"
-          model-value="English"
+          v-model="vocabularyUpdateFormData.language"
           readonly
-        ></v-select>
+        />
         <v-text-field
           label="Subunit"
-          model-value="40개"
+          v-model="vocabularyUpdateFormData.subunit"
           readonly
-        ></v-text-field>
+        />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="info" style="width: 48%"> UPDATE </v-btn>
+        <v-btn color="info" style="width: 48%" @click="onClickUpdateButton">
+          UPDATE
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="vocaDialogControl.showUpdateDialog = false"
@@ -204,6 +206,14 @@ const vocabularyAddFormData = reactive({
 
 // 단어장 삭제 FormData
 const vocabularyDeleteFormData = reactive({
+  id: null,
+  title: null,
+  language: null,
+  subunit: 0,
+});
+
+// 단어장 수정 FormData
+const vocabularyUpdateFormData = reactive({
   id: null,
   title: null,
   language: null,
@@ -294,6 +304,32 @@ const onClickDeleteButton = async () => {
   } catch (err) {
     console.error(err);
     alert("단어장 삭제를 실패했습니다.");
+  }
+};
+
+// 단어장 수정 다이얼로그 Open
+const openUpdateDialog = async (vocabularyId) => {
+  Object.assign(
+    vocabularyUpdateFormData,
+    await vocabularyService.searchOneVocabularyResponse(vocabularyId)
+  );
+  vocaDialogControl.showUpdateDialog = true;
+};
+
+// 단어장 수정 버튼 클릭 이벤트
+const onClickUpdateButton = async () => {
+  try {
+    await vocabularyService.modifyVocabulary(vocabularyUpdateFormData);
+    vocaDialogControl.showUpdateDialog = false;
+
+    await handlePageChange(currentPage.value);
+
+    setTimeout(() => {
+      alert("단어장 수정을 성공했습니다.");
+    }, 200);
+  } catch (err) {
+    console.error(err);
+    alert("단어장 수정을 실패했습니다.");
   }
 };
 
