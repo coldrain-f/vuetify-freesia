@@ -62,10 +62,12 @@ const {
 } = storeToRefs(adminHomeStore);
 
 const handleCategoryChange = async (c) => {
+  // Categoryt가 "Unit", "Word"인 경우에만 Voca와 Unit 데이터 설정.
   if (c === "Vocabulary") return;
 
   allVocabularyList.value = await vocabularyService.getAllVocabularyList();
 
+  // 생성한 단어장이 없으면 "No data available"
   if (utils.isEmptyArray(allVocabularyList.value)) {
     selectedVocabulary.value = "No data available";
     return;
@@ -74,15 +76,9 @@ const handleCategoryChange = async (c) => {
   const firstVocabulary = allVocabularyList.value[0];
   selectedVocabulary.value = firstVocabulary;
 
-  allUnitList.value = await unitService.searchUnitResponsePage(
-    firstVocabulary.id,
-    {
-      page: 0,
-      size: await unitService.searchUnitResponsePage(firstVocabulary.id)
-        .totalPages,
-    }
-  ).content;
+  allUnitList.value = await unitService.getAllUnitList(firstVocabulary.id);
 
+  // 생성한 Unit이 없으면 "No data available"
   if (utils.isEmptyArray(allUnitList.value)) {
     selectedUnit.value = "No data available";
     return;
