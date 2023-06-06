@@ -10,19 +10,19 @@
         </thead>
         <tbody>
           <tr v-for="unit in unitPage.content" :key="unit.id">
-            <td>{{ unit.title }}</td>
+            <td>{{ unit.subject }}</td>
             <td>
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
-                @click="unitDialogControl.showDeleteDialog = true"
+                @click="() => (unitDialogControl.showDeleteDialog = true)"
               ></v-btn>
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
-                @click="unitDialogControl.showUpdateDialog = true"
+                @click="() => (unitDialogControl.showUpdateDialog = true)"
               ></v-btn>
             </td>
           </tr>
@@ -46,7 +46,8 @@
         size="default"
         class="w-100"
         :color="themeStore.theme"
-        @click="unitDialogControl.showAddDialog = true"
+        @click="() => (unitDialogControl.showAddDialog = true)"
+        :disabled="!selectedVocabularyId"
       >
         <v-icon start icon="mdi-plus"></v-icon>
         Add item
@@ -64,7 +65,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="unitDialogControl.showDeleteDialog = false"
+          @click="() => (unitDialogControl.showDeleteDialog = false)"
         >
         </v-btn>
       </template>
@@ -76,7 +77,7 @@
         <v-btn color="error" style="width: 48%"> DELETE </v-btn>
         <v-btn
           style="width: 48%"
-          @click="unitDialogControl.showDeleteDialog = false"
+          @click="() => (unitDialogControl.showDeleteDialog = false)"
         >
           CANCEL
         </v-btn>
@@ -94,7 +95,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="unitDialogControl.showUpdateDialog = false"
+          @click="() => (unitDialogControl.showUpdateDialog = false)"
         >
         </v-btn>
       </template>
@@ -110,7 +111,7 @@
         <v-btn color="info" style="width: 48%"> UPDATE </v-btn>
         <v-btn
           style="width: 48%"
-          @click="unitDialogControl.showUpdateDialog = false"
+          @click="() => (unitDialogControl.showUpdateDialog = false)"
         >
           CANCEL
         </v-btn>
@@ -128,18 +129,20 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="unitDialogControl.showAddDialog = false"
+          @click="() => (unitDialogControl.showAddDialog = false)"
         >
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field label="Title"></v-text-field>
+        <v-text-field label="Subject" v-model="unitAddFormData.subject" />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="primary" style="width: 48%"> ADD </v-btn>
+        <v-btn color="primary" style="width: 48%" @click="onClickAddButton">
+          ADD
+        </v-btn>
         <v-btn
           style="width: 48%"
-          @click="unitDialogControl.showAddDialog = false"
+          @click="() => (unitDialogControl.showAddDialog = false)"
         >
           CANCEL
         </v-btn>
@@ -152,8 +155,13 @@
 import { reactive, ref, onMounted } from "vue";
 import { useThemeStore } from "@/stores/theme";
 import { unitService } from "@/service/unitService";
+import { useAdminHomeStore } from "@/stores/adminHome";
+import { storeToRefs } from "pinia";
 
 const themeStore = useThemeStore();
+const adminHomeStore = useAdminHomeStore();
+
+const { selectedVocabularyId } = storeToRefs(adminHomeStore);
 
 // Unit Pageable
 const unitPage = ref({});
@@ -168,8 +176,41 @@ const unitDialogControl = reactive({
   showAddDialog: false,
 });
 
+//  단위 등록 FormData
+const unitAddFormData = reactive({
+  subject: null,
+});
+
+// 단위 등록 버튼 클릭 이벤트
+const onClickAddButton = async () => {
+  const savedId = await unitService.registerUnit(
+    selectedVocabularyId.value,
+    unitAddFormData
+  );
+
+  // 추가된 상태의 최신 데이터 갱신
+  unitPage.value = await unitService.searchUnitResponsePage(
+    selectedVocabularyId.value
+  );
+
+  Object.assign(unitAddFormData, {
+    subject: null,
+  });
+
+  unitDialogControl.showAddDialog = false;
+  currentPage.value = 1;
+
+  console.log(`saved unit = ${savedId}`);
+};
+
 onMounted(async () => {
-  // unitPage.value = await unitService.searchUnitResponsePage();
+  if (!selectedVocabularyId.value) {
+    unitPage.value.content = [];
+    return;
+  }
+  unitPage.value = await unitService.searchUnitResponsePage(
+    selectedVocabularyId.value
+  );
 });
 </script>
 

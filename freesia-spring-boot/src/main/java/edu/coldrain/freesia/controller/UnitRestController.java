@@ -35,7 +35,7 @@ public class UnitRestController {
     }
 
     @PostMapping("/vocabulary/{vocabularyId}/units")
-    public Long registerUnit(@PathVariable Long vocabularyId, UnitDTO.RegistrationRequest request) {
+    public Long registerUnit(@PathVariable Long vocabularyId, @RequestBody UnitDTO.RegistrationRequest request) {
         return unitService.registerUnit(vocabularyId, request);
     }
 }

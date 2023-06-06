@@ -6,10 +6,23 @@ export const unitService = {
     vocabularyId,
     pageable = { page: 0, size: 3 }
   ) => {
+    if (!vocabularyId) {
+      console.error("VocabularyId value does not exist");
+      return;
+    }
     const { page, size } = pageable;
     const response = await $axios.get(
       `/vocabulary/${vocabularyId}/units?page=${page}&size=${size}`
     );
+    return response.data;
+  },
+
+  /** 단위 등록 API */
+  registerUnit: async (vocabularyId, formData) => {
+    const { subject } = formData;
+    const response = await $axios.post(`/vocabulary/${vocabularyId}/units`, {
+      subject,
+    });
     return response.data;
   },
 

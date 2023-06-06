@@ -251,7 +251,6 @@ const onClickAddButton = async () => {
     currentPage.value = 1;
 
     setTimeout(() => {
-      // Todo: 공통 Dialog로 Alert을 띄우도록 변경 필요.
       alert("단어장 등록을 성공했습니다.");
     }, 200);
   } catch (err) {
@@ -337,6 +336,7 @@ const onClickUpdateButton = async () => {
 onMounted(async () => {
   // 단어장 관리 초기 진입 시 단어장 Data Table Rendering.
   vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage();
+  
 });
 </script>
 

@@ -17,7 +17,7 @@
           v-show="selectedCategory === 'Unit' || selectedCategory === 'Word'"
           density="compact"
           hide-details
-          v-model="selectedVocabulary"
+          v-model="selectedVocabularyTitle"
           :items="allVocabularyList"
         />
       </v-col>
@@ -28,7 +28,7 @@
           v-show="selectedCategory === 'Word'"
           density="compact"
           hide-details
-          v-model="selectedUnit"
+          v-model="selectedUnitSubject"
           :items="allUnitList"
         />
       </v-col>
@@ -45,10 +45,7 @@ import UnitAdmin from "./UnitAdmin.vue";
 import WordAdmin from "./WordAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
 import { onMounted } from "vue";
-import { vocabularyService } from "@/service/vocabularyService";
-import { utils } from "@/common/utils";
 import { storeToRefs } from "pinia";
-import { unitService } from "@/service/unitService";
 
 const adminHomeStore = useAdminHomeStore();
 
@@ -56,36 +53,20 @@ const {
   categories,
   selectedCategory,
   allVocabularyList,
-  selectedVocabulary,
+  selectedVocabularyTitle,
   allUnitList,
-  selectedUnit,
+  selectedUnitSubject,
 } = storeToRefs(adminHomeStore);
 
-const handleCategoryChange = async (c) => {
-  // Categoryt가 "Unit", "Word"인 경우에만 Voca와 Unit 데이터 설정.
-  if (c === "Vocabulary") return;
-
-  allVocabularyList.value = await vocabularyService.getAllVocabularyList();
-
-  // 생성한 단어장이 없으면 "No data available"
-  if (utils.isEmptyArray(allVocabularyList.value)) {
-    selectedVocabulary.value = "No data available";
-    return;
-  }
-
-  const firstVocabulary = allVocabularyList.value[0];
-  selectedVocabulary.value = firstVocabulary;
-
-  allUnitList.value = await unitService.getAllUnitList(firstVocabulary.id);
-
-  // 생성한 Unit이 없으면 "No data available"
-  if (utils.isEmptyArray(allUnitList.value)) {
-    selectedUnit.value = "No data available";
-    return;
-  }
+// 단어장, 단위의 데이터가 변화가 생겼을 수 있으므로 카테고리가 변경될 때마다 매번 초기화
+const handleCategoryChange = async () => {
+  await adminHomeStore.initialize();
 };
 
-onMounted(async () => {});
+onMounted(async () => {
+  // 첫 AdminHome 진입 시 초기화
+  await adminHomeStore.initialize();
+});
 </script>
 
 <!-- 공통 스타일로 분리 예정  -->

@@ -27,12 +27,9 @@ public class UnitDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RegistrationRequest {
 
-        private Long vocabularyId;
-
         private String subject;
 
         public RegistrationRequest(Long vocabularyId,  String subject) {
-            this.vocabularyId = vocabularyId;
             this.subject = subject;
         }
     }
