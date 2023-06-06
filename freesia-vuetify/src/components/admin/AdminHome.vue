@@ -7,6 +7,7 @@
       :items="adminHomeStore.adminCategories"
       :hide-details="adminHomeStore.selectedAdminCategory === 'Vocabulary'"
       chips
+      @update:model-value="handleCategoryChange"
     />
     <v-row>
       <v-col :cols="6">
@@ -17,7 +18,7 @@
           density="compact"
           hide-details
           v-model="selectedVocabulary"
-          :items="vocabularyList"
+          :items="allVocabularyList"
         />
       </v-col>
       <v-col cols="6">
@@ -49,45 +50,25 @@ import VocabularyAdmin from "./VocabularyAdmin.vue";
 import UnitAdmin from "./UnitAdmin.vue";
 import WordAdmin from "./WordAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { vocabularyService } from "@/service/vocabularyService";
+import { utils } from "@/common/utils";
 
 const adminHomeStore = useAdminHomeStore();
 
-const vocabularyList = ref([]);
+const allVocabularyList = ref([]);
 const selectedVocabulary = ref(null);
 
-onMounted(async () => {});
-
-watch(
-  () => adminHomeStore.selectedAdminCategory,
-  async (selectedAdminCategory) => {
-    if (selectedAdminCategory === "Unit") {
-      // Total 조회
-      const vocabularyPage =
-        await vocabularyService.searchVocabularyResponsePage();
-      const totalElements = vocabularyPage.totalElements;
-
-      // Total 만큼 조회하여 단어장 목록을 설정한다.
-      vocabularyService
-        .searchVocabularyResponsePage({
-          page: 0,
-          size: totalElements,
-        })
-        .then((response) => {
-          vocabularyList.value = response.content;
-          if (!vocabularyList.value.length) {
-            selectedVocabulary.value = "No data available";
-            return;
-          }
-          selectedVocabulary.value = vocabularyList.value[0].title;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
+const handleCategoryChange = async (selectedCategory) => {
+  if (selectedCategory === "Unit" || selectedCategory === "Word") {
+    allVocabularyList.value = await vocabularyService.getAllVocabularyList();
+    selectedVocabulary.value = utils.isEmptyArray(allVocabularyList.value)
+      ? "No data available"
+      : allVocabularyList.value[0];
   }
-);
+};
+
+onMounted(async () => {});
 </script>
 
 <!-- 공통 스타일로 분리 예정  -->

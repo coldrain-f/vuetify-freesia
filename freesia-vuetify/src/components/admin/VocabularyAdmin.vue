@@ -189,7 +189,14 @@
 import { onMounted, reactive, ref } from "vue";
 import { useThemeStore } from "@/stores/theme";
 import { vocabularyService } from "@/service/vocabularyService";
+
 const themeStore = useThemeStore();
+
+// 단어장 Pageable
+const vocabularyPage = ref({});
+
+// Pagination Page
+const currentPage = ref(1);
 
 // 단어장 다이얼로그 컨트롤
 const vocaDialogControl = reactive({
@@ -219,12 +226,6 @@ const vocabularyUpdateFormData = reactive({
   language: null,
   subunit: 0,
 });
-
-// 단어장 Pageable
-const vocabularyPage = ref({});
-
-// Pagination Page
-const currentPage = ref(1);
 
 // Pagination PageChange 이벤트 핸들러
 const handlePageChange = async (pageNumber) => {
