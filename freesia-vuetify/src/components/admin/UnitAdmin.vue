@@ -9,7 +9,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="unit in unitList" :key="unit.id">
+          <tr v-for="unit in unitPage.content" :key="unit.id">
             <td>{{ unit.title }}</td>
             <td>
               <v-btn
@@ -31,7 +31,11 @@
 
       <v-row>
         <v-col cols="12">
-          <v-pagination :length="10" rounded="circle"></v-pagination>
+          <v-pagination
+            :length="unitPage.totalPages"
+            v-model="currentPage"
+            rounded="circle"
+          ></v-pagination>
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -145,10 +149,17 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useThemeStore } from "@/stores/theme";
+import { unitService } from "@/service/unitService";
 
 const themeStore = useThemeStore();
+
+// Unit Pageable
+const unitPage = ref({});
+
+// Pagination Page
+const currentPage = ref(1);
 
 // Unit 다이얼로그 컨트롤
 const unitDialogControl = reactive({
@@ -157,11 +168,9 @@ const unitDialogControl = reactive({
   showAddDialog: false,
 });
 
-const unitList = ref([
-  { id: 3, title: "Unit 03 - 학교 생활2" },
-  { id: 2, title: "Unit 02 - 학교 생활1" },
-  { id: 1, title: "Unit 01 - 일상" },
-]);
+onMounted(async () => {
+  // unitPage.value = await unitService.searchUnitResponsePage();
+});
 </script>
 
 <style>

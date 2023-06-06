@@ -2,19 +2,24 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useAdminHomeStore = defineStore("adminHome", () => {
-  const adminCategories = ref(["Vocabulary", "Unit", "Word"]);
-  const selectedAdminCategory = ref("Vocabulary");
+  const categories = ref(["Vocabulary", "Unit", "Word"]);
 
-  const isSubCategory = () => {
-    return (
-      selectedAdminCategory.value === "Unit" ||
-      selectedAdminCategory.value === "Word"
-    );
-  };
+  const selectedCategory = ref("Vocabulary");
+
+  const allVocabularyList = ref([]);
+
+  const selectedVocabulary = ref(null);
+
+  const allUnitList = ref([]);
+
+  const selectedUnit = ref(null);
 
   return {
-    adminCategories,
-    selectedAdminCategory,
-    isSubCategory,
+    categories,
+    selectedCategory,
+    allVocabularyList,
+    selectedVocabulary,
+    allUnitList,
+    selectedUnit,
   };
 });

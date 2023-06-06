@@ -22,8 +22,8 @@ public class UnitService {
 
     private final VocabularyRepository vocabularyRepository;
 
-    public Page<UnitDTO.Response> searchUnitResponsePage(@PageableDefault(size = 3) Pageable pageable) {
-        return unitRepository.searchUnitResponsePage(pageable);
+    public Page<UnitDTO.Response> searchUnitResponsePage(Long vocabularyId, Pageable pageable) {
+        return unitRepository.searchUnitResponsePage(vocabularyId, pageable);
     }
 
     public UnitDTO.Response searchOneUnitResponse(Long unitId) {

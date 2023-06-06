@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface UnitRepositoryQuerydsl {
 
-    Page<UnitDTO.Response> searchUnitResponsePage(Pageable pageable);
+    Page<UnitDTO.Response> searchUnitResponsePage(Long vocabularyId, Pageable pageable);
 
     UnitDTO.Response searchOneUnitResponse(Long unitId);
 }

@@ -14,9 +14,9 @@ public class UnitRestController {
 
     private final UnitService unitService;
 
-    @GetMapping("/units")
-    public Page<UnitDTO.Response> searchUnitResponsePage(@PageableDefault(size = 3) Pageable pageable) {
-        return unitService.searchUnitResponsePage(pageable);
+    @GetMapping("/vocabulary/{vocabularyId}/units")
+    public Page<UnitDTO.Response> searchUnitResponsePage(@PathVariable Long vocabularyId, @PageableDefault(size = 3) Pageable pageable) {
+        return unitService.searchUnitResponsePage(vocabularyId, pageable);
     }
 
     @GetMapping("/units/{unitId}")

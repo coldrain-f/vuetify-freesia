@@ -3,9 +3,9 @@
     <v-select
       label="Category"
       variant="underlined"
-      v-model="adminHomeStore.selectedAdminCategory"
-      :items="adminHomeStore.adminCategories"
-      :hide-details="adminHomeStore.selectedAdminCategory === 'Vocabulary'"
+      v-model="selectedCategory"
+      :items="categories"
+      :hide-details="selectedCategory === 'Vocabulary'"
       chips
       @update:model-value="handleCategoryChange"
     />
@@ -14,7 +14,7 @@
         <v-select
           label="Voca"
           variant="underlined"
-          v-show="adminHomeStore.isSubCategory()"
+          v-show="selectedCategory === 'Unit' || selectedCategory === 'Word'"
           density="compact"
           hide-details
           v-model="selectedVocabulary"
@@ -25,24 +25,18 @@
         <v-select
           label="Unit"
           variant="underlined"
-          v-show="adminHomeStore.selectedAdminCategory === 'Word'"
+          v-show="selectedCategory === 'Word'"
           density="compact"
           hide-details
-          model-value="Unit 01 - 일상1"
-          :items="[
-            'Unit 01 - 일상1',
-            'Unit 02 - 학교생활1',
-            'Unit 03 - 학교생활2',
-          ]"
+          v-model="selectedUnit"
+          :items="allUnitList"
         />
       </v-col>
     </v-row>
   </v-container>
-  <VocabularyAdmin
-    v-if="adminHomeStore.selectedAdminCategory === 'Vocabulary'"
-  />
-  <UnitAdmin v-if="adminHomeStore.selectedAdminCategory === 'Unit'" />
-  <WordAdmin v-if="adminHomeStore.selectedAdminCategory === 'Word'" />
+  <VocabularyAdmin v-if="selectedCategory === 'Vocabulary'" />
+  <UnitAdmin v-if="selectedCategory === 'Unit'" />
+  <WordAdmin v-if="selectedCategory === 'Word'" />
 </template>
 
 <script setup>
@@ -50,21 +44,48 @@ import VocabularyAdmin from "./VocabularyAdmin.vue";
 import UnitAdmin from "./UnitAdmin.vue";
 import WordAdmin from "./WordAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { vocabularyService } from "@/service/vocabularyService";
 import { utils } from "@/common/utils";
+import { storeToRefs } from "pinia";
+import { unitService } from "@/service/unitService";
 
 const adminHomeStore = useAdminHomeStore();
 
-const allVocabularyList = ref([]);
-const selectedVocabulary = ref(null);
+const {
+  categories,
+  selectedCategory,
+  allVocabularyList,
+  selectedVocabulary,
+  allUnitList,
+  selectedUnit,
+} = storeToRefs(adminHomeStore);
 
-const handleCategoryChange = async (selectedCategory) => {
-  if (selectedCategory === "Unit" || selectedCategory === "Word") {
-    allVocabularyList.value = await vocabularyService.getAllVocabularyList();
-    selectedVocabulary.value = utils.isEmptyArray(allVocabularyList.value)
-      ? "No data available"
-      : allVocabularyList.value[0];
+const handleCategoryChange = async (c) => {
+  if (c === "Vocabulary") return;
+
+  allVocabularyList.value = await vocabularyService.getAllVocabularyList();
+
+  if (utils.isEmptyArray(allVocabularyList.value)) {
+    selectedVocabulary.value = "No data available";
+    return;
+  }
+
+  const firstVocabulary = allVocabularyList.value[0];
+  selectedVocabulary.value = firstVocabulary;
+
+  allUnitList.value = await unitService.searchUnitResponsePage(
+    firstVocabulary.id,
+    {
+      page: 0,
+      size: await unitService.searchUnitResponsePage(firstVocabulary.id)
+        .totalPages,
+    }
+  ).content;
+
+  if (utils.isEmptyArray(allUnitList.value)) {
+    selectedUnit.value = "No data available";
+    return;
   }
 };
 

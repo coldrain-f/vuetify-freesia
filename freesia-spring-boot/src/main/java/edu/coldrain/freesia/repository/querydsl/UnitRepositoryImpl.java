@@ -22,13 +22,14 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
     }
 
     @Override
-    public Page<UnitDTO.Response> searchUnitResponsePage(Pageable pageable) {
+    public Page<UnitDTO.Response> searchUnitResponsePage(Long vocabularyId, Pageable pageable) {
         final List<UnitDTO.Response> content = query.select(new QUnitDTO_Response(
                         unit.id,
                         unit.subject
                 ))
                 .from(unit)
                 .innerJoin(unit.vocabulary, vocabulary)
+                .where(vocabulary.id.eq(vocabularyId))
                 .orderBy(unit.id.desc())
                 .offset(pageable.getOffset()) // page number
                 .limit(pageable.getPageSize()) // size
