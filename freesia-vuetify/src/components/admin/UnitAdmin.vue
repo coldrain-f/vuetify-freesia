@@ -16,14 +16,14 @@
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
-                @click="() => (unitDialogControl.showDeleteDialog = true)"
-              ></v-btn>
+                @click="() => openDeleteDialog(unit.id)"
+              />
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
                 @click="() => (unitDialogControl.showUpdateDialog = true)"
-              ></v-btn>
+              />
             </td>
           </tr>
         </tbody>
@@ -35,7 +35,8 @@
             :length="unitPage.totalPages"
             v-model="currentPage"
             rounded="circle"
-          ></v-pagination>
+            @update:model-value="handlePageChange"
+          />
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -66,12 +67,19 @@
           variant="text"
           icon="mdi-close"
           @click="() => (unitDialogControl.showDeleteDialog = false)"
-        >
-        </v-btn>
+        />
       </template>
       <v-card-text class="mt-5">
-        <v-text-field readonly label="Title" model-value="Unit 01 - 일상1" />
-        <v-text-field readonly label="Subword" model-value="40개" />
+        <v-text-field
+          readonly
+          label="Subject"
+          v-model="unitDeleteFormData.subject"
+        />
+        <v-text-field
+          readonly
+          label="Word Count"
+          v-model="unitDeleteFormData.wordCount"
+        />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
         <v-btn color="error" style="width: 48%"> DELETE </v-btn>
@@ -181,6 +189,23 @@ const unitAddFormData = reactive({
   subject: null,
 });
 
+// 삭제 등록 FormData
+const unitDeleteFormData = reactive({
+  subject: null,
+  wordCount: 0,
+});
+
+// Pagination PageChange 이벤트 핸들러
+const handlePageChange = async (pageNumber) => {
+  unitPage.value = await unitService.searchUnitResponsePage(
+    selectedVocabularyId.value,
+    {
+      page: pageNumber - 1,
+      size: 3,
+    }
+  );
+};
+
 // 단위 등록 버튼 클릭 이벤트
 const onClickAddButton = async () => {
   const savedId = await unitService.registerUnit(
@@ -202,6 +227,19 @@ const onClickAddButton = async () => {
 
   console.log(`saved unit = ${savedId}`);
 };
+
+// 단위 삭제 다이얼로그 Open
+const openDeleteDialog = async (unitId) => {
+  const unit = await unitService.searchOneUnitResponse(unitId);
+  Object.assign(unitDeleteFormData, {
+    subject: unit.subject,
+    wordCount: 0, // Todo: 나중에 추가 구현 필요
+  });
+  unitDialogControl.showDeleteDialog = true;
+};
+
+// 단위 삭제 버튼 클릭 이벤트
+const onClickDeleteButton = async () => {};
 
 onMounted(async () => {
   if (!selectedVocabularyId.value) {
