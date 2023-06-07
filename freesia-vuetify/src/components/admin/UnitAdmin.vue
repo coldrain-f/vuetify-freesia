@@ -4,7 +4,7 @@
       <v-table class="table-container">
         <thead>
           <tr>
-            <th style="width: 75%">Title</th>
+            <th style="width: 75%">Subject</th>
             <th style="width: 25%">Actions</th>
           </tr>
         </thead>
@@ -22,7 +22,7 @@
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
-                @click="() => (unitDialogControl.showUpdateDialog = true)"
+                @click="() => openUpdateDialog(unit.id)"
               />
             </td>
           </tr>
@@ -111,14 +111,20 @@
       </template>
       <v-card-text class="mt-5">
         <v-text-field
-          label="Title"
+          label="Subject"
           append-inner-icon="mdi-file-document-edit-outline"
-          model-value="Unit 01 - 일상1"
+          v-model="unitUpdateFormData.subject"
         />
-        <v-text-field label="Subword" model-value="40개" readonly />
+        <v-text-field
+          label="Word Count"
+          v-model="unitUpdateFormData.wordCount"
+          readonly
+        />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="info" style="width: 48%"> UPDATE </v-btn>
+        <v-btn color="info" style="width: 48%" @click="onClickUpdateButton">
+          UPDATE
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="() => (unitDialogControl.showUpdateDialog = false)"
@@ -191,8 +197,15 @@ const unitAddFormData = reactive({
   subject: null,
 });
 
-// 삭제 등록 FormData
+// 단위 삭제 FormData
 const unitDeleteFormData = reactive({
+  id: null,
+  subject: null,
+  wordCount: 0,
+});
+
+// 단위 수정 FormData
+const unitUpdateFormData = reactive({
   id: null,
   subject: null,
   wordCount: 0,
@@ -271,6 +284,43 @@ const onClickDeleteButton = async () => {
 
   // 조회해본 페이지가 데이터가 있으면 그대로 조회
   await handlePageChange(currentPage.value);
+};
+
+// 단위 수정 다이얼로그 Open
+const openUpdateDialog = async (unitId) => {
+  const unit = await unitService.searchOneUnitResponse(unitId);
+
+  Object.assign(unitUpdateFormData, {
+    id: unit.id,
+    subject: unit.subject,
+    wordCount: 0,
+  });
+
+  unitDialogControl.showUpdateDialog = true;
+};
+
+// 단위 수정 버튼 클릭 이벤트
+const onClickUpdateButton = async () => {
+  try {
+    await unitService.modifyUnit(unitUpdateFormData.id, unitUpdateFormData);
+
+    Object.assign(unitUpdateFormData, {
+      id: null,
+      subject: null,
+      wordCount: 0,
+    });
+
+    unitDialogControl.showUpdateDialog = false;
+
+    unitPage.value = await unitService.searchUnitResponsePage(
+      selectedVocabularyId.value
+    );
+
+    console.debug("단위 수정 성공!");
+  } catch (err) {
+    console.error(err);
+    console.debug("단위 수정 실패!");
+  }
 };
 
 onMounted(async () => {

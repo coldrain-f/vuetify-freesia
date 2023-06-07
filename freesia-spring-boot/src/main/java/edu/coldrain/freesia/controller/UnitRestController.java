@@ -30,7 +30,7 @@ public class UnitRestController {
     }
 
     @PatchMapping("/units/{unitId}")
-    public void modifyUnit(@PathVariable Long unitId, UnitDTO.ModifyRequest request) {
+    public void modifyUnit(@PathVariable Long unitId, @RequestBody UnitDTO.ModifyRequest request) {
         unitService.modifyUnit(unitId, request);
     }
 

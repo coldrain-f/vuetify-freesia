@@ -31,6 +31,14 @@ export const unitService = {
     await $axios.delete(`/units/${unitId}`);
   },
 
+  /** 단위 수정 API */
+  modifyUnit: async (unitId, formData) => {
+    const { subject } = formData;
+    await $axios.patch(`/units/${unitId}`, {
+      subject,
+    });
+  },
+
   /** 단위 단건 조회 API */
   searchOneUnitResponse: async (unitId) => {
     const response = await $axios.get(`/units/${unitId}`);

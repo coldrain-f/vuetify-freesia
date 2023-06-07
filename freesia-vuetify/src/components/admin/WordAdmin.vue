@@ -20,13 +20,13 @@
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
-                @click="wordDialogControl.showDeleteDialog = true"
+                @click="() => (wordDialogControl.showDeleteDialog = true)"
               ></v-btn>
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
-                @click="wordDialogControl.showUpdateDialog = true"
+                @click="() => (wordDialogControl.showUpdateDialog = true)"
               ></v-btn>
             </td>
           </tr>
@@ -46,7 +46,7 @@
         size="default"
         class="w-100"
         :color="themeStore.theme"
-        @click="wordDialogControl.showAddDialog = true"
+        @click="() => (wordDialogControl.showAddDialog = true)"
       >
         <v-icon start icon="mdi-plus"></v-icon>
         Add item
@@ -64,7 +64,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="wordDialogControl.showDeleteDialog = false"
+          @click="() => (wordDialogControl.showDeleteDialog = false)"
         >
         </v-btn>
       </template>
@@ -82,7 +82,7 @@
         <v-btn color="error" style="width: 48%"> DELETE </v-btn>
         <v-btn
           style="width: 48%"
-          @click="wordDialogControl.showDeleteDialog = false"
+          @click="() => (wordDialogControl.showDeleteDialog = false)"
         >
           CANCEL
         </v-btn>
@@ -100,7 +100,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="wordDialogControl.showUpdateDialog = false"
+          @click="() => (wordDialogControl.showUpdateDialog = false)"
         >
         </v-btn>
       </template>
@@ -126,7 +126,7 @@
         <v-btn color="info" style="width: 48%"> UPDATE </v-btn>
         <v-btn
           style="width: 48%"
-          @click="wordDialogControl.showUpdateDialog = false"
+          @click="() => (wordDialogControl.showUpdateDialog = false)"
         >
           CANCEL
         </v-btn>
@@ -144,7 +144,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="wordDialogControl.showAddDialog = false"
+          @click="() => (wordDialogControl.showAddDialog = false)"
         >
         </v-btn>
       </template>
@@ -161,7 +161,7 @@
         <v-btn color="primary" style="width: 48%"> ADD </v-btn>
         <v-btn
           style="width: 48%"
-          @click="wordDialogControl.showAddDialog = false"
+          @click="() => (wordDialogControl.showAddDialog = false)"
         >
           CANCEL
         </v-btn>
