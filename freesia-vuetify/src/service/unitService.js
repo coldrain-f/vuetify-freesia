@@ -47,7 +47,6 @@ export const unitService = {
     const response = await $axios.get(
       `/vocabulary/${vocabularyId}/units?page=0&size=${totalElements}`
     );
-    console.log(response);
     return response.data.content;
   },
 };

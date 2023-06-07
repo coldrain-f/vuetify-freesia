@@ -336,7 +336,6 @@ const onClickUpdateButton = async () => {
 onMounted(async () => {
   // 단어장 관리 초기 진입 시 단어장 Data Table Rendering.
   vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage();
-  
 });
 </script>
 

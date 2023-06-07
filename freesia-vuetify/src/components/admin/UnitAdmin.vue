@@ -82,7 +82,9 @@
         />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="error" style="width: 48%"> DELETE </v-btn>
+        <v-btn color="error" style="width: 48%" @click="onClickDeleteButton">
+          DELETE
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="() => (unitDialogControl.showDeleteDialog = false)"
@@ -191,6 +193,7 @@ const unitAddFormData = reactive({
 
 // 삭제 등록 FormData
 const unitDeleteFormData = reactive({
+  id: null,
   subject: null,
   wordCount: 0,
 });
@@ -232,6 +235,7 @@ const onClickAddButton = async () => {
 const openDeleteDialog = async (unitId) => {
   const unit = await unitService.searchOneUnitResponse(unitId);
   Object.assign(unitDeleteFormData, {
+    id: unit.id,
     subject: unit.subject,
     wordCount: 0, // Todo: 나중에 추가 구현 필요
   });
@@ -239,7 +243,35 @@ const openDeleteDialog = async (unitId) => {
 };
 
 // 단위 삭제 버튼 클릭 이벤트
-const onClickDeleteButton = async () => {};
+const onClickDeleteButton = async () => {
+  await unitService.deleteUnit(unitDeleteFormData.id);
+
+  Object.assign(unitDeleteFormData, {
+    id: null,
+    subject: null,
+    wordCount: 0,
+  });
+
+  unitDialogControl.showDeleteDialog = false;
+
+  // 삭제나 수정한 단어장의 페이지를 조회해 본다.
+  unitPage.value = await unitService.searchUnitResponsePage(
+    selectedVocabularyId.value,
+    {
+      page: currentPage.value - 1,
+      size: 3,
+    }
+  );
+
+  // 조회해본 페이지가 데이터가 없으면
+  if (unitPage.value.content.length <= 0) {
+    // 앞 페이지로 이동하고, 조회해본 페이지가 1페이지 라면 앞 페이지가 없으므로 1페이지로 설정한다.
+    currentPage.value = currentPage.value === 1 ? 1 : currentPage.value - 1;
+  }
+
+  // 조회해본 페이지가 데이터가 있으면 그대로 조회
+  await handlePageChange(currentPage.value);
+};
 
 onMounted(async () => {
   if (!selectedVocabularyId.value) {
