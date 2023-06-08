@@ -69,8 +69,8 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field readonly label="Word" model-value="spice" />
-        <v-text-field readonly label="Meaning" model-value="양념" />
+        <v-text-field readonly label="Study Word" model-value="spice" />
+        <v-text-field readonly label="Native Word" model-value="양념" />
         <v-select
           :items="['adj', 'v', 'n']"
           model-value="n"
@@ -106,12 +106,12 @@
       </template>
       <v-card-text class="mt-5">
         <v-text-field
-          label="Word"
+          label="Study Word"
           model-value="spice"
           append-inner-icon="mdi-file-document-edit-outline"
         />
         <v-text-field
-          label="Meaning"
+          label="Native Word"
           model-value="양념"
           append-inner-icon="mdi-file-document-edit-outline"
         />
@@ -149,8 +149,8 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field label="Word" />
-        <v-text-field label="Meaning" />
+        <v-text-field label="Study Word" />
+        <v-text-field label="Native Word" />
         <v-select
           model-value="adj"
           label="Part of speech"
