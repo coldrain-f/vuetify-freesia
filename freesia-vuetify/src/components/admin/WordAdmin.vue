@@ -4,8 +4,8 @@
       <v-table style="overflow-x: auto">
         <thead>
           <tr>
-            <th>Word</th>
-            <th>Meaning</th>
+            <th>Study Word</th>
+            <th>Native Word</th>
             <th>POS</th>
             <th>Actions</th>
           </tr>
