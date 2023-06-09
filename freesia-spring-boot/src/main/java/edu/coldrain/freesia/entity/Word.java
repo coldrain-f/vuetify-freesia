@@ -27,11 +27,16 @@ public class Word {
     @Column(nullable = false)
     private String partOfSpeech;
 
+    @ManyToOne
+    @JoinColumn(name = "UNIT_ID")
+    private Unit unit;
+
     @Builder
-    public Word(String studyWord, String nativeWord, String partOfSpeech) {
+    public Word(String studyWord, String nativeWord, String partOfSpeech, Unit unit) {
         this.studyWord = studyWord;
         this.nativeWord = nativeWord;
         this.partOfSpeech = partOfSpeech;
+        this.unit = unit;
     }
 
     public void changeStudyWord(String studyWord) {

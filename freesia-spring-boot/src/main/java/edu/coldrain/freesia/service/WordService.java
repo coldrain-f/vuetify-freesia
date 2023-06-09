@@ -25,6 +25,7 @@ public class WordService {
                 .studyWord(request.getStudyWord())
                 .nativeWord(request.getNativeWord())
                 .partOfSpeech(request.getPartOfSpeech())
+                .unit(unit)
                 .build();
 
         final Word savedWord = wordRepository.save(word);
