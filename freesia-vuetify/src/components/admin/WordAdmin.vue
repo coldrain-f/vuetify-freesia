@@ -35,7 +35,12 @@
 
       <v-row>
         <v-col cols="12">
-          <v-pagination :length="10" rounded="circle"></v-pagination>
+          <v-pagination
+            :length="wordPage.totalPages"
+            v-model="currentPage"
+            rounded="circle"
+            @update:model-value="handlePageChange"
+          />
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -209,6 +214,17 @@ const wordAddFormData = reactive({
   partOfSpeech: "adj",
 });
 
+// Pagination PageChange 이벤트 핸들러
+const handlePageChange = async (pageNumber) => {
+  wordPage.value = await wordService.searchWordResponsePage(
+    selectedUnit.value.value,
+    {
+      page: pageNumber - 1,
+      size: 3,
+    }
+  );
+};
+
 // 단어 등록 클릭 이벤트
 const onClickAddButton = async () => {
   const savedId = await wordService.registerWord(
@@ -222,6 +238,12 @@ const onClickAddButton = async () => {
     selectedUnit.value.value
   );
   currentPage.value = 1;
+
+  Object.assign(wordAddFormData, {
+    studyWord: null,
+    nativeWord: null,
+    partOfSpeech: "adj",
+  });
 
   console.log(`savedId = ${savedId}`);
 };

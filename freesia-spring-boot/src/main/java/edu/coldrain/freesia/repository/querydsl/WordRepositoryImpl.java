@@ -39,6 +39,8 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
 
         final Long total = query.select(word.count())
                 .from(word)
+                .innerJoin(word.unit, unit)
+                .where(unit.id.eq(unitId))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total == null ? 0L : total);

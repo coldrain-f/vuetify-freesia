@@ -11,6 +11,7 @@
     />
     <v-row>
       <v-col :cols="6">
+        <!-- :hint="`${selectedVocabulary.title}, ${selectedVocabulary.value}`" -->
         <v-select
           label="Voca"
           variant="underlined"
@@ -18,15 +19,16 @@
           density="compact"
           v-model="selectedVocabulary"
           :items="vocabularyItems"
-          :hint="`${selectedVocabulary.title}, ${selectedVocabulary.value}`"
           item-title="title"
           item-value="value"
+          hide-details
           return-object
           persistent-hint
           single-line
         />
       </v-col>
       <v-col cols="6">
+        <!-- :hint="`${selectedUnit.subject}, ${selectedUnit.value}`" -->
         <v-select
           label="Unit"
           variant="underlined"
@@ -34,9 +36,9 @@
           density="compact"
           v-model="selectedUnit"
           :items="unitItems"
-          :hint="`${selectedUnit.subject}, ${selectedUnit.value}`"
           item-title="subject"
           item-value="value"
+          hide-details
           return-object
           persistent-hint
           single-line
