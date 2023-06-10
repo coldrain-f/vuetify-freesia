@@ -16,9 +16,14 @@
           variant="underlined"
           v-show="selectedCategory === 'Unit' || selectedCategory === 'Word'"
           density="compact"
-          hide-details
-          v-model="selectedVocabularyTitle"
+          v-model="selectedVocabulary"
           :items="allVocabularyList"
+          :hint="`${selectedVocabulary.title}, ${selectedVocabulary.value}`"
+          item-title="title"
+          item-value="value"
+          return-object
+          persistent-hint
+          single-line
         />
       </v-col>
       <v-col cols="6">
@@ -52,8 +57,8 @@ const adminHomeStore = useAdminHomeStore();
 const {
   categories,
   selectedCategory,
+  selectedVocabulary,
   allVocabularyList,
-  selectedVocabularyTitle,
   allUnitList,
   selectedUnitSubject,
 } = storeToRefs(adminHomeStore);

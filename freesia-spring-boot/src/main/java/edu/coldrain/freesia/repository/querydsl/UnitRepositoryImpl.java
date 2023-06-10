@@ -37,6 +37,8 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
 
         final Long total = query.select(unit.count())
                 .from(unit)
+                .innerJoin(unit.vocabulary, vocabulary)
+                .where(vocabulary.id.eq(vocabularyId))
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total == null ? 0L : total);

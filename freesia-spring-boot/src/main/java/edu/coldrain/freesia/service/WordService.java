@@ -7,6 +7,8 @@ import edu.coldrain.freesia.exception.UnitNotFoundException;
 import edu.coldrain.freesia.repository.UnitRepository;
 import edu.coldrain.freesia.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,5 +32,9 @@ public class WordService {
 
         final Word savedWord = wordRepository.save(word);
         return savedWord.getId();
+    }
+
+    public Page<WordDTO.Response> searchWordResponsePage(Long unitId, Pageable pageable) {
+        return wordRepository.searchWordResponsePage(unitId, pageable);
     }
 }

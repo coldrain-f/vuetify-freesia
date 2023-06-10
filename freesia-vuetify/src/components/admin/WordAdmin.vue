@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <v-table style="overflow-x: auto">
+      <v-table class="table-container">
         <thead>
           <tr>
             <th>Study Word</th>
@@ -11,10 +11,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="word in wordList" :key="word.id">
-            <td style="width: 32.5%">{{ word.name }}</td>
-            <td style="width: 32.5%">{{ word.meaning }}</td>
-            <td style="width: 10%">{{ word.pos }}</td>
+          <tr v-for="word in wordPage.content" :key="word.id">
+            <td style="width: 32.5%">{{ word.studyWord }}</td>
+            <td style="width: 32.5%">{{ word.nativeWord }}</td>
+            <td style="width: 10%">{{ word.partOfSpeech }}</td>
             <td style="width: 25%">
               <v-btn
                 variant="text"
@@ -149,16 +149,21 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field label="Study Word" />
-        <v-text-field label="Native Word" />
+        <v-text-field label="Study Word" v-model="wordAddFormData.studyWord" />
+        <v-text-field
+          label="Native Word"
+          v-model="wordAddFormData.nativeWord"
+        />
         <v-select
-          model-value="adj"
           label="Part of speech"
+          v-model="wordAddFormData.partOfSpeech"
           :items="['adj', 'v', 'n']"
         />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="primary" style="width: 48%"> ADD </v-btn>
+        <v-btn color="primary" style="width: 48%" @click="onClickAddButton">
+          ADD
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="() => (wordDialogControl.showAddDialog = false)"
@@ -171,10 +176,16 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useThemeStore } from "@/stores/theme";
+import { wordService } from "@/service/wordService";
+import { useAdminHomeStore } from "@/stores/adminHome";
+import { storeToRefs } from "pinia";
 
 const themeStore = useThemeStore();
+const adminHomeStore = useAdminHomeStore();
+
+const { selectedUnitId } = storeToRefs(adminHomeStore);
 
 // 단어 다이얼로그 컨트롤
 const wordDialogControl = reactive({
@@ -183,9 +194,55 @@ const wordDialogControl = reactive({
   showAddDialog: false,
 });
 
-const wordList = ref([
-  { id: 3, name: "spice", meaning: "양념", pos: "n" },
-  { id: 2, name: "delicious", meaning: "맛있는", pos: "adj" },
-  { id: 1, name: "cook", meaning: "요리하다", pos: "v" },
-]);
+// Word Pageable
+const wordPage = ref({});
+
+// Pagination Page
+const currentPage = ref(1);
+
+// 단어 등록 FormData
+const wordAddFormData = reactive({
+  studyWord: null,
+  nativeWord: null,
+  partOfSpeech: "adj",
+});
+
+// 단어 등록 클릭 이벤트
+const onClickAddButton = async () => {
+  const savedId = await wordService.registerWord(
+    selectedUnitId.value,
+    wordAddFormData
+  );
+
+  wordDialogControl.showAddDialog = false;
+
+  wordPage.value = await wordService.searchWordResponsePage(
+    selectedUnitId.value
+  );
+  currentPage.value = 1;
+
+  console.log(`savedId = ${savedId}`);
+};
+
+onMounted(async () => {
+  if (!selectedUnitId.value) {
+    return;
+  }
+  wordPage.value = await wordService.searchWordResponsePage(
+    selectedUnitId.value,
+    { page: 0, size: 3 }
+  );
+});
 </script>
+
+<style>
+.table-container {
+  /* 가로, 세로 스크롤 생성 */
+  overflow: auto;
+  /* 테이블 데이터의 줄 바꿈 제거 */
+  white-space: nowrap;
+
+  height: 215px;
+  width: 100%;
+}
+</style>

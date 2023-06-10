@@ -48,7 +48,6 @@
         class="w-100"
         :color="themeStore.theme"
         @click="() => (unitDialogControl.showAddDialog = true)"
-        :disabled="!selectedVocabularyId"
       >
         <v-icon start icon="mdi-plus"></v-icon>
         Add item
@@ -168,7 +167,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 import { useThemeStore } from "@/stores/theme";
 import { unitService } from "@/service/unitService";
 import { useAdminHomeStore } from "@/stores/adminHome";
@@ -177,7 +176,7 @@ import { storeToRefs } from "pinia";
 const themeStore = useThemeStore();
 const adminHomeStore = useAdminHomeStore();
 
-const { selectedVocabularyId } = storeToRefs(adminHomeStore);
+const { selectedVocabulary } = storeToRefs(adminHomeStore);
 
 // Unit Pageable
 const unitPage = ref({});
@@ -214,7 +213,7 @@ const unitUpdateFormData = reactive({
 // Pagination PageChange 이벤트 핸들러
 const handlePageChange = async (pageNumber) => {
   unitPage.value = await unitService.searchUnitResponsePage(
-    selectedVocabularyId.value,
+    selectedVocabulary.value.value,
     {
       page: pageNumber - 1,
       size: 3,
@@ -225,13 +224,13 @@ const handlePageChange = async (pageNumber) => {
 // 단위 등록 버튼 클릭 이벤트
 const onClickAddButton = async () => {
   const savedId = await unitService.registerUnit(
-    selectedVocabularyId.value,
+    selectedVocabulary.value.value,
     unitAddFormData
   );
 
   // 추가된 상태의 최신 데이터 갱신
   unitPage.value = await unitService.searchUnitResponsePage(
-    selectedVocabularyId.value
+    selectedVocabulary.value.value
   );
 
   Object.assign(unitAddFormData, {
@@ -269,7 +268,7 @@ const onClickDeleteButton = async () => {
 
   // 삭제나 수정한 단어장의 페이지를 조회해 본다.
   unitPage.value = await unitService.searchUnitResponsePage(
-    selectedVocabularyId.value,
+    selectedVocabulary.value.value,
     {
       page: currentPage.value - 1,
       size: 3,
@@ -313,7 +312,7 @@ const onClickUpdateButton = async () => {
     unitDialogControl.showUpdateDialog = false;
 
     unitPage.value = await unitService.searchUnitResponsePage(
-      selectedVocabularyId.value
+      selectedVocabulary.value.value
     );
 
     console.debug("단위 수정 성공!");
@@ -323,13 +322,32 @@ const onClickUpdateButton = async () => {
   }
 };
 
+// watch
+watch(
+  () => selectedVocabulary.value.value,
+  async () => {
+    const selectedVocabularyId = selectedVocabulary.value.value;
+    Object.assign(
+      unitPage.value,
+      await unitService.searchUnitResponsePage(selectedVocabularyId, {
+        page: 0,
+        size: 3,
+      })
+    );
+
+    currentPage.value = 1;
+  }
+);
+
 onMounted(async () => {
-  if (!selectedVocabularyId.value) {
+  const selectedVocabularyId = selectedVocabulary.value.value;
+  if (!selectedVocabularyId) {
     unitPage.value.content = [];
     return;
   }
   unitPage.value = await unitService.searchUnitResponsePage(
-    selectedVocabularyId.value
+    selectedVocabularyId,
+    { page: 0, size: 3 }
   );
 });
 </script>
