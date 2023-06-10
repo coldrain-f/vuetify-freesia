@@ -24,7 +24,6 @@
           hide-details
           return-object
           persistent-hint
-          single-line
         />
       </v-col>
       <v-col cols="6">
@@ -41,7 +40,6 @@
           hide-details
           return-object
           persistent-hint
-          single-line
         />
       </v-col>
     </v-row>
@@ -58,6 +56,9 @@ import WordAdmin from "./WordAdmin.vue";
 import { useAdminHomeStore } from "@/stores/adminHome";
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
+
+// Bug 1. 새로운 단어장 추가 후 Unit 카테고리로 이동하면 기존 테이블 데이터 유지되는 버그
+// Bug 2. 새로운 단어장 추가 후 Word 카테고리로 이동 → 다른 단어장 선택 → 새로 추가한 단어장 → Unit이 이전 단어장으로 유지되는 버그
 
 const adminHomeStore = useAdminHomeStore();
 

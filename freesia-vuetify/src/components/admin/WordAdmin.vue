@@ -52,6 +52,7 @@
         class="w-100"
         :color="themeStore.theme"
         @click="() => (wordDialogControl.showAddDialog = true)"
+        :disabled="selectedUnit.subject === 'No data available'"
       >
         <v-icon start icon="mdi-plus"></v-icon>
         Add item
