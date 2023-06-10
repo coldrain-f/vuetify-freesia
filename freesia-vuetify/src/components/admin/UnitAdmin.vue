@@ -326,6 +326,7 @@ const onClickUpdateButton = async () => {
 watch(
   () => selectedVocabulary.value.value,
   async () => {
+    // Unit Table Rendering...
     const selectedVocabularyId = selectedVocabulary.value.value;
     Object.assign(
       unitPage.value,
@@ -334,7 +335,6 @@ watch(
         size: 3,
       })
     );
-
     currentPage.value = 1;
   }
 );

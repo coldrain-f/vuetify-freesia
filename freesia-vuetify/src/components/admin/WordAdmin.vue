@@ -4,30 +4,30 @@
       <v-table class="table-container">
         <thead>
           <tr>
-            <th>Study Word</th>
-            <th>Native Word</th>
-            <th>POS</th>
-            <th>Actions</th>
+            <th style="width: 32.5%">Study Word</th>
+            <th style="width: 32.5%">Native Word</th>
+            <th style="width: 10%">POS</th>
+            <th style="width: 25%">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="word in wordPage.content" :key="word.id">
-            <td style="width: 32.5%">{{ word.studyWord }}</td>
-            <td style="width: 32.5%">{{ word.nativeWord }}</td>
-            <td style="width: 10%">{{ word.partOfSpeech }}</td>
-            <td style="width: 25%">
+            <td>{{ word.studyWord }}</td>
+            <td>{{ word.nativeWord }}</td>
+            <td>{{ word.partOfSpeech }}</td>
+            <td>
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
                 @click="() => (wordDialogControl.showDeleteDialog = true)"
-              ></v-btn>
+              />
               <v-btn
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
                 @click="() => (wordDialogControl.showUpdateDialog = true)"
-              ></v-btn>
+              />
             </td>
           </tr>
         </tbody>
@@ -176,16 +176,18 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { useThemeStore } from "@/stores/theme";
 import { wordService } from "@/service/wordService";
+import { unitService } from "@/service/unitService";
 import { useAdminHomeStore } from "@/stores/adminHome";
 import { storeToRefs } from "pinia";
 
 const themeStore = useThemeStore();
 const adminHomeStore = useAdminHomeStore();
 
-const { selectedUnitId } = storeToRefs(adminHomeStore);
+const { selectedUnit, selectedVocabulary, unitItems } =
+  storeToRefs(adminHomeStore);
 
 // 단어 다이얼로그 컨트롤
 const wordDialogControl = reactive({
@@ -210,26 +212,66 @@ const wordAddFormData = reactive({
 // 단어 등록 클릭 이벤트
 const onClickAddButton = async () => {
   const savedId = await wordService.registerWord(
-    selectedUnitId.value,
+    selectedUnit.value.value,
     wordAddFormData
   );
 
   wordDialogControl.showAddDialog = false;
 
   wordPage.value = await wordService.searchWordResponsePage(
-    selectedUnitId.value
+    selectedUnit.value.value
   );
   currentPage.value = 1;
 
   console.log(`savedId = ${savedId}`);
 };
 
+// watch
+watch(
+  () => selectedUnit.value.value,
+  async () => {
+    const selectedUnitId = selectedUnit.value.value;
+    Object.assign(
+      wordPage.value,
+      await wordService.searchWordResponsePage(selectedUnitId, {
+        page: 0,
+        size: 3,
+      })
+    );
+    currentPage.value = 1;
+  }
+);
+
+watch(
+  () => selectedVocabulary.value.value,
+  async () => {
+    // Unit Select Rendering...
+    const unitPage = await unitService.searchUnitResponsePage(
+      selectedVocabulary.value.value,
+      {
+        page: 0,
+        size: 2000,
+      }
+    );
+    unitItems.value = unitPage.content.map((u) => {
+      return {
+        subject: u.subject,
+        value: u.id,
+      };
+    });
+    Object.assign(selectedUnit.value, {
+      subject: unitItems.value[0].subject,
+      value: unitItems.value[0].value,
+    });
+  }
+);
+
 onMounted(async () => {
-  if (!selectedUnitId.value) {
+  if (!selectedUnit.value.value) {
     return;
   }
   wordPage.value = await wordService.searchWordResponsePage(
-    selectedUnitId.value,
+    selectedUnit.value.value,
     { page: 0, size: 3 }
   );
 });

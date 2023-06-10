@@ -17,7 +17,7 @@
           v-show="selectedCategory === 'Unit' || selectedCategory === 'Word'"
           density="compact"
           v-model="selectedVocabulary"
-          :items="allVocabularyList"
+          :items="vocabularyItems"
           :hint="`${selectedVocabulary.title}, ${selectedVocabulary.value}`"
           item-title="title"
           item-value="value"
@@ -32,9 +32,14 @@
           variant="underlined"
           v-show="selectedCategory === 'Word'"
           density="compact"
-          hide-details
-          v-model="selectedUnitSubject"
-          :items="allUnitList"
+          v-model="selectedUnit"
+          :items="unitItems"
+          :hint="`${selectedUnit.subject}, ${selectedUnit.value}`"
+          item-title="subject"
+          item-value="value"
+          return-object
+          persistent-hint
+          single-line
         />
       </v-col>
     </v-row>
@@ -58,9 +63,9 @@ const {
   categories,
   selectedCategory,
   selectedVocabulary,
-  allVocabularyList,
-  allUnitList,
-  selectedUnitSubject,
+  selectedUnit,
+  vocabularyItems,
+  unitItems,
 } = storeToRefs(adminHomeStore);
 
 // 단어장, 단위의 데이터가 변화가 생겼을 수 있으므로 카테고리가 변경될 때마다 매번 초기화

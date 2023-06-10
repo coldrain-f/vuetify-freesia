@@ -14,7 +14,6 @@ export const unitService = {
     const response = await $axios.get(
       `/vocabulary/${vocabularyId}/units?page=${page}&size=${size}`
     );
-    console.log(`totalPages = ${response.data.totalPages}`);
     return response.data;
   },
 
