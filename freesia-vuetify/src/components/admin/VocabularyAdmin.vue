@@ -12,11 +12,11 @@
         <tbody>
           <tr v-for="vocabulary in vocabularyPage.content" :key="vocabulary.id">
             <td>
-              <v-btn variant="text" color="primary">
-                <v-badge :content="20" floating color="white">
-                  {{ vocabulary.title }}
-                </v-badge>
-              </v-btn>
+              <v-badge :content="20" floating color="white">
+                <a href="#" class="text-primary text-decoration-none">{{
+                  vocabulary.title
+                }}</a>
+              </v-badge>
             </td>
             <td>
               <flag
