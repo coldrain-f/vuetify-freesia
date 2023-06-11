@@ -193,7 +193,7 @@ import { storeToRefs } from "pinia";
 const themeStore = useThemeStore();
 const adminHomeStore = useAdminHomeStore();
 
-const { selectedUnit, selectedVocabulary, unitItems } =
+const { selectedUnit, selectedVocabulary, unitItems, wordPage } =
   storeToRefs(adminHomeStore);
 
 // 단어 다이얼로그 컨트롤
@@ -202,9 +202,6 @@ const wordDialogControl = reactive({
   showUpdateDialog: false,
   showAddDialog: false,
 });
-
-// Word Pageable
-const wordPage = ref({});
 
 // Pagination Page
 const currentPage = ref(1);
@@ -307,15 +304,7 @@ watch(
   }
 );
 
-onMounted(async () => {
-  if (!selectedUnit.value.value) {
-    return;
-  }
-  wordPage.value = await wordService.searchWordResponsePage(
-    selectedUnit.value.value,
-    { page: 0, size: 3 }
-  );
-});
+onMounted(async () => {});
 </script>
 
 <style>

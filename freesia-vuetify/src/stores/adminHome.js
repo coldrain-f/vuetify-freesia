@@ -9,6 +9,12 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
 
   const selectedCategory = ref("Vocabulary");
 
+  // 단위(Unit) Pageable
+  const unitPage = ref({});
+
+  // 단어(Word) Pageable
+  const wordPage = ref({});
+
   // 단어장(Vocabulary) 셀렉트 박스에 표시될 아이템
   const vocabularyItems = ref([]);
 
@@ -28,12 +34,12 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
   });
 
   const initialize = async () => {
-    const vocaPage = await vocabularyService.searchVocabularyResponsePage({
+    const vocaPageTemp = await vocabularyService.searchVocabularyResponsePage({
       page: 0,
       size: 2000,
     });
 
-    vocabularyItems.value = vocaPage.content.map((v) => {
+    vocabularyItems.value = vocaPageTemp.content.map((v) => {
       return {
         title: v.title,
         value: v.id,
@@ -41,7 +47,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     });
 
     // 생성한 단어장이 없으면 "No data available"
-    if (utils.isEmptyArray(vocaPage.content)) {
+    if (utils.isEmptyArray(vocaPageTemp.content)) {
       selectedUnit.value.subject = "No data available";
       Object.assign(selectedVocabulary.value, {
         title: "No data available",
@@ -59,7 +65,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     });
 
     // 설정한 단어장의 소속된 UnitList를 셀렉트 박스에 설정한다.
-    const unitPage = await unitService.searchUnitResponsePage(
+    const unitPageTemp = await unitService.searchUnitResponsePage(
       firstVocabulary.value,
       {
         page: 0,
@@ -67,7 +73,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
       }
     );
 
-    unitItems.value = unitPage.content.map((u) => {
+    unitItems.value = unitPageTemp.content.map((u) => {
       return {
         subject: u.subject,
         value: u.id,
@@ -75,7 +81,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     });
 
     // 단어장은 있지만, 생성한 Unit이 없으면 "No data available"
-    if (utils.isEmptyArray(unitPage.content)) {
+    if (utils.isEmptyArray(unitPageTemp.content)) {
       Object.assign(selectedUnit.value, {
         subject: "No data available",
         value: null,
@@ -94,9 +100,11 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     categories,
     selectedCategory,
     vocabularyItems,
-    unitItems,
     selectedVocabulary,
+    unitItems,
     selectedUnit,
+    unitPage,
+    wordPage,
     initialize,
   };
 });

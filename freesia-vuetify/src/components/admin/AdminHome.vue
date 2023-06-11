@@ -53,6 +53,8 @@
 import VocabularyAdmin from "./VocabularyAdmin.vue";
 import UnitAdmin from "./UnitAdmin.vue";
 import WordAdmin from "./WordAdmin.vue";
+import { unitService } from "@/service/unitService";
+import { wordService } from "@/service/wordService";
 import { useAdminHomeStore } from "@/stores/adminHome";
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
@@ -66,11 +68,38 @@ const {
   selectedUnit,
   vocabularyItems,
   unitItems,
+  unitPage,
+  wordPage,
 } = storeToRefs(adminHomeStore);
 
 // 단어장, 단위의 데이터가 변화가 생겼을 수 있으므로 카테고리가 변경될 때마다 매번 초기화
 const handleCategoryChange = async () => {
   await adminHomeStore.initialize();
+
+  if (!selectedVocabulary.value.value) {
+    unitPage.value.content = [];
+    return;
+  }
+  Object.assign(
+    unitPage.value,
+    await unitService.searchUnitResponsePage(selectedVocabulary.value.value, {
+      page: 0,
+      size: 3,
+    })
+  );
+
+  if (!selectedUnit.value.value) {
+    wordPage.value.content = [];
+    return;
+  }
+
+  Object.assign(
+    wordPage.value,
+    await wordService.searchWordResponsePage(selectedUnit.value.value, {
+      page: 0,
+      size: 3,
+    })
+  );
 };
 
 onMounted(async () => {

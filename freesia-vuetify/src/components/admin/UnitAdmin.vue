@@ -176,10 +176,7 @@ import { storeToRefs } from "pinia";
 const themeStore = useThemeStore();
 const adminHomeStore = useAdminHomeStore();
 
-const { selectedVocabulary } = storeToRefs(adminHomeStore);
-
-// Unit Pageable
-const unitPage = ref({});
+const { selectedVocabulary, unitPage } = storeToRefs(adminHomeStore);
 
 // Pagination Page
 const currentPage = ref(1);
@@ -339,17 +336,7 @@ watch(
   }
 );
 
-onMounted(async () => {
-  const selectedVocabularyId = selectedVocabulary.value.value;
-  if (!selectedVocabularyId) {
-    unitPage.value.content = [];
-    return;
-  }
-  unitPage.value = await unitService.searchUnitResponsePage(
-    selectedVocabularyId,
-    { page: 0, size: 3 }
-  );
-});
+onMounted(async () => {});
 </script>
 
 <style>
