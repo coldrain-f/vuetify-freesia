@@ -124,6 +124,54 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <!-- 
+    공통 스낵바
+    사용 예시:
+      1. useCommonStore를 import한다.
+      2. snackbarText.value = "단어장 등록을 성공했습니다.";
+      3. showSnackbar.value = true;
+  -->
+  <v-snackbar v-model="showSnackbar">
+    {{ snackbarText }}
+
+    <template v-slot:actions>
+      <v-btn color="pink" variant="text" @click="() => (showSnackbar = false)">
+        Close
+      </v-btn>
+    </template>
+  </v-snackbar>
+
+  <!-- 
+    공통 메시지 다이얼로그
+   -->
+  <v-dialog v-model="showMessageDialog" width="auto">
+    <v-card>
+      <template #title>
+        <span class="noto-sans text-primary"> ※ Alert </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="() => (showMessageDialog = false)"
+        >
+        </v-btn>
+      </template>
+      <v-card-text>
+        {{ messageDialogText }}
+      </v-card-text>
+      <v-card-actions class="d-flex justify-center">
+        <v-btn
+          style="width: 100%"
+          color="primary"
+          @click="() => (showMessageDialog = false)"
+        >
+          CONFIRM
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -135,6 +183,7 @@ import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
 import { onMounted, reactive, ref } from "vue";
+import { useCommonStore } from "@/stores/common";
 
 const tab = ref(null);
 
@@ -142,8 +191,11 @@ const tab = ref(null);
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
 const themeStore = useThemeStore();
+const commonStore = useCommonStore();
 
 const { isLearningStarted } = storeToRefs(learningStore);
+const { showSnackbar, snackbarText, showMessageDialog, messageDialogText } =
+  storeToRefs(commonStore);
 
 // TTS(Text-to-Speech)
 const textToSpeech = reactive({

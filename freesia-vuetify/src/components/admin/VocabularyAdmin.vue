@@ -188,9 +188,13 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useThemeStore } from "@/stores/theme";
+import { useCommonStore } from "@/stores/common";
 import { vocabularyService } from "@/service/vocabularyService";
 
 const themeStore = useThemeStore();
+const commonStore = useCommonStore();
+
+const { VDialogMessage } = commonStore;
 
 // 단어장 Pageable
 const vocabularyPage = ref({});
@@ -251,11 +255,11 @@ const onClickAddButton = async () => {
     currentPage.value = 1;
 
     setTimeout(() => {
-      alert("단어장 등록을 성공했습니다.");
+      VDialogMessage("단어장 등록을 완료했습니다.");
     }, 200);
   } catch (err) {
     console.error(err);
-    alert("단어장 등록을 실패했습니다.");
+    VDialogMessage("단어장 등록을 실패했습니다.");
   }
 };
 
@@ -299,11 +303,11 @@ const onClickDeleteButton = async () => {
     await handlePageChange(currentPage.value);
 
     setTimeout(() => {
-      alert("단어장 삭제를 성공했습니다.");
+      VDialogMessage("단어장 삭제를 완료했습니다.");
     }, 200);
   } catch (err) {
     console.error(err);
-    alert("단어장 삭제를 실패했습니다.");
+    VDialogMessage("단어장 삭제를 실패했습니다.");
   }
 };
 
@@ -325,11 +329,11 @@ const onClickUpdateButton = async () => {
     await handlePageChange(currentPage.value);
 
     setTimeout(() => {
-      alert("단어장 수정을 성공했습니다.");
+      VDialogMessage("단어장 수정을 완료했습니다.");
     }, 200);
   } catch (err) {
     console.error(err);
-    alert("단어장 수정을 실패했습니다.");
+    VDialogMessage("단어장 수정을 실패했습니다.");
   }
 };
 

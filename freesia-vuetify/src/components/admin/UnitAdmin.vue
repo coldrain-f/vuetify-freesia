@@ -172,10 +172,14 @@ import { reactive, ref, onMounted, watch } from "vue";
 import { useThemeStore } from "@/stores/theme";
 import { unitService } from "@/service/unitService";
 import { useAdminHomeStore } from "@/stores/adminHome";
+import { useCommonStore } from "@/stores/common";
 import { storeToRefs } from "pinia";
 
 const themeStore = useThemeStore();
 const adminHomeStore = useAdminHomeStore();
+const commonStore = useCommonStore();
+
+const { VDialogMessage } = commonStore;
 
 const { selectedVocabulary, unitPage } = storeToRefs(adminHomeStore);
 
@@ -221,24 +225,34 @@ const handlePageChange = async (pageNumber) => {
 
 // 단위 등록 버튼 클릭 이벤트
 const onClickAddButton = async () => {
-  const savedId = await unitService.registerUnit(
-    selectedVocabulary.value.value,
-    unitAddFormData
-  );
+  try {
+    await unitService.registerUnit(
+      selectedVocabulary.value.value,
+      unitAddFormData
+    );
 
-  // 추가된 상태의 최신 데이터 갱신
-  unitPage.value = await unitService.searchUnitResponsePage(
-    selectedVocabulary.value.value
-  );
+    // 추가된 상태의 최신 데이터 갱신
+    unitPage.value = await unitService.searchUnitResponsePage(
+      selectedVocabulary.value.value
+    );
 
-  Object.assign(unitAddFormData, {
-    subject: null,
-  });
+    Object.assign(unitAddFormData, {
+      subject: null,
+    });
 
-  unitDialogControl.showAddDialog = false;
-  currentPage.value = 1;
+    unitDialogControl.showAddDialog = false;
+    currentPage.value = 1;
 
-  console.log(`saved unit = ${savedId}`);
+    setTimeout(() => {
+      VDialogMessage("단위 등록을 완료했습니다.");
+    }, 200);
+  } catch (err) {
+    console.error(err);
+
+    setTimeout(() => {
+      VDialogMessage("단위 등록을 실패했습니다.");
+    }, 200);
+  }
 };
 
 // 단위 삭제 다이얼로그 Open
@@ -254,33 +268,44 @@ const openDeleteDialog = async (unitId) => {
 
 // 단위 삭제 버튼 클릭 이벤트
 const onClickDeleteButton = async () => {
-  await unitService.deleteUnit(unitDeleteFormData.id);
+  try {
+    await unitService.deleteUnit(unitDeleteFormData.id);
 
-  Object.assign(unitDeleteFormData, {
-    id: null,
-    subject: null,
-    wordCount: 0,
-  });
+    Object.assign(unitDeleteFormData, {
+      id: null,
+      subject: null,
+      wordCount: 0,
+    });
 
-  unitDialogControl.showDeleteDialog = false;
+    unitDialogControl.showDeleteDialog = false;
 
-  // 삭제나 수정한 단어장의 페이지를 조회해 본다.
-  unitPage.value = await unitService.searchUnitResponsePage(
-    selectedVocabulary.value.value,
-    {
-      page: currentPage.value - 1,
-      size: 3,
+    // 삭제나 수정한 단어장의 페이지를 조회해 본다.
+    unitPage.value = await unitService.searchUnitResponsePage(
+      selectedVocabulary.value.value,
+      {
+        page: currentPage.value - 1,
+        size: 3,
+      }
+    );
+
+    // 조회해본 페이지가 데이터가 없으면
+    if (unitPage.value.content.length <= 0) {
+      // 앞 페이지로 이동하고, 조회해본 페이지가 1페이지 라면 앞 페이지가 없으므로 1페이지로 설정한다.
+      currentPage.value = currentPage.value === 1 ? 1 : currentPage.value - 1;
     }
-  );
 
-  // 조회해본 페이지가 데이터가 없으면
-  if (unitPage.value.content.length <= 0) {
-    // 앞 페이지로 이동하고, 조회해본 페이지가 1페이지 라면 앞 페이지가 없으므로 1페이지로 설정한다.
-    currentPage.value = currentPage.value === 1 ? 1 : currentPage.value - 1;
+    // 조회해본 페이지가 데이터가 있으면 그대로 조회
+    await handlePageChange(currentPage.value);
+
+    setTimeout(() => {
+      VDialogMessage("단위 삭제를 완료했습니다.");
+    }, 200);
+  } catch (err) {
+    console.error(err);
+    setTimeout(() => {
+      VDialogMessage("단위 삭제를 실패했습니다.");
+    }, 200);
   }
-
-  // 조회해본 페이지가 데이터가 있으면 그대로 조회
-  await handlePageChange(currentPage.value);
 };
 
 // 단위 수정 다이얼로그 Open
@@ -313,10 +338,15 @@ const onClickUpdateButton = async () => {
       selectedVocabulary.value.value
     );
 
-    console.debug("단위 수정 성공!");
+    setTimeout(() => {
+      VDialogMessage("단위 수정을 완료했습니다.");
+    }, 200);
   } catch (err) {
     console.error(err);
-    console.debug("단위 수정 실패!");
+
+    setTimeout(() => {
+      VDialogMessage("단위 수정을 실패했습니다.");
+    }, 200);
   }
 };
 

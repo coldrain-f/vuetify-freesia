@@ -189,9 +189,13 @@ import { unitService } from "@/service/unitService";
 import { useAdminHomeStore } from "@/stores/adminHome";
 import { utils } from "@/common/utils";
 import { storeToRefs } from "pinia";
+import { useCommonStore } from "@/stores/common";
 
 const themeStore = useThemeStore();
 const adminHomeStore = useAdminHomeStore();
+const commonStore = useCommonStore();
+
+const { VDialogMessage } = commonStore;
 
 const { selectedUnit, selectedVocabulary, unitItems, wordPage } =
   storeToRefs(adminHomeStore);
@@ -226,25 +230,32 @@ const handlePageChange = async (pageNumber) => {
 
 // 단어 등록 클릭 이벤트
 const onClickAddButton = async () => {
-  const savedId = await wordService.registerWord(
-    selectedUnit.value.value,
-    wordAddFormData
-  );
+  try {
+    await wordService.registerWord(selectedUnit.value.value, wordAddFormData);
 
-  wordDialogControl.showAddDialog = false;
+    wordDialogControl.showAddDialog = false;
 
-  wordPage.value = await wordService.searchWordResponsePage(
-    selectedUnit.value.value
-  );
-  currentPage.value = 1;
+    wordPage.value = await wordService.searchWordResponsePage(
+      selectedUnit.value.value
+    );
+    currentPage.value = 1;
 
-  Object.assign(wordAddFormData, {
-    studyWord: null,
-    nativeWord: null,
-    partOfSpeech: "adj",
-  });
+    Object.assign(wordAddFormData, {
+      studyWord: null,
+      nativeWord: null,
+      partOfSpeech: "adj",
+    });
 
-  console.log(`savedId = ${savedId}`);
+    setTimeout(() => {
+      VDialogMessage("단어 등록을 완료했습니다.");
+    }, 200);
+  } catch (err) {
+    console.error(err);
+
+    setTimeout(() => {
+      VDialogMessage("단어 등록을 실패했습니다.");
+    }, 200);
+  }
 };
 
 // watch
