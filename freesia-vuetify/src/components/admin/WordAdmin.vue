@@ -187,6 +187,7 @@ import { useThemeStore } from "@/stores/theme";
 import { wordService } from "@/service/wordService";
 import { unitService } from "@/service/unitService";
 import { useAdminHomeStore } from "@/stores/adminHome";
+import { utils } from "@/common/utils";
 import { storeToRefs } from "pinia";
 
 const themeStore = useThemeStore();
@@ -253,6 +254,12 @@ const onClickAddButton = async () => {
 watch(
   () => selectedUnit.value.value,
   async () => {
+    // 선택된 단위(Unit)가 없다면 단어 Pageable 초기화
+    if (!selectedUnit.value.value) {
+      wordPage.value.content = [];
+      wordPage.value.totalPages = 0;
+      return;
+    }
     const selectedUnitId = selectedUnit.value.value;
     Object.assign(
       wordPage.value,
@@ -282,6 +289,17 @@ watch(
         value: u.id,
       };
     });
+
+    // 선택된 단어장에 생성된 단위(Unit)가 없으면 "No data available"
+    if (utils.isEmptyArray(unitPage.content)) {
+      Object.assign(selectedUnit.value, {
+        subject: "No data available",
+        value: null,
+      });
+      return;
+    }
+
+    // 있으면 Default 값으로 맨 첫 번째 단위(Unit)로 설정한다.
     Object.assign(selectedUnit.value, {
       subject: unitItems.value[0].subject,
       value: unitItems.value[0].value,
