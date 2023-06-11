@@ -985,6 +985,11 @@
     "locate-path" "^6.0.0"
     "path-exists" "^4.0.0"
 
+"flag-icons@^6.4.4":
+  "integrity" "sha512-+KXrrrXN2jiETFxisFl+3f83Bq7tj5nuIWnbv9fX59k05lvldEXRCOffybb5hAIjMWt4nmG0E8OfKt7Flm99Eg=="
+  "resolved" "https://registry.npmjs.org/flag-icons/-/flag-icons-6.7.0.tgz"
+  "version" "6.7.0"
+
 "flat-cache@^3.0.4":
   "integrity" "sha512-dm9s5Pw7Jc0GvMYbshN6zchCA9RgQlzzEZX3vylR9IqFfS8XciblUXOKfW6SiuJ0e13eDYZoZV5wdrev7P3Nwg=="
   "resolved" "https://registry.npmjs.org/flat-cache/-/flat-cache-3.0.4.tgz"
@@ -2456,6 +2461,13 @@
     "esquery" "^1.4.0"
     "lodash" "^4.17.21"
     "semver" "^7.3.6"
+
+"vue-flag-icon@^2.1.0":
+  "integrity" "sha512-Iwf5vltvDIh5s5WQ1Tr0eFVtwkXz70S2Ef1f5qgK3mj8t9haEqTrcZtInkePYP3Ir8HCqNaZwUwYipW/moBNVw=="
+  "resolved" "https://registry.npmjs.org/vue-flag-icon/-/vue-flag-icon-2.1.0.tgz"
+  "version" "2.1.0"
+  dependencies:
+    "flag-icons" "^6.4.4"
 
 "vue-router@^4.0.0":
   "integrity" "sha512-DYWYwsG6xNPmLq/FmZn8Ip+qrhFEzA14EI12MsMgVxvHFDYvlr4NXpVF5hrRH1wVcDP8fGi5F4rxuJSl8/r+EQ=="

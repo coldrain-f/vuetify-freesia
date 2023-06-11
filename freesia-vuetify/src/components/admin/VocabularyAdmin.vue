@@ -11,8 +11,27 @@
         </thead>
         <tbody>
           <tr v-for="vocabulary in vocabularyPage.content" :key="vocabulary.id">
-            <td>{{ vocabulary.title }}</td>
-            <td>{{ vocabulary.language }}</td>
+            <td>
+              <v-btn variant="text" color="primary">
+                <v-badge :content="20" floating color="white">
+                  {{ vocabulary.title }}
+                </v-badge>
+              </v-btn>
+            </td>
+            <td>
+              <flag
+                iso="us"
+                class="mr-2"
+                v-show="vocabulary.language === 'English'"
+              />
+              <flag
+                iso="jp"
+                class="mr-2"
+                v-show="vocabulary.language === 'Japanese'"
+              />
+
+              <span>{{ vocabulary.language }}</span>
+            </td>
             <td>
               <v-btn
                 variant="text"
