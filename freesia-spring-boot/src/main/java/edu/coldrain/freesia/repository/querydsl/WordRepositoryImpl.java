@@ -3,6 +3,7 @@ package edu.coldrain.freesia.repository.querydsl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import edu.coldrain.freesia.dto.QWordDTO_Response;
 import edu.coldrain.freesia.dto.WordDTO;
+import edu.coldrain.freesia.entity.Word;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -44,5 +45,13 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total == null ? 0L : total);
+    }
+
+    @Override
+    public List<Word> findAllByParentId(Long unitId) {
+        return query.selectFrom(word)
+                .innerJoin(word.unit, unit)
+                .where(unit.id.eq(unitId))
+                .fetch();
     }
 }

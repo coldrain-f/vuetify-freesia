@@ -2,11 +2,15 @@ package edu.coldrain.freesia.service;
 
 import edu.coldrain.freesia.dto.VocabularyDTO;
 import edu.coldrain.freesia.entity.Language;
+import edu.coldrain.freesia.entity.Unit;
 import edu.coldrain.freesia.entity.Vocabulary;
+import edu.coldrain.freesia.entity.Word;
 import edu.coldrain.freesia.exception.LanguageNotFoundException;
 import edu.coldrain.freesia.exception.VocabularyNotFoundException;
 import edu.coldrain.freesia.repository.LanguageRepository;
+import edu.coldrain.freesia.repository.UnitRepository;
 import edu.coldrain.freesia.repository.VocabularyRepository;
+import edu.coldrain.freesia.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +27,10 @@ public class VocabularyService {
     private final VocabularyRepository vocabularyRepository;
 
     private final LanguageRepository languageRepository;
+
+    private final UnitRepository unitRepository;
+
+    private final WordRepository wordRepository;
 
     public Long registerVocabulary(VocabularyDTO.RegistrationRequest request) {
         final Language language = languageRepository.findByName(request.getLanguage())
@@ -45,7 +53,23 @@ public class VocabularyService {
         vocabulary.changeTitle(request.getTitle());
     }
 
+    @Transactional
     public void removeVocabularyById(Long vocabularyId) {
+        final List<Unit> units = unitRepository.findAllByParentId(vocabularyId);
+        if (units.isEmpty()) {
+            // Delete vocabulary
+            vocabularyRepository.deleteById(vocabularyId);
+            return;
+        }
+        units.forEach((u) -> {
+            final List<Word> words = wordRepository.findAllByParentId(u.getId());
+            // Delete all words
+            wordRepository.deleteAllInBatch(words);
+        });
+        // Delete all units
+        unitRepository.deleteAllInBatch(units);
+
+        // Delete vocabulary
         vocabularyRepository.deleteById(vocabularyId);
     }
 

@@ -3,12 +3,14 @@ package edu.coldrain.freesia.repository.querydsl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import edu.coldrain.freesia.dto.QUnitDTO_Response;
 import edu.coldrain.freesia.dto.UnitDTO;
+import edu.coldrain.freesia.entity.Unit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static edu.coldrain.freesia.entity.QUnit.unit;
 import static edu.coldrain.freesia.entity.QVocabulary.vocabulary;
@@ -54,5 +56,13 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
                 .innerJoin(unit.vocabulary, vocabulary)
                 .where(unit.id.eq(unitId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<Unit> findAllByParentId(Long vocabularyId) {
+        return query.selectFrom(unit)
+                .innerJoin(unit.vocabulary, vocabulary)
+                .where(vocabulary.id.eq(vocabularyId))
+                .fetch();
     }
 }
