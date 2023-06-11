@@ -48,6 +48,7 @@
         class="w-100"
         :color="themeStore.theme"
         @click="() => (unitDialogControl.showAddDialog = true)"
+        :disabled="selectedVocabulary.title === 'No data available'"
       >
         <v-icon start icon="mdi-plus"></v-icon>
         Add item
