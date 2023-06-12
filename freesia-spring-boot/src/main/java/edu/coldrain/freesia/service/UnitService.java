@@ -3,16 +3,19 @@ package edu.coldrain.freesia.service;
 import edu.coldrain.freesia.dto.UnitDTO;
 import edu.coldrain.freesia.entity.Unit;
 import edu.coldrain.freesia.entity.Vocabulary;
+import edu.coldrain.freesia.entity.Word;
 import edu.coldrain.freesia.exception.UnitNotFoundException;
 import edu.coldrain.freesia.exception.VocabularyNotFoundException;
 import edu.coldrain.freesia.repository.UnitRepository;
 import edu.coldrain.freesia.repository.VocabularyRepository;
+import edu.coldrain.freesia.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ public class UnitService {
 
     private final VocabularyRepository vocabularyRepository;
 
+    private final WordRepository wordRepository;
+
     public Page<UnitDTO.Response> searchUnitResponsePage(Long vocabularyId, Pageable pageable) {
         return unitRepository.searchUnitResponsePage(vocabularyId, pageable);
     }
@@ -30,7 +35,13 @@ public class UnitService {
         return unitRepository.searchOneUnitResponse(unitId);
     }
 
+    @Transactional
     public void removeUnit(Long unitId) {
+        // delete all children
+        final List<Word> words = wordRepository.findAllByParentId(unitId);
+        wordRepository.deleteAllInBatch(words);
+
+        // delete parent
         unitRepository.deleteById(unitId);
     }
 

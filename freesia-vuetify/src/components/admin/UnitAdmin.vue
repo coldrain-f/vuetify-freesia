@@ -264,12 +264,10 @@ const onClickAddButton = async () => {
 
 // 단위 삭제 다이얼로그 Open
 const openDeleteDialog = async (unitId) => {
-  const unit = await unitService.searchOneUnitResponse(unitId);
-  Object.assign(unitDeleteFormData, {
-    id: unit.id,
-    subject: unit.subject,
-    wordCount: 0, // Todo: 나중에 추가 구현 필요
-  });
+  Object.assign(
+    unitDeleteFormData,
+    await unitService.searchOneUnitResponse(unitId)
+  );
   unitDialogControl.showDeleteDialog = true;
 };
 
@@ -317,13 +315,10 @@ const onClickDeleteButton = async () => {
 
 // 단위 수정 다이얼로그 Open
 const openUpdateDialog = async (unitId) => {
-  const unit = await unitService.searchOneUnitResponse(unitId);
-
-  Object.assign(unitUpdateFormData, {
-    id: unit.id,
-    subject: unit.subject,
-    wordCount: 0,
-  });
+  Object.assign(
+    unitUpdateFormData,
+    await unitService.searchOneUnitResponse(unitId)
+  );
 
   unitDialogControl.showUpdateDialog = true;
 };
