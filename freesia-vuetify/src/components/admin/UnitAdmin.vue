@@ -10,7 +10,14 @@
         </thead>
         <tbody>
           <tr v-for="unit in unitPage.content" :key="unit.id">
-            <td>{{ unit.subject }}</td>
+            <td>
+              <v-badge :content="unit.wordCount" floating color="white">
+                <a href="#" class="text-info text-decoration-none">
+                  {{ unit.subject }}
+                </a>
+              </v-badge>
+            </td>
+
             <td>
               <v-btn
                 variant="text"

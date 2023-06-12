@@ -1,5 +1,7 @@
 package edu.coldrain.freesia.repository.querydsl;
 
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import edu.coldrain.freesia.dto.QUnitDTO_Response;
 import edu.coldrain.freesia.dto.UnitDTO;
@@ -10,10 +12,10 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 import static edu.coldrain.freesia.entity.QUnit.unit;
 import static edu.coldrain.freesia.entity.QVocabulary.vocabulary;
+import static edu.coldrain.freesia.entity.QWord.word;
 
 public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
 
@@ -27,7 +29,8 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
     public Page<UnitDTO.Response> searchUnitResponsePage(Long vocabularyId, Pageable pageable) {
         final List<UnitDTO.Response> content = query.select(new QUnitDTO_Response(
                         unit.id,
-                        unit.subject
+                        unit.subject,
+                        Expressions.asNumber(0L) // wordCount
                 ))
                 .from(unit)
                 .innerJoin(unit.vocabulary, vocabulary)
@@ -36,6 +39,16 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
                 .offset(pageable.getOffset()) // page number
                 .limit(pageable.getPageSize()) // size
                 .fetch();
+
+        content.forEach((u) -> {
+            final Long wordCount = query.select(word.count())
+                    .from(word)
+                    .innerJoin(word.unit, unit)
+                    .where(unit.id.eq(u.getId()))
+                    .fetchOne();
+
+            u.setWordCount(wordCount);
+        });
 
         final Long total = query.select(unit.count())
                 .from(unit)
@@ -50,7 +63,11 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
     public UnitDTO.Response searchOneUnitResponse(Long unitId) {
         return query.select(new QUnitDTO_Response(
                         unit.id,
-                        unit.subject
+                        unit.subject,
+                        JPAExpressions.select(word.count()) // wordCount
+                                .from(word)
+                                .innerJoin(word.unit, unit)
+                                .where(unit.id.eq(unitId))
                 ))
                 .from(unit)
                 .innerJoin(unit.vocabulary, vocabulary)

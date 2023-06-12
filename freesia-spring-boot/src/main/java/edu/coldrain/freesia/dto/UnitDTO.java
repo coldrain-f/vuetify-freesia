@@ -15,11 +15,14 @@ public class UnitDTO {
 
         private String subject;
 
+        private Long wordCount;
+
         @Builder
         @QueryProjection // new QUnitDTO_Response
-        public Response(Long id, String subject) {
+        public Response(Long id, String subject, Long wordCount) {
             this.id = id;
             this.subject = subject;
+            this.wordCount = wordCount;
         }
     }
 
