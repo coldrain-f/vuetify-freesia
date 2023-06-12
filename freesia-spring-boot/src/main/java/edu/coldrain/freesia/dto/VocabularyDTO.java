@@ -34,15 +34,17 @@ public class VocabularyDTO {
 
         private Long id;
         private String title;
-
         private String language;
+
+        private Long subunit;
 
         @Builder
         @QueryProjection // new QVocabularyDTO_Response
-        public Response(Long id, String title, String language) {
+        public Response(Long id, String title, String language, Long subunit) {
             this.id = id;
             this.title = title;
             this.language = language;
+            this.subunit = subunit;
         }
     }
 }

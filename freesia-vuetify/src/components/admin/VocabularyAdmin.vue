@@ -12,10 +12,10 @@
         <tbody>
           <tr v-for="vocabulary in vocabularyPage.content" :key="vocabulary.id">
             <td>
-              <v-badge :content="20" floating color="white">
-                <a href="#" class="text-primary text-decoration-none">{{
-                  vocabulary.title
-                }}</a>
+              <v-badge :content="vocabulary.subunit" floating color="white">
+                <a href="#" class="text-primary text-decoration-none">
+                  {{ vocabulary.title }}
+                </a>
               </v-badge>
             </td>
             <td>
@@ -68,7 +68,7 @@
         size="default"
         class="w-100"
         :color="themeStore.theme"
-        @click="vocaDialogControl.showAddDialog = true"
+        @click="() => (vocaDialogControl.showAddDialog = true)"
       >
         <v-icon start icon="mdi-plus"></v-icon>
         Add item
@@ -85,7 +85,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="vocaDialogControl.showDeleteDialog = false"
+          @click="() => (vocaDialogControl.showDeleteDialog = false)"
         >
         </v-btn>
       </template>
@@ -113,7 +113,7 @@
         </v-btn>
         <v-btn
           style="width: 48%"
-          @click="vocaDialogControl.showDeleteDialog = false"
+          @click="() => (vocaDialogControl.showDeleteDialog = false)"
         >
           CANCEL
         </v-btn>
@@ -131,7 +131,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="vocaDialogControl.showUpdateDialog = false"
+          @click="() => (vocaDialogControl.showUpdateDialog = false)"
         >
         </v-btn>
       </template>
@@ -159,7 +159,7 @@
         </v-btn>
         <v-btn
           style="width: 48%"
-          @click="vocaDialogControl.showUpdateDialog = false"
+          @click="() => (vocaDialogControl.showUpdateDialog = false)"
         >
           CANCEL
         </v-btn>
@@ -177,7 +177,7 @@
         <v-btn
           variant="text"
           icon="mdi-close"
-          @click="vocaDialogControl.showAddDialog = false"
+          @click="() => (vocaDialogControl.showAddDialog = false)"
         >
         </v-btn>
       </template>
@@ -195,7 +195,7 @@
         </v-btn>
         <v-btn
           style="width: 48%"
-          @click="vocaDialogControl.showAddDialog = false"
+          @click="() => (vocaDialogControl.showAddDialog = false)"
         >
           CANCEL
         </v-btn>

@@ -1,5 +1,7 @@
 package edu.coldrain.freesia.repository.querydsl;
 
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import edu.coldrain.freesia.dto.QVocabularyDTO_Response;
 import edu.coldrain.freesia.dto.VocabularyDTO;
@@ -8,9 +10,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
+import java.beans.Expression;
 import java.util.List;
 
 import static edu.coldrain.freesia.entity.QLanguage.language;
+import static edu.coldrain.freesia.entity.QUnit.unit;
 import static edu.coldrain.freesia.entity.QVocabulary.vocabulary;
 
 public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
@@ -27,7 +31,8 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                         new QVocabularyDTO_Response(
                                 vocabulary.id,
                                 vocabulary.title,
-                                language.name
+                                language.name,
+                                Expressions.asNumber(0L) // subunit
                         )
                 )
                 .from(vocabulary)
@@ -36,6 +41,15 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                 .offset(pageable.getOffset()) // page number
                 .limit(pageable.getPageSize()) // size
                 .fetch();
+
+        content.forEach((v) -> {
+            final Long subunit = query.select(unit.count())
+                    .from(unit)
+                    .innerJoin(unit.vocabulary, vocabulary)
+                    .where(vocabulary.id.eq(v.getId()))
+                    .fetchOne();
+            v.setSubunit(subunit);
+        });
 
         final Long total = query.select(vocabulary.count())
                 .from(vocabulary)
@@ -50,7 +64,11 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                         new QVocabularyDTO_Response(
                                 vocabulary.id,
                                 vocabulary.title,
-                                language.name
+                                language.name,
+                                JPAExpressions.select(unit.count()) // subunit
+                                        .from(unit)
+                                        .innerJoin(unit.vocabulary, vocabulary)
+                                        .where(unit.vocabulary.id.eq(vocabularyId))
                         )
                 )
                 .from(vocabulary)
