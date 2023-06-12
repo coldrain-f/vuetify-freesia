@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
-import java.beans.Expression;
 import java.util.List;
 
 import static edu.coldrain.freesia.entity.QLanguage.language;
@@ -32,7 +31,7 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                                 vocabulary.id,
                                 vocabulary.title,
                                 language.name,
-                                Expressions.asNumber(0L) // subunit
+                                Expressions.asNumber(0L) // unitCount
                         )
                 )
                 .from(vocabulary)
@@ -43,12 +42,13 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                 .fetch();
 
         content.forEach((v) -> {
-            final Long subunit = query.select(unit.count())
+            final Long unitCount = query.select(unit.count())
                     .from(unit)
                     .innerJoin(unit.vocabulary, vocabulary)
                     .where(vocabulary.id.eq(v.getId()))
                     .fetchOne();
-            v.setSubunit(subunit);
+
+            v.setUnitCount(unitCount);
         });
 
         final Long total = query.select(vocabulary.count())
@@ -65,7 +65,7 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                                 vocabulary.id,
                                 vocabulary.title,
                                 language.name,
-                                JPAExpressions.select(unit.count()) // subunit
+                                JPAExpressions.select(unit.count()) // unitCount
                                         .from(unit)
                                         .innerJoin(unit.vocabulary, vocabulary)
                                         .where(unit.vocabulary.id.eq(vocabularyId))

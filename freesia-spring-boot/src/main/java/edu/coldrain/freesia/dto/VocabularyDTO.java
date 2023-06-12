@@ -36,15 +36,15 @@ public class VocabularyDTO {
         private String title;
         private String language;
 
-        private Long subunit;
+        private Long unitCount;
 
         @Builder
         @QueryProjection // new QVocabularyDTO_Response
-        public Response(Long id, String title, String language, Long subunit) {
+        public Response(Long id, String title, String language, Long unitCount) {
             this.id = id;
             this.title = title;
             this.language = language;
-            this.subunit = subunit;
+            this.unitCount = unitCount;
         }
     }
 }

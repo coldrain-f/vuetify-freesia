@@ -12,8 +12,8 @@
         <tbody>
           <tr v-for="vocabulary in vocabularyPage.content" :key="vocabulary.id">
             <td>
-              <v-badge :content="vocabulary.subunit" floating color="white">
-                <a href="#" class="text-primary text-decoration-none">
+              <v-badge :content="vocabulary.unitCount" floating color="white">
+                <a href="#" class="text-info text-decoration-none">
                   {{ vocabulary.title }}
                 </a>
               </v-badge>
@@ -103,8 +103,8 @@
         />
         <v-text-field
           readonly
-          label="Subunit"
-          v-model="vocabularyDeleteFormData.subunit"
+          label="Unit Count"
+          v-model="vocabularyDeleteFormData.unitCount"
         />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
@@ -148,8 +148,8 @@
           readonly
         />
         <v-text-field
-          label="Subunit"
-          v-model="vocabularyUpdateFormData.subunit"
+          label="Unit Count"
+          v-model="vocabularyUpdateFormData.unitCount"
           readonly
         />
       </v-card-text>
@@ -239,7 +239,7 @@ const vocabularyDeleteFormData = reactive({
   id: null,
   title: null,
   language: null,
-  subunit: 0,
+  unitCount: 0,
 });
 
 // 단어장 수정 FormData
@@ -247,7 +247,7 @@ const vocabularyUpdateFormData = reactive({
   id: null,
   title: null,
   language: null,
-  subunit: 0,
+  unitCount: 0,
 });
 
 // Pagination PageChange 이벤트 핸들러
@@ -301,7 +301,7 @@ const onClickDeleteButton = async () => {
       id: null,
       title: null,
       language: null,
-      subunit: 0,
+      unitCount: 0,
     });
 
     // 삭제나 수정한 단어장의 페이지를 조회해 본다.
