@@ -21,4 +21,16 @@ export const wordService = {
     );
     return response.data;
   },
+
+  /** 단어 단일 조회 API */
+  searchOneWordResponse: async (wordId) => {
+    const response = await $axios.get(`/words/${wordId}`);
+    console.log(response.data);
+    return response.data;
+  },
+
+  /** 단어 삭제 API */
+  removeWord: async (wordId) => {
+    await $axios.delete(`/words/${wordId}`);
+  },
 };

@@ -54,4 +54,17 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
                 .where(unit.id.eq(unitId))
                 .fetch();
     }
+
+    @Override
+    public WordDTO.Response searchOneWordResponse(Long wordId) {
+        return query.select(new QWordDTO_Response(
+                        word.id
+                        , word.studyWord
+                        , word.nativeWord
+                        , word.partOfSpeech
+                ))
+                .from(word)
+                .where(word.id.eq(wordId))
+                .fetchOne();
+    }
 }

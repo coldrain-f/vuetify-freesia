@@ -11,5 +11,7 @@ public interface WordRepositoryQuerydsl {
 
     Page<WordDTO.Response> searchWordResponsePage(Long unitId, Pageable pageable);
 
+    WordDTO.Response searchOneWordResponse(Long wordId);
+
     List<Word> findAllByParentId(Long unitId);
 }

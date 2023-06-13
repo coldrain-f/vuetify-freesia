@@ -26,6 +26,23 @@ public class WordDTO {
     }
 
     @Data
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ModifyRequest {
+
+        private String studyWord;
+
+        private String nativeWord;
+
+        private String partOfSpeech;
+
+        public ModifyRequest(String studyWord, String nativeWord, String partOfSpeech) {
+            this.studyWord = studyWord;
+            this.nativeWord = nativeWord;
+            this.partOfSpeech = partOfSpeech;
+        }
+    }
+
+    @Data
     public static class Response {
 
         private Long id;

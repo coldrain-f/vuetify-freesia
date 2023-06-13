@@ -23,4 +23,19 @@ public class WordRestController {
     public Page<WordDTO.Response> searchWordResponsePage(@PathVariable Long unitId, @PageableDefault(size = 3) Pageable pageable) {
         return wordService.searchWordResponsePage(unitId, pageable);
     }
+
+    @GetMapping("/words/{wordId}")
+    public WordDTO.Response searchOneWordResponse(@PathVariable Long wordId) {
+        return wordService.searchOneWordResponse(wordId);
+    }
+
+    @DeleteMapping("/words/{wordId}")
+    public void removeWord(@PathVariable Long wordId) {
+        wordService.removeWord(wordId);
+    }
+
+    @PatchMapping("/words/{wordId}")
+    public void modifyWord(@PathVariable Long wordId, @RequestBody WordDTO.ModifyRequest request) {
+        wordService.modifyWord(wordId, request);
+    }
 }

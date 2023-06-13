@@ -20,7 +20,7 @@
                 variant="text"
                 size="small"
                 icon="mdi-trash-can-outline"
-                @click="() => (wordDialogControl.showDeleteDialog = true)"
+                @click="() => openWordDeleteDialog(word.id)"
               />
               <v-btn
                 variant="text"
@@ -75,17 +75,27 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
-        <v-text-field readonly label="Study Word" model-value="spice" />
-        <v-text-field readonly label="Native Word" model-value="양념" />
+        <v-text-field
+          readonly
+          label="Study Word"
+          v-model="wordDeleteFormData.studyWord"
+        />
+        <v-text-field
+          readonly
+          label="Native Word"
+          v-model="wordDeleteFormData.nativeWord"
+        />
         <v-select
           :items="['adj', 'v', 'n']"
-          model-value="n"
+          v-model="wordDeleteFormData.partOfSpeech"
           label="Part of speech"
           readonly
         />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="error" style="width: 48%"> DELETE </v-btn>
+        <v-btn color="error" style="width: 48%" @click="onClickWordDelete">
+          DELETE
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="() => (wordDialogControl.showDeleteDialog = false)"
@@ -217,6 +227,20 @@ const wordAddFormData = reactive({
   partOfSpeech: "adj",
 });
 
+// 단어 수정 FormData
+const wordUpdateFormData = reactive({
+  studyWord: null,
+  nativeWord: null,
+  partOfSpeech: "adj",
+});
+
+// 단어 삭제 FormData
+const wordDeleteFormData = reactive({
+  studyWord: null,
+  nativeWord: null,
+  partOfSpeech: "adj",
+});
+
 // Pagination PageChange 이벤트 핸들러
 const handlePageChange = async (pageNumber) => {
   wordPage.value = await wordService.searchWordResponsePage(
@@ -255,6 +279,59 @@ const onClickAddButton = async () => {
     setTimeout(() => {
       VDialogMessage("단어 등록을 실패했습니다.");
     }, 200);
+  }
+};
+
+// 단어 삭제 다이얼로그 오픈
+const openWordDeleteDialog = async (wordId) => {
+  Object.assign(
+    wordDeleteFormData,
+    await wordService.searchOneWordResponse(wordId)
+  );
+
+  wordDialogControl.showDeleteDialog = true;
+};
+
+// 단어 삭제 클릭 이벤트
+const onClickWordDelete = async () => {
+  try {
+    await wordService.removeWord(wordDeleteFormData.id);
+
+    Object.assign(wordDeleteFormData, {
+      studyWord: null,
+      nativeWord: null,
+      partOfSpeech: "adj",
+    });
+
+    wordDialogControl.showDeleteDialog = false;
+
+    // 삭제나 수정한 단어장의 페이지를 조회해 본다.
+    wordPage.value = await wordService.searchWordResponsePage(
+      selectedUnit.value.value,
+      {
+        page: currentPage.value - 1,
+        size: 3,
+      }
+    );
+
+    // 조회해본 페이지가 데이터가 없으면
+    if (wordPage.value.content.length <= 0) {
+      // 앞 페이지로 이동하고, 조회해본 페이지가 1페이지 라면 앞 페이지가 없으므로 1페이지로 설정한다.
+      currentPage.value = currentPage.value === 1 ? 1 : currentPage.value - 1;
+    }
+
+    // 조회해본 페이지가 데이터가 있으면 그대로 조회
+    await handlePageChange(currentPage.value);
+
+    setTimeout(() => {
+      VDialogMessage("단어 삭제를 완료했습니다.");
+    });
+  } catch (err) {
+    console.error(err);
+
+    setTimeout(() => {
+      VDialogMessage("단어 삭제를 실패했습니다.");
+    });
   }
 };
 

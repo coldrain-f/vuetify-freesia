@@ -4,12 +4,14 @@ import edu.coldrain.freesia.dto.WordDTO;
 import edu.coldrain.freesia.entity.Unit;
 import edu.coldrain.freesia.entity.Word;
 import edu.coldrain.freesia.exception.UnitNotFoundException;
+import edu.coldrain.freesia.exception.WordNotFoundException;
 import edu.coldrain.freesia.repository.UnitRepository;
 import edu.coldrain.freesia.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +38,23 @@ public class WordService {
 
     public Page<WordDTO.Response> searchWordResponsePage(Long unitId, Pageable pageable) {
         return wordRepository.searchWordResponsePage(unitId, pageable);
+    }
+
+    public void removeWord(Long wordId) {
+        wordRepository.deleteById(wordId);
+    }
+
+    @Transactional
+    public void modifyWord(Long wordId, WordDTO.ModifyRequest request) {
+        final Word word = wordRepository.findById(wordId)
+                .orElseThrow(() -> new WordNotFoundException("word not found exception"));
+
+        word.changeStudyWord(request.getStudyWord());
+        word.changeNativeWord(request.getNativeWord());
+        word.changePartOfSpeech(request.getPartOfSpeech());
+    }
+
+    public WordDTO.Response searchOneWordResponse(Long wordId) {
+        return wordRepository.searchOneWordResponse(wordId);
     }
 }
