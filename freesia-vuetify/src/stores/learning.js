@@ -18,7 +18,7 @@ export const useLearningStore = defineStore("learning", () => {
   const learningLanguage = ref("English");
 
   // 선택한 학습 Vocabulary
-  const learningVocabularyTitle = ref("");
+  const learningVocabulary = ref({ title: null, value: null });
 
   // 선택한 학습 Unit
   const learningUnitName = ref("");
@@ -29,7 +29,7 @@ export const useLearningStore = defineStore("learning", () => {
     useLearning,
     learningStyle,
     learningLanguage,
-    learningVocabularyTitle,
+    learningVocabulary,
     learningUnitName,
   };
 });

@@ -69,33 +69,7 @@
   </v-card>
 
   <!-- TTS(Text-to-Speech) 설정 다이얼로그 -->
-  <v-dialog v-model="textToSpeech.showTextToSpeechDialog" width="500">
-    <v-card>
-      <template #title>
-        <span class="noto-sans text-primary"> ※ TTS(Text-To-Speech) </span>
-      </template>
-      <template #append>
-        <v-btn
-          variant="text"
-          icon="mdi-close"
-          @click="textToSpeech.showTextToSpeechDialog = false"
-        >
-        </v-btn>
-      </template>
-      <v-card-text class="mt-5"> Under development. </v-card-text>
-      <v-card-actions class="d-flex justify-center">
-        <v-btn color="primary" style="width: 48%" @click="onClickThemeApply()">
-          APPLY
-        </v-btn>
-        <v-btn
-          style="width: 48%"
-          @click="textToSpeech.showTextToSpeechDialog = false"
-        >
-          CANCEL
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <TextToSpeech />
 
   <!-- Theme 설정 다이얼로그 -->
   <v-dialog v-model="showThemeDialog" width="500">
@@ -178,6 +152,7 @@
 import LearningSettings from "@/components/learning/LearningSettings.vue";
 import LearningStart from "@/components/learning/LearningStart.vue";
 import AdminHome from "@/components/admin/AdminHome.vue";
+import TextToSpeech from "@/components/options/TestToSpeech.vue";
 import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";

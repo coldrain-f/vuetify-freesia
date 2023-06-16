@@ -86,12 +86,16 @@
         class="mb-2"
       /> -->
       <v-select
+        class="mb-2"
         label="Voca"
-        v-model="learningStore.learningVocabularyTitle"
-        :items="vocabularyOptions"
         variant="underlined"
         density="compact"
-        class="mb-2"
+        v-model="learningVocabulary"
+        :items="vocabularyList"
+        item-title="title"
+        item-value="value"
+        return-object
+        persistent-hint
       />
       <v-select
         label="Unit"
@@ -108,7 +112,7 @@
         size="default"
         :color="themeStore.theme"
         variant="flat"
-        @click="learningStore.isLearningStarted = true"
+        @click="() => (learningStore.isLearningStarted = true)"
       >
         <v-icon start icon="mdi-school-outline"></v-icon>
         START
@@ -123,24 +127,47 @@ import { utils } from "@/common/utils";
 import { ref, onMounted, watch } from "vue";
 import { useLearningStore } from "@/stores/learning";
 import { useThemeStore } from "@/stores/theme";
+import { vocabularyService } from "@/service/vocabularyService";
+import { unitService } from "@/service/unitService";
+import { useCommonStore } from "@/stores/common";
+import { storeToRefs } from "pinia";
 
 // Pinia stores
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
 const themeStore = useThemeStore();
+const commonStore = useCommonStore();
 
-const vocabularyOptions = ref([]);
+const { VDialogMessage } = commonStore;
+
 const unitOptions = ref([]);
 
 const vocabularyList = ref([]);
+const { learningVocabulary } = storeToRefs(learningStore);
+
 const units = ref([]);
 
-// DB에서 조회해오도록 변경 작업 필요.
-const fetchVocabularyList = () => {
-  return [
-    { id: 1, title: "단어가 읽기다 기본편", lang: "en" },
-    { id: 2, title: "단어가 읽기다 실력편", lang: "ja" },
-  ];
+const fetchVocabularyList = async () => {
+  let page = null;
+  try {
+    page = await vocabularyService.searchVocabularyResponsePage({
+      page: 0,
+      size: 2000,
+    });
+  } catch (err) {
+    console.error(err);
+
+    setTimeout(() => {
+      VDialogMessage("단어장 조회 실패!");
+    }, 200);
+  }
+
+  Object.assign(learningVocabulary.value, {
+    title: page.content[0].title,
+    value: page.content[0].id,
+  });
+
+  return page.content;
 };
 
 // DB에서 조회해오도록 변경 작업 필요.
@@ -164,41 +191,10 @@ watch(
   }
 );
 
-const loadVocabularyOptions = () => {
-  vocabularyList.value.forEach((vocabulary) => {
-    vocabularyOptions.value.push(vocabulary.title);
-  });
-};
-
-const loadUnitOptions = () => {
-  units.value.forEach((unit) => {
-    unitOptions.value.push(unit.name);
-  });
-};
-
-const setDefaultSelectedVocabularyOption = () => {
-  learningStore.learningVocabularyTitle = utils.isEmptyArray(
-    vocabularyList.value
-  )
-    ? "No data available"
-    : vocabularyList.value[0].title;
-};
-
-const setDefaultSelectedUnitOption = () => {
-  learningStore.learningUnitName = utils.isEmptyArray(units.value)
-    ? "No data available"
-    : units.value[0].name;
-};
-
-const initializeLearningSettings = () => {
+const initializeLearningSettings = async () => {
   try {
-    vocabularyList.value = fetchVocabularyList();
+    vocabularyList.value = await fetchVocabularyList();
     units.value = fetchUnits();
-
-    loadVocabularyOptions();
-    loadUnitOptions();
-    setDefaultSelectedVocabularyOption();
-    setDefaultSelectedUnitOption();
   } catch (err) {
     console.error("Error occurred during initializing learning settings:", err);
   }
