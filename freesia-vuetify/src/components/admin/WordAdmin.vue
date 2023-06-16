@@ -26,7 +26,7 @@
                 variant="text"
                 size="small"
                 icon="mdi-pencil-outline"
-                @click="() => (wordDialogControl.showUpdateDialog = true)"
+                @click="() => openWordUpdateDialog(word.id)"
               />
             </td>
           </tr>
@@ -123,23 +123,25 @@
       <v-card-text class="mt-5">
         <v-text-field
           label="Study Word"
-          model-value="spice"
+          v-model="wordUpdateFormData.studyWord"
           append-inner-icon="mdi-file-document-edit-outline"
         />
         <v-text-field
           label="Native Word"
-          model-value="양념"
+          v-model="wordUpdateFormData.nativeWord"
           append-inner-icon="mdi-file-document-edit-outline"
         />
         <v-select
           append-inner-icon="mdi-file-document-edit-outline"
-          model-value="n"
+          v-model="wordUpdateFormData.partOfSpeech"
           label="Part of speech"
           :items="['adj', 'v', 'n']"
         />
       </v-card-text>
       <v-card-actions class="d-flex justify-center">
-        <v-btn color="info" style="width: 48%"> UPDATE </v-btn>
+        <v-btn color="info" style="width: 48%" @click="onClickUpdateButton">
+          UPDATE
+        </v-btn>
         <v-btn
           style="width: 48%"
           @click="() => (wordDialogControl.showUpdateDialog = false)"
@@ -332,6 +334,45 @@ const onClickWordDelete = async () => {
     setTimeout(() => {
       VDialogMessage("단어 삭제를 실패했습니다.");
     });
+  }
+};
+
+// 단어 수정 다이얼로그 오픈
+const openWordUpdateDialog = async (wordId) => {
+  Object.assign(
+    wordUpdateFormData,
+    await wordService.searchOneWordResponse(wordId)
+  );
+
+  wordDialogControl.showUpdateDialog = true;
+};
+
+// 단위 수정 버튼 클릭 이벤트
+const onClickUpdateButton = async () => {
+  try {
+    await wordService.modifyWord(wordUpdateFormData.id, wordUpdateFormData);
+
+    Object.assign(wordUpdateFormData, {
+      id: null,
+      subject: null,
+      wordCount: 0,
+    });
+
+    wordDialogControl.showUpdateDialog = false;
+
+    wordPage.value = await wordService.searchWordResponsePage(
+      selectedUnit.value.value
+    );
+
+    setTimeout(() => {
+      VDialogMessage("단어 수정을 완료했습니다.");
+    }, 200);
+  } catch (err) {
+    console.error(err);
+
+    setTimeout(() => {
+      VDialogMessage("단어 수정을 실패했습니다.");
+    }, 200);
   }
 };
 

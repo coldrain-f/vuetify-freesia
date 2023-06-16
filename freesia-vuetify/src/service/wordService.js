@@ -13,6 +13,17 @@ export const wordService = {
     return response.data;
   },
 
+  /** 단어 수정 API */
+  modifyWord: async (wordId, formData) => {
+    const { studyWord, nativeWord, partOfSpeech } = formData;
+
+    await $axios.patch(`/words/${wordId}`, {
+      studyWord,
+      nativeWord,
+      partOfSpeech,
+    });
+  },
+
   /** 단어 페이지 조회 API */
   searchWordResponsePage: async (unitId, pageable = { page: 0, size: 3 }) => {
     const { page, size } = pageable;
