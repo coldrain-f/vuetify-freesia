@@ -90,10 +90,10 @@
         label="Voca"
         variant="underlined"
         density="compact"
-        v-model="learningVocabulary"
-        :items="vocabularyList"
+        v-model="selectedLearningVocabulary"
+        :items="vocabularyPage.content"
         item-title="title"
-        item-value="value"
+        item-value="id"
         return-object
         persistent-hint
       />
@@ -130,6 +130,7 @@ import { useThemeStore } from "@/stores/theme";
 import { vocabularyService } from "@/service/vocabularyService";
 import { unitService } from "@/service/unitService";
 import { useCommonStore } from "@/stores/common";
+import { useAdminHomeStore } from "@/stores/adminHome";
 import { storeToRefs } from "pinia";
 
 // Pinia stores
@@ -137,23 +138,25 @@ const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
 const themeStore = useThemeStore();
 const commonStore = useCommonStore();
+const adminHomeStore = useAdminHomeStore();
 
 const { VDialogMessage } = commonStore;
 
 const unitOptions = ref([]);
 
-const vocabularyList = ref([]);
-const { learningVocabulary } = storeToRefs(learningStore);
+const { selectedLearningVocabulary } = storeToRefs(learningStore);
+const { vocabularyPage } = storeToRefs(adminHomeStore);
 
 const units = ref([]);
 
 const fetchVocabularyList = async () => {
-  let page = null;
   try {
-    page = await vocabularyService.searchVocabularyResponsePage({
-      page: 0,
-      size: 2000,
-    });
+    vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage(
+      {
+        page: 0,
+        size: 2000,
+      }
+    );
   } catch (err) {
     console.error(err);
 
@@ -162,12 +165,10 @@ const fetchVocabularyList = async () => {
     }, 200);
   }
 
-  Object.assign(learningVocabulary.value, {
-    title: page.content[0].title,
-    value: page.content[0].id,
+  Object.assign(selectedLearningVocabulary.value, {
+    title: vocabularyPage.value.content[0].title,
+    id: vocabularyPage.value.content[0].id,
   });
-
-  return page.content;
 };
 
 // DB에서 조회해오도록 변경 작업 필요.
@@ -193,7 +194,7 @@ watch(
 
 const initializeLearningSettings = async () => {
   try {
-    vocabularyList.value = await fetchVocabularyList();
+    await fetchVocabularyList();
     units.value = fetchUnits();
   } catch (err) {
     console.error("Error occurred during initializing learning settings:", err);

@@ -209,14 +209,22 @@ import { onMounted, reactive, ref } from "vue";
 import { useThemeStore } from "@/stores/theme";
 import { useCommonStore } from "@/stores/common";
 import { vocabularyService } from "@/service/vocabularyService";
+import { useAdminHomeStore } from "@/stores/adminHome";
+import { useLearningStore } from "@/stores/learning";
+import { storeToRefs } from "pinia";
 
 const themeStore = useThemeStore();
 const commonStore = useCommonStore();
+const adminHomeStore = useAdminHomeStore();
+const learningStore = useLearningStore();
 
 const { VDialogMessage } = commonStore;
 
+// LEARN 탭에서 선택될 학습 단어장
+const { selectedLearningVocabulary } = storeToRefs(learningStore);
+
 // 단어장 Pageable
-const vocabularyPage = ref({});
+const { vocabularyPage } = storeToRefs(adminHomeStore);
 
 // Pagination Page
 const currentPage = ref(1);
@@ -258,6 +266,22 @@ const handlePageChange = async (pageNumber) => {
   });
 };
 
+// LEARN 탭에서 선택될 학습 단어장 설정
+const setSelectedLearningVocabulary = (content) => {
+  if (!content.length) {
+    Object.assign(selectedLearningVocabulary.value, {
+      title: "no data available",
+      id: null,
+    });
+    return;
+  }
+
+  Object.assign(selectedLearningVocabulary.value, {
+    title: content[0].title,
+    id: content[0].id,
+  });
+};
+
 // 단어장 등록 버튼 클릭 이벤트
 const onClickAddButton = async () => {
   try {
@@ -265,6 +289,9 @@ const onClickAddButton = async () => {
 
     vocabularyPage.value =
       await vocabularyService.searchVocabularyResponsePage();
+
+    // LEARN 탭에서 선택될 학습 단어장 설정
+    setSelectedLearningVocabulary(vocabularyPage.value.content);
 
     Object.assign(vocabularyAddFormData, {
       title: null,
@@ -321,6 +348,9 @@ const onClickDeleteButton = async () => {
     // 조회해본 페이지가 데이터가 있으면 그대로 조회
     await handlePageChange(currentPage.value);
 
+    // LEARN 탭에서 선택될 학습 단어장 설정
+    setSelectedLearningVocabulary(vocabularyPage.value.content);
+
     setTimeout(() => {
       VDialogMessage("단어장 삭제를 완료했습니다.");
     }, 200);
@@ -346,6 +376,13 @@ const onClickUpdateButton = async () => {
     vocaDialogControl.showUpdateDialog = false;
 
     await handlePageChange(currentPage.value);
+
+    // LEARN 탭에서 선택될 학습 단어장 설정
+    const page = await vocabularyService.searchVocabularyResponsePage({
+      page: 0,
+      size: 1,
+    });
+    setSelectedLearningVocabulary(page.content);
 
     setTimeout(() => {
       VDialogMessage("단어장 수정을 완료했습니다.");

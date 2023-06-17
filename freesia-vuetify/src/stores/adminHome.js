@@ -9,6 +9,9 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
 
   const selectedCategory = ref("Vocabulary");
 
+  // 단어장(Vocabulary) Pageable
+  const vocabularyPage = ref({});
+
   // 단위(Unit) Pageable
   const unitPage = ref({});
 
@@ -103,6 +106,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     selectedVocabulary,
     unitItems,
     selectedUnit,
+    vocabularyPage,
     unitPage,
     wordPage,
     initialize,
