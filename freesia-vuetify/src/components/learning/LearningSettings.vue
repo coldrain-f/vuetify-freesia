@@ -155,7 +155,7 @@ const {
 
 const { vocabularyPage, unitPage } = storeToRefs(adminHomeStore);
 
-const fetchVocabularyList = async () => {
+const loadVocabularyList = async () => {
   try {
     vocabularyPage.value = await vocabularyService.searchVocabularyResponsePage(
       {
@@ -181,7 +181,7 @@ const fetchVocabularyList = async () => {
   });
 };
 
-const fetchUnits = async () => {
+const loadUnits = async () => {
   try {
     unitPage.value = await unitService.searchUnitResponsePage(
       selectedLearningVocabulary.value.id,
@@ -261,8 +261,8 @@ const changeSelectedLearningVocabulary = async () => {
 
 onMounted(async () => {
   try {
-    await fetchVocabularyList();
-    await fetchUnits();
+    await loadVocabularyList();
+    await loadUnits();
   } catch (err) {
     console.error("Error occurred during initializing learning settings:", err);
   }

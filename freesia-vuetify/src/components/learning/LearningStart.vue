@@ -208,8 +208,12 @@ const themeStore = useThemeStore();
 // the action can just be destructured
 const { speakText } = synthStore;
 
-const { isLearningStarted, showLearningTerminationDialog } =
-  storeToRefs(learningStore);
+const {
+  isLearningStarted,
+  showLearningTerminationDialog,
+  selectedLearningVocabulary,
+  selectedLearningUnit,
+} = storeToRefs(learningStore);
 
 const inputMeaningField = ref(null);
 
@@ -263,8 +267,8 @@ const words = ref([
 
 /** 학습 브레드크럼  */
 const breadcrumbsItems = [
-  learningStore.learningVocabularyTitle,
-  learningStore.learningUnitName,
+  selectedLearningVocabulary.value.title,
+  selectedLearningUnit.value.subject,
 ];
 
 /** 틀린 단어 목록 */
