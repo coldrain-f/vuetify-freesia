@@ -221,7 +221,8 @@ const learningStore = useLearningStore();
 const { VDialogMessage } = commonStore;
 
 // LEARN 탭에서 선택될 학습 단어장
-const { selectedLearningVocabulary } = storeToRefs(learningStore);
+const { selectedLearningVocabulary, vocabularyOptions } =
+  storeToRefs(learningStore);
 
 // 단어장 Pageable
 const { vocabularyPage } = storeToRefs(adminHomeStore);
@@ -270,7 +271,7 @@ const handlePageChange = async (pageNumber) => {
 const setSelectedLearningVocabulary = (content) => {
   if (!content.length) {
     Object.assign(selectedLearningVocabulary.value, {
-      title: "no data available",
+      title: "No data available",
       id: null,
     });
     return;
@@ -279,6 +280,13 @@ const setSelectedLearningVocabulary = (content) => {
   Object.assign(selectedLearningVocabulary.value, {
     title: content[0].title,
     id: content[0].id,
+  });
+};
+
+// LEARN 탭에서 렌더링 될 학습 단어장 설정
+const setLearningVocabularyOptions = (content) => {
+  vocabularyOptions.value = content.map((v) => {
+    return { title: v.title, id: v.id };
   });
 };
 
@@ -292,6 +300,7 @@ const onClickAddButton = async () => {
 
     // LEARN 탭에서 선택될 학습 단어장 설정
     setSelectedLearningVocabulary(vocabularyPage.value.content);
+    setLearningVocabularyOptions(vocabularyPage.value.content);
 
     Object.assign(vocabularyAddFormData, {
       title: null,
@@ -350,6 +359,7 @@ const onClickDeleteButton = async () => {
 
     // LEARN 탭에서 선택될 학습 단어장 설정
     setSelectedLearningVocabulary(vocabularyPage.value.content);
+    setLearningVocabularyOptions(vocabularyPage.value.content);
 
     setTimeout(() => {
       VDialogMessage("단어장 삭제를 완료했습니다.");
@@ -380,9 +390,10 @@ const onClickUpdateButton = async () => {
     // LEARN 탭에서 선택될 학습 단어장 설정
     const page = await vocabularyService.searchVocabularyResponsePage({
       page: 0,
-      size: 1,
+      size: 2000,
     });
     setSelectedLearningVocabulary(page.content);
+    setLearningVocabularyOptions(page.content);
 
     setTimeout(() => {
       VDialogMessage("단어장 수정을 완료했습니다.");

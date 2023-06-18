@@ -91,19 +91,24 @@
         variant="underlined"
         density="compact"
         v-model="selectedLearningVocabulary"
-        :items="vocabularyPage.content"
+        :items="vocabularyOptions"
         item-title="title"
         item-value="id"
         return-object
         persistent-hint
+        @update:model-value="changeSelectedLearningVocabulary"
       />
       <v-select
+        class="mb-2"
         label="Unit"
-        v-model="learningStore.learningUnitName"
-        :items="unitOptions"
         variant="underlined"
         density="compact"
-        class="mb-2"
+        v-model="selectedLearningUnit"
+        :items="unitOptions"
+        item-title="subject"
+        item-value="id"
+        return-object
+        persistent-hint
       />
     </v-card-text>
     <v-card-actions>
@@ -123,8 +128,7 @@
 
 <script setup>
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
-import { utils } from "@/common/utils";
-import { ref, onMounted, watch } from "vue";
+import { onMounted, watch } from "vue";
 import { useLearningStore } from "@/stores/learning";
 import { useThemeStore } from "@/stores/theme";
 import { vocabularyService } from "@/service/vocabularyService";
@@ -142,12 +146,14 @@ const adminHomeStore = useAdminHomeStore();
 
 const { VDialogMessage } = commonStore;
 
-const unitOptions = ref([]);
+const {
+  selectedLearningVocabulary,
+  selectedLearningUnit,
+  vocabularyOptions,
+  unitOptions,
+} = storeToRefs(learningStore);
 
-const { selectedLearningVocabulary } = storeToRefs(learningStore);
-const { vocabularyPage } = storeToRefs(adminHomeStore);
-
-const units = ref([]);
+const { vocabularyPage, unitPage } = storeToRefs(adminHomeStore);
 
 const fetchVocabularyList = async () => {
   try {
@@ -157,6 +163,10 @@ const fetchVocabularyList = async () => {
         size: 2000,
       }
     );
+
+    vocabularyOptions.value = vocabularyPage.value.content.map((v) => {
+      return { title: v.title, id: v.id };
+    });
   } catch (err) {
     console.error(err);
 
@@ -171,16 +181,46 @@ const fetchVocabularyList = async () => {
   });
 };
 
-// DB에서 조회해오도록 변경 작업 필요.
-const fetchUnits = () => {
-  return [
-    { id: 1, name: "Unit 01 - 일상생활" },
-    { id: 2, name: "Unit 02 - 학교" },
-  ];
+const fetchUnits = async () => {
+  try {
+    unitPage.value = await unitService.searchUnitResponsePage(
+      selectedLearningVocabulary.value.id,
+      {
+        page: 0,
+        size: 2000,
+      }
+    );
+
+    // Unit이 없으면 "No data available"
+    if (!unitPage.value.content.length) {
+      Object.assign(selectedLearningUnit.value, {
+        subject: "No data available",
+        id: null,
+      });
+      return;
+    }
+
+    Object.assign(selectedLearningUnit.value, {
+      subject: unitPage.value.content[0].subject,
+      id: unitPage.value.content[0].id,
+    });
+
+    unitOptions.value = await unitPage.value.content.map((u) => {
+      return { subject: u.subject, id: u.id };
+    });
+  } catch (err) {
+    console.error(err);
+
+    setTimeout(() => {
+      VDialogMessage("단위 조회 실패!");
+    });
+  }
 };
 
-// Language 를 감시하고 있다가 해당하는 언어의 TTS Voice를 조회 후
-// TTS 음성을 조회한 맨 첫 번째 Voice로 설정한다.
+/**
+ * Language 를 감시하고 있다가 해당하는 언어의 TTS Voice를 조회 후
+ * TTS 음성을 조회한 맨 첫 번째 Voice로 설정한다.
+ */
 watch(
   () => learningStore.learningLanguage,
   () => {
@@ -192,17 +232,40 @@ watch(
   }
 );
 
-const initializeLearningSettings = async () => {
+/**
+ * Voca Change Event Handler
+ */
+const changeSelectedLearningVocabulary = async () => {
+  unitPage.value = await unitService.searchUnitResponsePage(
+    selectedLearningVocabulary.value.id,
+    { page: 0, size: 2000 }
+  );
+
+  if (!unitPage.value.content.length) {
+    Object.assign(selectedLearningUnit.value, {
+      subject: "No data available",
+      id: null,
+    });
+    return;
+  }
+
+  Object.assign(selectedLearningUnit.value, {
+    subject: unitPage.value.content[0].subject,
+    id: unitPage.value.content[0].id,
+  });
+
+  unitOptions.value = await unitPage.value.content.map((u) => {
+    return { subject: u.subject, id: u.id };
+  });
+};
+
+onMounted(async () => {
   try {
     await fetchVocabularyList();
-    units.value = fetchUnits();
+    await fetchUnits();
   } catch (err) {
     console.error("Error occurred during initializing learning settings:", err);
   }
-};
-
-onMounted(() => {
-  initializeLearningSettings();
 });
 </script>
 

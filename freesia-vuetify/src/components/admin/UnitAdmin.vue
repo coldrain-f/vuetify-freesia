@@ -181,12 +181,16 @@ import { unitService } from "@/service/unitService";
 import { useAdminHomeStore } from "@/stores/adminHome";
 import { useCommonStore } from "@/stores/common";
 import { storeToRefs } from "pinia";
+import { useLearningStore } from "@/stores/learning";
 
 const themeStore = useThemeStore();
 const adminHomeStore = useAdminHomeStore();
 const commonStore = useCommonStore();
+const learningStore = useLearningStore();
 
 const { VDialogMessage } = commonStore;
+
+const { unitOptions, selectedLearningUnit } = storeToRefs(learningStore);
 
 const { selectedVocabulary, unitPage } = storeToRefs(adminHomeStore);
 
@@ -219,6 +223,29 @@ const unitUpdateFormData = reactive({
   wordCount: 0,
 });
 
+// LEARN 탭에서 선택될 학습 단위 설정
+const setSelectedLearningUnit = (content) => {
+  if (!content.length) {
+    Object.assign(selectedLearningUnit.value, {
+      subject: "No data available",
+      id: null,
+    });
+    return;
+  }
+
+  Object.assign(selectedLearningUnit.value, {
+    subject: content[0].subject,
+    id: content[0].id,
+  });
+};
+
+// LEARN 탭에서 렌더링 될 학습 단위 설정
+const setLearningUnitOptions = (content) => {
+  unitOptions.value = content.map((u) => {
+    return { subject: u.subject, id: u.id };
+  });
+};
+
 // Pagination PageChange 이벤트 핸들러
 const handlePageChange = async (pageNumber) => {
   unitPage.value = await unitService.searchUnitResponsePage(
@@ -249,6 +276,10 @@ const onClickAddButton = async () => {
 
     unitDialogControl.showAddDialog = false;
     currentPage.value = 1;
+
+    // LEARN 탭에서 선택될 학습 단어장 설정
+    setSelectedLearningUnit(unitPage.value.content);
+    setLearningUnitOptions(unitPage.value.content);
 
     setTimeout(() => {
       VDialogMessage("단위 등록을 완료했습니다.");
@@ -302,6 +333,10 @@ const onClickDeleteButton = async () => {
     // 조회해본 페이지가 데이터가 있으면 그대로 조회
     await handlePageChange(currentPage.value);
 
+    // LEARN 탭에서 선택될 학습 단어장 설정
+    setSelectedLearningUnit(unitPage.value.content);
+    setLearningUnitOptions(unitPage.value.content);
+
     setTimeout(() => {
       VDialogMessage("단위 삭제를 완료했습니다.");
     }, 200);
@@ -339,6 +374,10 @@ const onClickUpdateButton = async () => {
     unitPage.value = await unitService.searchUnitResponsePage(
       selectedVocabulary.value.value
     );
+
+    // LEARN 탭에서 선택될 학습 단어장 설정
+    setSelectedLearningUnit(unitPage.value.content);
+    setLearningUnitOptions(unitPage.value.content);
 
     setTimeout(() => {
       VDialogMessage("단위 수정을 완료했습니다.");

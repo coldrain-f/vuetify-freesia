@@ -21,7 +21,13 @@ export const useLearningStore = defineStore("learning", () => {
   const selectedLearningVocabulary = ref({ title: null, id: null });
 
   // 선택한 학습 Unit
-  const learningUnitName = ref("");
+  const selectedLearningUnit = ref({ subject: null, id: null });
+
+  // 단어장 Options
+  const vocabularyOptions = ref([]);
+
+  // 단위 Options
+  const unitOptions = ref([]);
 
   return {
     isLearningStarted,
@@ -30,6 +36,8 @@ export const useLearningStore = defineStore("learning", () => {
     learningStyle,
     learningLanguage,
     selectedLearningVocabulary,
-    learningUnitName,
+    selectedLearningUnit,
+    vocabularyOptions,
+    unitOptions,
   };
 });
