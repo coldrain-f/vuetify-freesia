@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static edu.coldrain.freesia.entity.QUnit.unit;
 import static edu.coldrain.freesia.entity.QWord.word;
@@ -18,8 +19,11 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
 
     private final JPAQueryFactory query;
 
+    private final EntityManager em;
+
     public WordRepositoryImpl(EntityManager em) {
         this.query = new JPAQueryFactory(em);
+        this.em = em;
     }
 
     @Override
@@ -66,5 +70,31 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
                 .from(word)
                 .where(word.id.eq(wordId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<WordDTO.LearningWord> findAllLearningWordList() {
+        final String sql = "SELECT W.WORD_ID, W.STUDY_WORD, W.NATIVE_WORD, W.PART_OF_SPEECH, N.RN FROM " +
+                "(SELECT U.*, ROWNUM RN FROM UNIT U WHERE VOCABULARY_ID = :vocabularyId) N " +
+                "INNER JOIN WORD W ON W.UNIT_ID = N.UNIT_ID " +
+                "WHERE N.RN IN (:rn, :rn + 1) " +
+                "ORDER BY N.RN ASC, W.WORD_ID DESC";
+
+        List<Object[]> nativeResults = em.createNativeQuery(sql)
+                .setParameter("vocabularyId", "8014")
+                .setParameter("rn", 1)
+                .getResultList();
+
+        return nativeResults.stream()
+                .map((item) ->
+                        WordDTO.LearningWord.builder()
+                                // String -> Integer, String -> Long
+                                .id(Long.parseLong(String.valueOf(item[0])))
+                                .studyWord((String) item[1])
+                                .nativeWord((String) item[2])
+                                .partOfSpeech((String) item[3])
+                                .rn(Integer.parseInt(String.valueOf(item[4])))
+                                .build())
+                .collect(Collectors.toList());
     }
 }

@@ -62,4 +62,27 @@ public class WordDTO {
             this.partOfSpeech = partOfSpeech;
         }
     }
+
+    @Data
+    public static class LearningWord {
+
+        private Long id;
+
+        private String studyWord;
+
+        private String nativeWord;
+
+        private String partOfSpeech;
+
+        private Integer rn;
+
+        @Builder
+        public LearningWord(Long id, String studyWord, String nativeWord, String partOfSpeech, Integer rn) {
+            this.id = id;
+            this.studyWord = studyWord;
+            this.nativeWord = nativeWord;
+            this.partOfSpeech = partOfSpeech;
+            this.rn = rn;
+        }
+    }
 }
