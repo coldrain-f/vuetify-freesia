@@ -21,9 +21,13 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
 
     private final JPAQueryFactory query;
 
+    private final EntityManager em;
+
     public UnitRepositoryImpl(EntityManager em) {
         this.query = new JPAQueryFactory(em);
+        this.em = em;
     }
+
 
     @Override
     public Page<UnitDTO.Response> searchUnitResponsePage(Long vocabularyId, Pageable pageable) {
@@ -81,5 +85,33 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
                 .innerJoin(unit.vocabulary, vocabulary)
                 .where(vocabulary.id.eq(vocabularyId))
                 .fetch();
+    }
+
+    @Override
+    public Long findRownumById(Long unitId) {
+        final Long vocabularyId = query.select(unit.vocabulary.id)
+                .from(unit)
+                .where(unit.id.eq(unitId))
+                .fetchOne();
+
+        final String SQL = "SELECT V.RN " +
+                "FROM UNIT U " +
+                "JOIN (" +
+                "  SELECT UNIT_ID, ROWNUM AS RN " +
+                "  FROM (" +
+                "    SELECT UNIT_ID " +
+                "    FROM UNIT " +
+                "    WHERE VOCABULARY_ID = :vocabularyId " +
+                "    ORDER BY UNIT_ID ASC" +
+                "  )" +
+                ") V ON U.UNIT_ID = V.UNIT_ID " +
+                "WHERE U.UNIT_ID = :unitId";
+
+        final Object result = em.createNativeQuery(SQL)
+                .setParameter("vocabularyId", vocabularyId)
+                .setParameter("unitId", unitId)
+                .getSingleResult();
+
+        return Long.parseLong(String.valueOf(result));
     }
 }

@@ -14,4 +14,6 @@ public interface UnitRepositoryQuerydsl {
     UnitDTO.Response searchOneUnitResponse(Long unitId);
 
     List<Unit> findAllByParentId(Long vocabularyId);
+
+    Long findRownumById(Long unitId);
 }

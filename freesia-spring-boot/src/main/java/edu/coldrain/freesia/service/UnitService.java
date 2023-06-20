@@ -65,4 +65,8 @@ public class UnitService {
         final Unit savedUnit = unitRepository.save(unit);
         return savedUnit.getId();
     }
+
+    public Long findRownumById(Long unitId) {
+        return unitRepository.findRownumById(unitId);
+    }
 }

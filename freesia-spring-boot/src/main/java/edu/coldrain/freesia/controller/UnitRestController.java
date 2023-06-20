@@ -38,4 +38,9 @@ public class UnitRestController {
     public Long registerUnit(@PathVariable Long vocabularyId, @RequestBody UnitDTO.RegistrationRequest request) {
         return unitService.registerUnit(vocabularyId, request);
     }
+
+    @GetMapping("/units/{unitId}/rownum")
+    public Long findRownumById(@PathVariable Long unitId) {
+        return unitService.findRownumById(unitId);
+    }
 }
