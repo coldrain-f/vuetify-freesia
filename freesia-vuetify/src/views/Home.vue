@@ -232,14 +232,14 @@ const showPlannerDialog = ref(false);
 
 const gridOptions = {
   // 여기서부터 개발 진행...
-  onCellClicked: (params) => {
+  onCellDoubleClicked: (params) => {
     console.log("셀 클릭 이벤트:", params);
     showThemeDialog.value = true;
   },
 };
 
 const defaultColDef = {
-  editable: true,
+  editable: false,
   cellDataType: false,
   suppressHorizontalScroll: false, // 가로 스크롤 적용
   cellStyle: {
