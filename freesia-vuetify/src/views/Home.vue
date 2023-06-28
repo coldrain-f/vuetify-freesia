@@ -36,6 +36,11 @@
                 Theme
               </v-list-item-title>
             </v-list-item>
+            <v-list-item :value="3">
+              <v-list-item-title @click="() => (showPlannerDialog = true)">
+                Planner
+              </v-list-item-title>
+            </v-list-item>
           </v-list>
         </v-menu>
       </v-btn>
@@ -75,7 +80,7 @@
   <v-dialog v-model="showThemeDialog" width="500">
     <v-card>
       <template #title>
-        <span class="noto-sans text-primary"> ※ Theme </span>
+        <span class="text-primary"> ※ Theme </span>
       </template>
       <template #append>
         <v-btn variant="text" icon="mdi-close" @click="showThemeDialog = false">
@@ -95,6 +100,37 @@
         <v-btn style="width: 48%" @click="showThemeDialog = false">
           CANCEL
         </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- Planner 다이얼로그 -->
+  <v-dialog v-model="showPlannerDialog" width="800">
+    <v-card>
+      <template #title>
+        <span class="text-primary"> ※ Planner </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="showPlannerDialog = false"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="mt-5">
+        <ag-grid-vue
+          style="width: 100%; height: 500px"
+          class="ag-theme-alpine"
+          :columnDefs="columnDefs"
+          :rowData="rowData"
+          :defaultColDef="defaultColDef"
+          :gridOptions="gridOptions"
+        >
+        </ag-grid-vue>
+      </v-card-text>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn class="mr-5" @click="showPlannerDialog = false"> CANCEL </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -149,6 +185,11 @@
 </template>
 
 <script setup>
+// AG Grid Vue
+import { AgGridVue } from "ag-grid-vue3"; // the AG Grid Vue Component
+import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
+import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
+
 import LearningSettings from "@/components/learning/LearningSettings.vue";
 import LearningStart from "@/components/learning/LearningStart.vue";
 import AdminHome from "@/components/admin/AdminHome.vue";
@@ -185,6 +226,53 @@ const onClickThemeApply = () => {
   themeStore.theme = selectedTheme.value;
   showThemeDialog.value = false;
 };
+
+// Planner
+const showPlannerDialog = ref(false);
+
+const gridOptions = {
+  // 여기서부터 개발 진행...
+  onCellClicked: (params) => {
+    console.log("셀 클릭 이벤트:", params);
+    showThemeDialog.value = true;
+  },
+};
+
+const defaultColDef = {
+  editable: true,
+  cellDataType: false,
+  suppressHorizontalScroll: false, // 가로 스크롤 적용
+  cellStyle: {
+    color: "gray",
+    fontWeight: "bold",
+  },
+};
+
+const columnDefs = [
+  { headerName: "진도", field: "progress", flex: 0.16 },
+  { headerName: "1 복습", field: "one", flex: 0.16 },
+  { headerName: "4 복습", field: "four", flex: 0.16 },
+  { headerName: "7 복습", field: "seven", flex: 0.16 },
+  { headerName: "14 복습", field: "fourteen", flex: 0.16 },
+  { headerName: "30 복습", field: "thirty", flex: 0.16 },
+];
+
+const rowData = getTempRowData();
+
+function getTempRowData() {
+  const rowData = [];
+  for (let i = 1; i <= 30; i++) {
+    rowData.push({
+      progress: i + "일",
+      one: "",
+      four: "",
+      seven: "",
+      fourteen: "",
+      thirty: "",
+    });
+  }
+  return rowData;
+}
 
 // 한국의 현재 시간을 가지고 오는 함수
 // Format: 오후 9:31:25

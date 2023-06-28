@@ -81,7 +81,7 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
         final String SQL = "SELECT W.WORD_ID, W.STUDY_WORD, W.NATIVE_WORD, W.PART_OF_SPEECH, N.RN FROM " +
                 "(SELECT V.*, ROWNUM RN FROM (SELECT U.* FROM UNIT U WHERE VOCABULARY_ID = :vocabularyId ORDER BY UNIT_ID ASC) V) N " +
                 "INNER JOIN WORD W ON W.UNIT_ID = N.UNIT_ID " +
-                "WHERE N.RN IN (:rn, :rn - 1) " +
+                "WHERE N.RN IN (:rn, :rn - 1, :rn - 3, :rn - 6, :rn - 13, :rn - 29) " +
                 "ORDER BY N.RN ASC, W.WORD_ID DESC";
 
         final Long rownum = unitRepository.findRownumById(unitId);
