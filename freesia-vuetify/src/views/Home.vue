@@ -104,8 +104,46 @@
     </v-card>
   </v-dialog>
 
+  <!-- Planner 단어장 & 유닛 선택 다이얼로그 -->
+  <v-dialog v-model="showPlannerSelectDialog" width="500">
+    <v-card>
+      <template #title>
+        <span class="text-primary"> ※ Search </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="showPlannerSelectDialog = false"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="mt-5">
+        <v-select
+          model-value="단어가 읽기다 기본편"
+          label="Voca"
+          :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편']"
+        />
+
+        <v-select
+          model-value="Unit 01 - 일상"
+          label="Unit"
+          :items="['Unit 01 - 일상', 'Unit 02 - 학교 생활1']"
+        />
+      </v-card-text>
+      <v-card-actions class="d-flex justify-center">
+        <v-btn color="primary" style="width: 48%" @click="onClickThemeApply()">
+          APPLY
+        </v-btn>
+        <v-btn style="width: 48%" @click="showPlannerSelectDialog = false">
+          CANCEL
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <!-- Planner 다이얼로그 -->
-  <v-dialog v-model="showPlannerDialog" width="800">
+  <v-dialog v-model="showPlannerDialog" width="1070">
     <v-card>
       <template #title>
         <span class="text-primary"> ※ Planner </span>
@@ -126,6 +164,7 @@
           :rowData="rowData"
           :defaultColDef="defaultColDef"
           :gridOptions="gridOptions"
+          :suppressMovableColumns="true"
         >
         </ag-grid-vue>
       </v-card-text>
@@ -229,32 +268,56 @@ const onClickThemeApply = () => {
 
 // Planner
 const showPlannerDialog = ref(false);
+const showPlannerSelectDialog = ref(false);
 
 const gridOptions = {
+  singleClickEdit: "false",
+
   // 여기서부터 개발 진행...
   onCellDoubleClicked: (params) => {
-    console.log("셀 클릭 이벤트:", params);
-    showThemeDialog.value = true;
+    // console.log("셀 더블 클릭 이벤트:", params);
+    showPlannerSelectDialog.value = true;
+  },
+  onCellClicked: (params) => {
+    // console.log("셀 클릭 이벤트:", params);
+    // defaultColDef.value.editable = true;
   },
 };
 
-const defaultColDef = {
+const defaultColDef = ref({
   editable: false,
   cellDataType: false,
   suppressHorizontalScroll: false, // 가로 스크롤 적용
-  cellStyle: {
-    color: "gray",
-    fontWeight: "bold",
-  },
-};
+  resizable: true, // 헤더 길이 늘리기 허용
+});
 
 const columnDefs = [
-  { headerName: "진도", field: "progress", flex: 0.16 },
-  { headerName: "1 복습", field: "one", flex: 0.16 },
-  { headerName: "4 복습", field: "four", flex: 0.16 },
-  { headerName: "7 복습", field: "seven", flex: 0.16 },
-  { headerName: "14 복습", field: "fourteen", flex: 0.16 },
-  { headerName: "30 복습", field: "thirty", flex: 0.16 },
+  {
+    headerName: "공부 일자",
+    field: "day",
+    cellStyle: { color: "gray", fontWeight: "bold" },
+    width: 100,
+    pinned: true,
+  },
+  {
+    headerName: "완료 여부",
+    field: "complete",
+    cellStyle: { color: "#1867C0", fontWeight: "bold" },
+    width: 100,
+    pinned: true,
+  },
+  {
+    headerName: "선택",
+    headerCheckboxSelection: false, // 헤더 체크박스 disable
+    checkboxSelection: true,
+    width: 70,
+    pinned: true,
+  },
+  { headerName: "당일", field: "zero", width: 150, editable: true },
+  { headerName: "1일전", field: "one", width: 150 },
+  { headerName: "3일전", field: "three", width: 150 },
+  { headerName: "6일전", field: "six", width: 150 },
+  { headerName: "13일전", field: "thirteen", width: 150 },
 ];
 
 const rowData = getTempRowData();
@@ -263,12 +326,13 @@ function getTempRowData() {
   const rowData = [];
   for (let i = 1; i <= 30; i++) {
     rowData.push({
-      progress: i + "일",
+      complete: "미학습",
+      day: "Day " + i,
+      zero: "",
       one: "",
-      four: "",
-      seven: "",
-      fourteen: "",
-      thirty: "",
+      three: "",
+      six: "",
+      thirteen: "",
     });
   }
   return rowData;
