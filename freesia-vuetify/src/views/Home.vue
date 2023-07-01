@@ -216,8 +216,33 @@
         >
         </ag-grid-vue>
       </v-card-text>
-      <v-card-actions class="d-flex justify-end">
-        <v-btn class="mr-5" @click="showPlannerDialog = false"> CANCEL </v-btn>
+      <v-card-actions>
+        <v-row style="margin: 0">
+          <v-col cols="3" style="padding: 0">
+            <v-switch
+              class="ml-4"
+              v-model="isLearning"
+              hide-details
+              color="primary"
+              :true-value="true"
+              :false-value="false"
+              :label="`1/4/7/14 학습법: ${isLearning ? '적용' : '미적용'}`"
+            />
+          </v-col>
+          <v-col class="text-end" cols="9" style="padding: 0">
+            <v-btn class="mr-5 mt-2" color="primary">
+              <v-icon start icon="mdi-school-outline"></v-icon>
+              LEARN
+            </v-btn>
+            <v-btn class="mr-5 mt-2" color="error">
+              <v-icon start icon="mdi-school-outline"></v-icon>
+              EXAM
+            </v-btn>
+            <v-btn class="mr-5 mt-2" @click="showPlannerDialog = false">
+              CANCEL
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -318,6 +343,8 @@ const onClickThemeApply = () => {
 const showPlannerDialog = ref(false);
 const showPlannerSelectDialog = ref(false);
 
+const isLearning = ref(true);
+
 const gridOptions = {
   singleClickEdit: false,
 
@@ -341,6 +368,13 @@ const defaultColDef = ref({
 
 const columnDefs = [
   {
+    headerName: "선택",
+    headerCheckboxSelection: false, // 헤더 체크박스 disable
+    checkboxSelection: true,
+    width: 70,
+    pinned: true,
+  },
+  {
     headerName: "공부 일자",
     field: "day",
     cellStyle: { color: "gray", fontWeight: "bold" },
@@ -350,17 +384,12 @@ const columnDefs = [
   {
     headerName: "완료 여부",
     field: "complete",
-    cellStyle: { color: "#1867C0", fontWeight: "bold" },
+    // Priamry: #1867C0
+    cellStyle: { color: "#B00020", fontWeight: "bold" },
     width: 100,
     pinned: true,
   },
-  {
-    headerName: "선택",
-    headerCheckboxSelection: false, // 헤더 체크박스 disable
-    checkboxSelection: true,
-    width: 70,
-    pinned: true,
-  },
+
   {
     headerName: "당일",
     field: "zero",
@@ -368,7 +397,29 @@ const columnDefs = [
     editable: true,
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
-      values: ["", "일상 생활1", "일상 생활2", "학교", "요리"],
+      values: [
+        "",
+        "일상 생활",
+        "요리",
+        "일상 1",
+        "일상 2",
+        "개인",
+        "신체",
+        "취미 1",
+        "취미 2",
+        "학교 생활 1",
+        "학교 생활 2",
+        "학교 생활 3",
+        "대인 관계 1",
+        "대인 관계 2",
+        "편의 시설",
+        "회사 생활",
+        "행사",
+        "진로",
+        "동식물 1",
+        "동식물 2",
+        "기후 / 지형",
+      ],
     },
   },
   { headerName: "1일전", field: "one", width: 150 },
