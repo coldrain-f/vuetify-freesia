@@ -157,8 +157,56 @@
         </v-btn>
       </template>
       <v-card-text class="mt-5">
+        <v-row>
+          <v-col cols="2">
+            <v-select
+              label="Language"
+              variant="underlined"
+              :items="['English', 'Japanese']"
+              model-value="English"
+            />
+          </v-col>
+          <v-col cols="3">
+            <v-select
+              label="Voca"
+              variant="underlined"
+              :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편']"
+              model-value="단어가 읽기다 기본편"
+            />
+          </v-col>
+          <v-col cols="2">
+            <v-btn
+              class="mt-3"
+              size="large"
+              density="compact"
+              icon="mdi-magnify"
+              variant="text"
+            >
+            </v-btn>
+          </v-col>
+          <v-col cols="5" class="text-end">
+            <v-btn
+              class="mt-4 mr-2"
+              size="small"
+              variant="flat"
+              color="primary"
+            >
+              <v-icon start icon="mdi-content-save-all-outline"></v-icon>
+              SAVE
+            </v-btn>
+            <v-btn class="mt-4 mr-2" size="small" variant="flat" color="error">
+              <v-icon start icon="mdi-trash-can-outline"></v-icon>
+              CLEAR
+            </v-btn>
+            <v-btn class="mt-4 border" size="small" variant="flat">
+              <v-icon start icon="mdi-file-export-outline"></v-icon>
+              EXPORT
+            </v-btn>
+          </v-col>
+        </v-row>
+
         <ag-grid-vue
-          style="width: 100%; height: 500px"
+          style="width: 100%; height: 450px"
           class="ag-theme-alpine"
           :columnDefs="columnDefs"
           :rowData="rowData"
@@ -271,12 +319,12 @@ const showPlannerDialog = ref(false);
 const showPlannerSelectDialog = ref(false);
 
 const gridOptions = {
-  singleClickEdit: "false",
+  singleClickEdit: false,
 
   // 여기서부터 개발 진행...
   onCellDoubleClicked: (params) => {
     // console.log("셀 더블 클릭 이벤트:", params);
-    showPlannerSelectDialog.value = true;
+    showPlannerSelectDialog.value = false;
   },
   onCellClicked: (params) => {
     // console.log("셀 클릭 이벤트:", params);
@@ -313,7 +361,16 @@ const columnDefs = [
     width: 70,
     pinned: true,
   },
-  { headerName: "당일", field: "zero", width: 150, editable: true },
+  {
+    headerName: "당일",
+    field: "zero",
+    width: 150,
+    editable: true,
+    cellEditor: "agSelectCellEditor",
+    cellEditorParams: {
+      values: ["", "일상 생활1", "일상 생활2", "학교", "요리"],
+    },
+  },
   { headerName: "1일전", field: "one", width: 150 },
   { headerName: "3일전", field: "three", width: 150 },
   { headerName: "6일전", field: "six", width: 150 },
