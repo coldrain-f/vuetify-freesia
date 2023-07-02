@@ -353,25 +353,20 @@ const gridOptions = {
   onCellValueChanged: (event) => {
     const itemsToUpdate = [];
 
-    event.data.zero =
-      event.newValue + (event.newValue === "" ? "" : " - [1회독]");
+    event.data.zero = event.newValue;
 
     gridApi.value.forEachNode((node, index) => {
       if (index > event.rowIndex + 13) {
         return;
       }
       if (event.rowIndex + 1 === index) {
-        node.data.one =
-          event.newValue + (event.newValue !== "" ? " - [2회독]" : "");
+        node.data.one = event.newValue;
       } else if (event.rowIndex + 3 === index) {
-        node.data.three =
-          event.newValue + (event.newValue !== "" ? " - [3회독]" : "");
+        node.data.three = event.newValue;
       } else if (event.rowIndex + 6 === index) {
-        node.data.six =
-          event.newValue + (event.newValue !== "" ? " - [4회독]" : "");
+        node.data.six = event.newValue;
       } else if (event.rowIndex + 13 === index) {
-        node.data.thirteen =
-          event.newValue + (event.newValue !== "" ? " - [5회독]" : "");
+        node.data.thirteen = event.newValue;
       }
       itemsToUpdate.push(node.data);
     });
