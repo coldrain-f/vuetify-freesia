@@ -181,6 +181,7 @@
               density="compact"
               icon="mdi-magnify"
               variant="text"
+              :disabled="isEditMode"
             >
             </v-btn>
           </v-col>
@@ -189,14 +190,48 @@
               class="mt-4 mr-2"
               size="small"
               variant="flat"
+              color="info"
+              :disabled="isEditMode"
+              v-if="!isEditMode"
+              @click="isEditMode = true"
+            >
+              <v-icon start icon="mdi-content-save-all-outline"></v-icon>
+              EDIT
+            </v-btn>
+            <v-btn
+              class="mt-4 mr-2"
+              size="small"
+              variant="flat"
               color="primary"
+              :disabled="!isEditMode"
+              v-if="isEditMode"
+              @click="isEditMode = false"
             >
               <v-icon start icon="mdi-content-save-all-outline"></v-icon>
               SAVE
             </v-btn>
-            <v-btn class="mt-4 mr-2" size="small" variant="flat" color="error">
-              <v-icon start icon="mdi-trash-can-outline"></v-icon>
-              CLEAR
+            <v-btn
+              class="mt-4 mr-2"
+              size="small"
+              variant="flat"
+              color="error"
+              :disabled="!isEditMode"
+              v-if="isEditMode"
+            >
+              <v-icon start icon="mdi-lock-reset"></v-icon>
+              RESET
+            </v-btn>
+            <v-btn
+              class="mt-4 mr-2"
+              size="small"
+              variant="flat"
+              color="success"
+              :disabled="!isEditMode"
+              v-if="isEditMode"
+              @click="isEditMode = false"
+            >
+              <v-icon start icon="mdi-cancel"></v-icon>
+              CANCEL
             </v-btn>
             <v-btn class="mt-4 border" size="small" variant="flat">
               <v-icon start icon="mdi-file-export-outline"></v-icon>
@@ -226,11 +261,11 @@
             </v-btn>
           </v-col>
           <v-col class="text-end" cols="9" style="padding: 0">
-            <v-btn class="mr-5" color="primary">
+            <v-btn class="mr-5" color="primary" :disabled="isEditMode">
               <v-icon start icon="mdi-school-outline"></v-icon>
               LEARN
             </v-btn>
-            <v-btn class="mr-5" color="error">
+            <v-btn class="mr-5" color="error" :disabled="isEditMode">
               <v-icon start icon="mdi-school-outline"></v-icon>
               EXAM
             </v-btn>
@@ -347,6 +382,8 @@ const showPlannerSelectDialog = ref(false);
 const isLearning = ref(true);
 const learningStyle = ref("study");
 
+const isEditMode = ref(false);
+
 const gridOptions = {
   singleClickEdit: false,
 
@@ -384,6 +421,10 @@ const gridOptions = {
   },
 };
 
+const isEditable = () => {
+  return isEditMode.value;
+};
+
 const defaultColDef = ref({
   editable: false,
   cellDataType: false,
@@ -419,7 +460,7 @@ const columnDefs = [
     headerName: "당일",
     field: "zero",
     width: 176,
-    editable: true,
+    editable: isEditable,
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
       values: [
