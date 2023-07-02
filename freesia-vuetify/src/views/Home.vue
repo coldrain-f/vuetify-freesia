@@ -143,7 +143,7 @@
   </v-dialog>
 
   <!-- Planner 다이얼로그 -->
-  <v-dialog v-model="showPlannerDialog" width="1070">
+  <v-dialog v-model="showPlannerDialog" width="1200">
     <v-card>
       <template #title>
         <span class="text-primary"> ※ Planner </span>
@@ -213,32 +213,28 @@
           :defaultColDef="defaultColDef"
           :gridOptions="gridOptions"
           :suppressMovableColumns="true"
+          @grid-ready="onGridReady"
         >
         </ag-grid-vue>
       </v-card-text>
       <v-card-actions>
         <v-row style="margin: 0">
           <v-col cols="3" style="padding: 0">
-            <v-switch
-              class="ml-4"
-              v-model="isLearning"
-              hide-details
-              color="primary"
-              :true-value="true"
-              :false-value="false"
-              :label="`1/4/7/14 학습법: ${isLearning ? '적용' : '미적용'}`"
-            />
+            <v-btn class="ml-4 mt-1 border" variant="flat" size="small">
+              <v-icon start icon="mdi-cog-outline"></v-icon>
+              LEARNING OPTION
+            </v-btn>
           </v-col>
           <v-col class="text-end" cols="9" style="padding: 0">
-            <v-btn class="mr-5 mt-2" color="primary">
+            <v-btn class="mr-5" color="primary">
               <v-icon start icon="mdi-school-outline"></v-icon>
               LEARN
             </v-btn>
-            <v-btn class="mr-5 mt-2" color="error">
+            <v-btn class="mr-5" color="error">
               <v-icon start icon="mdi-school-outline"></v-icon>
               EXAM
             </v-btn>
-            <v-btn class="mr-5 mt-2" @click="showPlannerDialog = false">
+            <v-btn class="mr-5" @click="showPlannerDialog = false">
               CANCEL
             </v-btn>
           </v-col>
@@ -315,6 +311,11 @@ import { useCommonStore } from "@/stores/common";
 
 const tab = ref(null);
 
+const gridApi = ref(null);
+const onGridReady = (params) => {
+  gridApi.value = params.api;
+};
+
 // Pinia
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
@@ -344,11 +345,40 @@ const showPlannerDialog = ref(false);
 const showPlannerSelectDialog = ref(false);
 
 const isLearning = ref(true);
+const learningStyle = ref("study");
 
 const gridOptions = {
   singleClickEdit: false,
 
-  // 여기서부터 개발 진행...
+  onCellValueChanged: (event) => {
+    const itemsToUpdate = [];
+
+    event.data.zero =
+      event.newValue + (event.newValue === "" ? "" : " - [1회독]");
+
+    gridApi.value.forEachNode((node, index) => {
+      if (index > event.rowIndex + 13) {
+        return;
+      }
+      if (event.rowIndex + 1 === index) {
+        node.data.one =
+          event.newValue + (event.newValue !== "" ? " - [2회독]" : "");
+      } else if (event.rowIndex + 3 === index) {
+        node.data.three =
+          event.newValue + (event.newValue !== "" ? " - [3회독]" : "");
+      } else if (event.rowIndex + 6 === index) {
+        node.data.six =
+          event.newValue + (event.newValue !== "" ? " - [4회독]" : "");
+      } else if (event.rowIndex + 13 === index) {
+        node.data.thirteen =
+          event.newValue + (event.newValue !== "" ? " - [5회독]" : "");
+      }
+      itemsToUpdate.push(node.data);
+    });
+
+    gridApi.value.applyTransaction({ update: itemsToUpdate });
+  },
+
   onCellDoubleClicked: (params) => {
     // console.log("셀 더블 클릭 이벤트:", params);
     showPlannerSelectDialog.value = false;
@@ -393,7 +423,7 @@ const columnDefs = [
   {
     headerName: "당일",
     field: "zero",
-    width: 150,
+    width: 176,
     editable: true,
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
@@ -422,10 +452,10 @@ const columnDefs = [
       ],
     },
   },
-  { headerName: "1일전", field: "one", width: 150 },
-  { headerName: "3일전", field: "three", width: 150 },
-  { headerName: "6일전", field: "six", width: 150 },
-  { headerName: "13일전", field: "thirteen", width: 150 },
+  { headerName: "1일전", field: "one", width: 176 },
+  { headerName: "3일전", field: "three", width: 176 },
+  { headerName: "6일전", field: "six", width: 176 },
+  { headerName: "13일전", field: "thirteen", width: 176 },
 ];
 
 const rowData = getTempRowData();
