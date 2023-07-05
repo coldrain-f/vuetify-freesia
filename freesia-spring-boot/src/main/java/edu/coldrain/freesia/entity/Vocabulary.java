@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SequenceGenerator(name = "VOCABULARY_SEQ_GENERATOR", sequenceName = "VOCABULARY_SEQ")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"TITLE", "LANGUAGE_ID"}))
 public class Vocabulary {
 
     @Id

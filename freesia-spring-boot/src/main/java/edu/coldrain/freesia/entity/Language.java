@@ -19,7 +19,7 @@ public class Language {
     @Column(name = "LANGUAGE_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Builder
