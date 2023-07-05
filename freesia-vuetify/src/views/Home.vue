@@ -9,7 +9,7 @@
     </v-system-bar>
     <v-toolbar :color="themeStore.theme" class="mt-6">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <v-toolbar-title class="noto-sans">프리지아 보카</v-toolbar-title>
+      <v-toolbar-title class="noto-sans">기묘한 보카</v-toolbar-title>
       <v-spacer></v-spacer>
 
       <v-btn icon>
@@ -164,6 +164,7 @@
               variant="underlined"
               :items="['English', 'Japanese']"
               model-value="English"
+              :readonly="isEditMode"
             />
           </v-col>
           <v-col cols="3">
@@ -172,6 +173,7 @@
               variant="underlined"
               :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편']"
               model-value="단어가 읽기다 기본편"
+              :readonly="isEditMode"
             />
           </v-col>
           <v-col cols="2">
@@ -182,6 +184,7 @@
               icon="mdi-magnify"
               variant="text"
               :disabled="isEditMode"
+              @click="onClickPlannerSearchIcon"
             >
             </v-btn>
           </v-col>
@@ -233,7 +236,12 @@
               <v-icon start icon="mdi-cancel"></v-icon>
               CANCEL
             </v-btn>
-            <v-btn class="mt-4 border" size="small" variant="flat">
+            <v-btn
+              class="mt-4 border"
+              size="small"
+              variant="flat"
+              v-if="!isEditMode"
+            >
               <v-icon start icon="mdi-file-export-outline"></v-icon>
               EXPORT
             </v-btn>
@@ -270,10 +278,35 @@
               EXAM
             </v-btn>
             <v-btn class="mr-5" @click="showPlannerDialog = false">
-              CANCEL
+              <v-icon start icon="mdi-close"></v-icon>
+              CLOSE
             </v-btn>
           </v-col>
         </v-row>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- 플래너 등록 다이얼로그 -->
+  <v-dialog v-model="showCreatePlannerDialog" width="350">
+    <v-card>
+      <template #title>
+        <span class="noto-sans text-primary"> ※ Alert </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="() => (showCreatePlannerDialog = false)"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="">
+        기존에 등록된 플래너가 없습니다. 새로 생성하시겠습니까?
+      </v-card-text>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn color="primary"> CONFIRM </v-btn>
+        <v-btn @click="showCreatePlannerDialog = false">Cancel</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -378,6 +411,12 @@ const onClickThemeApply = () => {
 // Planner
 const showPlannerDialog = ref(false);
 const showPlannerSelectDialog = ref(false);
+
+const showCreatePlannerDialog = ref(false);
+
+const onClickPlannerSearchIcon = () => {
+  showCreatePlannerDialog.value = true;
+};
 
 const isLearning = ref(true);
 const learningStyle = ref("study");

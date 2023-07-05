@@ -25,6 +25,10 @@ public class Vocabulary {
     @JoinColumn(name = "LANGUAGE_ID", nullable = false, updatable = false)
     private Language language;
 
+    @OneToOne
+    @JoinColumn(name = "PLANNER_ID")
+    private Planner planner;
+
     @Builder
     public Vocabulary(String title, Language language) {
         this.title = title;
