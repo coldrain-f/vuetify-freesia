@@ -8,8 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/vocabulary")
 @RequiredArgsConstructor
@@ -18,27 +16,27 @@ public class VocabularyRestController {
     private final VocabularyService vocabularyService;
 
     @PostMapping
-    public Long registerVocabulary(@RequestBody VocabularyDTO.RegistrationRequest request) {
-        return vocabularyService.registerVocabulary(request);
+    public Long register(@RequestBody VocabularyDTO.RegistrationRequest request) {
+        return vocabularyService.register(request);
     }
 
     @PatchMapping("/{vocabularyId}")
-    public void modifyVocabulary(@RequestBody VocabularyDTO.ModifyRequest request, @PathVariable Long vocabularyId) {
-        vocabularyService.modifyVocabulary(request, vocabularyId);
+    public void modifyById(@RequestBody VocabularyDTO.ModifyRequest request, @PathVariable Long vocabularyId) {
+        vocabularyService.modifyById(request, vocabularyId);
     }
 
     @DeleteMapping("/{vocabularyId}")
-    public void removeVocabulary(@PathVariable Long vocabularyId) {
-        vocabularyService.removeVocabularyById(vocabularyId);
+    public void removeById(@PathVariable Long vocabularyId) {
+        vocabularyService.removeById(vocabularyId);
     }
 
     @GetMapping
-    public Page<VocabularyDTO.Response> searchVocabularyResponsePage(@PageableDefault(size = 3) Pageable pageable) {
-        return vocabularyService.searchVocabularyResponsePage(pageable);
+    public Page<VocabularyDTO.Response> searchResponsePage(@PageableDefault(size = 3) Pageable pageable) {
+        return vocabularyService.searchResponsePage(pageable);
     }
 
     @GetMapping("/{vocabularyId}")
-    public VocabularyDTO.Response searchOneVocabularyResponse(@PathVariable Long vocabularyId) {
-        return vocabularyService.searchOneVocabularyResponse(vocabularyId);
+    public VocabularyDTO.Response getResponseById(@PathVariable Long vocabularyId) {
+        return vocabularyService.getResponseById(vocabularyId);
     }
 }

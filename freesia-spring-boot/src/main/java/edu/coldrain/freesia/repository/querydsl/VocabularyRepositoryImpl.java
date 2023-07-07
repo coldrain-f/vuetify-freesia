@@ -25,7 +25,7 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
     }
 
     @Override
-    public Page<VocabularyDTO.Response> searchVocabularyResponsePage(Pageable pageable) {
+    public Page<VocabularyDTO.Response> searchResponsePage(Pageable pageable) {
         final List<VocabularyDTO.Response> content = query.select(
                         new QVocabularyDTO_Response(
                                 vocabulary.id,
@@ -59,7 +59,7 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
     }
 
     @Override
-    public VocabularyDTO.Response searchOneVocabularyResponse(Long vocabularyId) {
+    public VocabularyDTO.Response getResponseById(Long vocabularyId) {
         return query.select(
                         new QVocabularyDTO_Response(
                                 vocabulary.id,

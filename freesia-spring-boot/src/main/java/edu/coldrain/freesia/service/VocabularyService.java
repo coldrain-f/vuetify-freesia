@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class VocabularyService {
 
     private final WordRepository wordRepository;
 
-    public Long registerVocabulary(VocabularyDTO.RegistrationRequest request) {
+    public Long register(VocabularyDTO.RegistrationRequest request) {
         final Language language = languageRepository.findByName(request.getLanguage())
                 .orElseThrow(() -> new LanguageNotFoundException("Language not found exception."));
 
@@ -46,7 +45,7 @@ public class VocabularyService {
     }
 
     @Transactional // 없으면 변경 감지 안 됨.
-    public void modifyVocabulary(VocabularyDTO.ModifyRequest request, Long vocabularyId) {
+    public void modifyById(VocabularyDTO.ModifyRequest request, Long vocabularyId) {
         final Vocabulary vocabulary = vocabularyRepository.findById(vocabularyId)
                 .orElseThrow(() -> new VocabularyNotFoundException("Vocabulary not found exception."));
 
@@ -54,7 +53,7 @@ public class VocabularyService {
     }
 
     @Transactional
-    public void removeVocabularyById(Long vocabularyId) {
+    public void removeById(Long vocabularyId) {
         final List<Unit> units = unitRepository.findAllByParentId(vocabularyId);
         if (units.isEmpty()) {
             // Delete vocabulary
@@ -73,23 +72,11 @@ public class VocabularyService {
         vocabularyRepository.deleteById(vocabularyId);
     }
 
-    public List<VocabularyDTO.Response> findAllVocabularyResponse() {
-        return vocabularyRepository.findAll()
-                .stream()
-                .map((v) -> VocabularyDTO.Response
-                        .builder()
-                        .id(v.getId())
-                        .title(v.getTitle())
-                        .language(v.getLanguage().getName())
-                        .build())
-                .collect(Collectors.toList());
+    public Page<VocabularyDTO.Response> searchResponsePage(Pageable pageable) {
+        return vocabularyRepository.searchResponsePage(pageable);
     }
 
-    public Page<VocabularyDTO.Response> searchVocabularyResponsePage(Pageable pageable) {
-        return vocabularyRepository.searchVocabularyResponsePage(pageable);
-    }
-
-    public VocabularyDTO.Response searchOneVocabularyResponse(Long vocabularyId) {
-        return vocabularyRepository.searchOneVocabularyResponse(vocabularyId);
+    public VocabularyDTO.Response getResponseById(Long vocabularyId) {
+        return vocabularyRepository.getResponseById(vocabularyId);
     }
 }

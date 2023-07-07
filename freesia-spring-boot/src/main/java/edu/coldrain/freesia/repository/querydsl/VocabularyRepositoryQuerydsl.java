@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface VocabularyRepositoryQuerydsl {
 
-    Page<VocabularyDTO.Response> searchVocabularyResponsePage(Pageable pageable);
+    Page<VocabularyDTO.Response> searchResponsePage(Pageable pageable);
 
-    VocabularyDTO.Response searchOneVocabularyResponse(Long vocabularyId);
+    VocabularyDTO.Response getResponseById(Long vocabularyId);
 }
