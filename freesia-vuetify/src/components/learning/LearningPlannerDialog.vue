@@ -77,10 +77,9 @@
               RESET
             </v-btn>
             <v-btn
-              class="mt-4 mr-2"
+              class="mt-4 mr-2 border"
               size="small"
               variant="flat"
-              color="success"
               :disabled="!isEditMode"
               v-if="isEditMode"
               @click="isEditMode = false"
@@ -92,6 +91,7 @@
               class="mt-4 border"
               size="small"
               variant="flat"
+              color="success"
               v-if="!isEditMode"
             >
               <v-icon start icon="mdi-file-export-outline"></v-icon>
@@ -122,7 +122,12 @@
             </v-btn>
           </v-col>
           <v-col class="text-end" cols="9" style="padding: 0">
-            <v-btn class="mr-5" color="primary" :disabled="isEditMode">
+            <v-btn
+              class="mr-5"
+              color="primary"
+              :disabled="isEditMode"
+              @click="onLearnButtonClicked"
+            >
               <v-icon start icon="mdi-school-outline"></v-icon>
               LEARN
             </v-btn>
@@ -150,11 +155,18 @@ import { AgGridVue } from "ag-grid-vue3"; // the AG Grid Vue Component
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 
+// Pinia
+import { useLearningStore } from "@/stores/learning";
+
 // Vue
 import { computed, onMounted, ref } from "vue";
 
 // Components
 import LearningPlannerCreateDialog from "./LearningPlannerCreateDialog.vue";
+import { storeToRefs } from "pinia";
+
+const learningStore = useLearningStore();
+const { isLearningStarted } = storeToRefs(learningStore);
 
 const props = defineProps({
   modelValue: {
@@ -177,6 +189,11 @@ const showDialog = computed({
   },
 });
 
+const onLearnButtonClicked = () => {
+  showDialog.value = false;
+  isLearningStarted.value = true;
+};
+
 const isEditMode = ref(false);
 
 const gridApi = ref(null);
@@ -192,7 +209,6 @@ const gridOptions = {
 // 그리드 셀 변경 이벤트
 const onCellValueChanged = (params) => {
   const { rowIndex, newValue } = params;
-
   setReviewCycle(rowIndex, newValue);
 };
 
@@ -279,7 +295,7 @@ const rowData = ref([]);
 const makeTempRowData = () => {
   const rowData = [];
 
-  for (let i = 1; i <= 30; i++) {
+  for (let i = 1; i <= 365; i++) {
     const data = {
       studyDay: "Day " + i,
       learningStatus: "미학습",

@@ -140,7 +140,7 @@
   <v-dialog v-model="showLearningTerminationDialog" width="auto">
     <v-card>
       <template #title>
-        <span>Alarm</span>
+        <span>※ Alarm</span>
       </template>
       <v-card-text>정말 처음으로 돌아가시겠습니까?</v-card-text>
       <v-card-actions class="justify-end">
@@ -162,7 +162,7 @@
   </v-dialog>
 
   <v-dialog v-model="messageDialog.showDialog" width="auto">
-    <v-card title="Alarm">
+    <v-card title="※ Alarm">
       <template #append>
         <v-btn
           variant="text"
@@ -266,10 +266,7 @@ const words = ref([
 ]);
 
 /** 학습 브레드크럼  */
-const breadcrumbsItems = [
-  selectedLearningVocabulary.value.title,
-  selectedLearningUnit.value.subject,
-];
+const breadcrumbsItems = ["단어가 읽기다 기본편", "Day 1"];
 
 /** 틀린 단어 목록 */
 const incorrectWords = ref([]);

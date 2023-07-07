@@ -2,14 +2,14 @@
   <v-dialog v-model="showDialog" width="350">
     <v-card>
       <template #title>
-        <span class="noto-sans text-primary"> ※ Alert </span>
+        <span class="text-primary"> ※ Alert </span>
       </template>
       <template #append>
         <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
         </v-btn>
       </template>
       <v-card-text class="">
-        기존에 등록된 플래너가 없습니다. 새로 생성하시겠습니까?
+        생성된 학습 플래너가 없습니다. 새로 생성하시겠습니까?
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="primary"> CONFIRM </v-btn>
