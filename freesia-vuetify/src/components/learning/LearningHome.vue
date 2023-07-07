@@ -2,7 +2,7 @@
   <v-card flat>
     <v-card-text>
       <v-img
-        height="375"
+        height="400"
         :aspect-ratio="1"
         :src="titleImage"
         cover

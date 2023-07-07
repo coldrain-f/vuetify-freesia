@@ -53,7 +53,7 @@
     <v-window v-model="tab">
       <v-window-item value="learn">
         <learning-start v-if="isLearningStarted"></learning-start>
-        <learning-settings v-else class="mt-4"></learning-settings>
+        <learning-home v-else class="mt-4"></learning-home>
       </v-window-item>
 
       <v-window-item value="admin">
@@ -131,7 +131,7 @@
 </template>
 
 <script setup>
-import LearningSettings from "@/components/learning/LearningSettings.vue";
+import LearningHome from "@/components/learning/LearningHome.vue";
 import LearningStart from "@/components/learning/LearningStart.vue";
 import LearningPlannerDialog from "@/components/learning/LearningPlannerDialog.vue";
 import AdminHome from "@/components/admin/AdminHome.vue";
