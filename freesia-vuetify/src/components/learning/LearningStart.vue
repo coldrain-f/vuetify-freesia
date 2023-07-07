@@ -208,12 +208,8 @@ const themeStore = useThemeStore();
 // the action can just be destructured
 const { speakText } = synthStore;
 
-const {
-  isLearningStarted,
-  showLearningTerminationDialog,
-  selectedLearningVocabulary,
-  selectedLearningUnit,
-} = storeToRefs(learningStore);
+const { isLearningStarted, showLearningTerminationDialog } =
+  storeToRefs(learningStore);
 
 const inputMeaningField = ref(null);
 

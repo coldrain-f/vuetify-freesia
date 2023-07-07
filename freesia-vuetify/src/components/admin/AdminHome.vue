@@ -43,16 +43,22 @@
         />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12">
+        <AdminVocabularyGrid />
+      </v-col>
+    </v-row>
   </v-container>
-  <VocabularyAdmin v-if="selectedCategory === 'Vocabulary'" />
+  <!-- <VocabularyAdmin v-if="selectedCategory === 'Vocabulary'" />
   <UnitAdmin v-if="selectedCategory === 'Unit'" />
-  <WordAdmin v-if="selectedCategory === 'Word'" />
+  <WordAdmin v-if="selectedCategory === 'Word'" /> -->
 </template>
 
 <script setup>
 import VocabularyAdmin from "./VocabularyAdmin.vue";
 import UnitAdmin from "./UnitAdmin.vue";
 import WordAdmin from "./WordAdmin.vue";
+import AdminVocabularyGrid from "./AdminVocabularyGrid.vue";
 import { unitService } from "@/service/unitService";
 import { wordService } from "@/service/wordService";
 import { useAdminHomeStore } from "@/stores/adminHome";

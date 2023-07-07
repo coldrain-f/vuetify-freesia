@@ -2,7 +2,7 @@
   <v-card flat>
     <v-card-text>
       <v-img
-        height="400"
+        height="375"
         :aspect-ratio="1"
         :src="titleImage"
         cover
@@ -32,7 +32,7 @@
 import { ref } from "vue";
 import { useThemeStore } from "@/stores/theme";
 
-import titleImage from "@/assets/images/tempBanner.jpg";
+import titleImage from "@/assets/images/titleBanner.png";
 import LearningPlannerDialog from "./LearningPlannerDialog.vue";
 
 // Pinia
