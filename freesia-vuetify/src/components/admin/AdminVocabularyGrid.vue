@@ -17,24 +17,24 @@
     <v-row>
       <v-col cols="4">
         <v-btn size="small" class="w-100">
-          <v-icon start icon="mdi-note-search-outline" style="margin-top: 1px">
+          <v-icon start icon="mdi-note-search-outline" class="margin-top-1px">
           </v-icon>
           SEARCH
         </v-btn>
       </v-col>
       <v-col cols="8" class="text-end">
         <v-btn size="small" color="primary">
-          <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
+          <v-icon start icon="mdi-note-plus-outline" class="margin-top-1px">
           </v-icon>
           ADD
         </v-btn>
         <v-btn size="small" color="info" class="ml-2">
-          <v-icon start icon="mdi-note-edit-outline" style="margin-top: 1px">
+          <v-icon start icon="mdi-note-edit-outline" class="margin-top-1px">
           </v-icon>
           UPDATE
         </v-btn>
         <v-btn size="small" color="error" class="ml-2">
-          <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
+          <v-icon start icon="mdi-note-remove-outline" class="margin-top-1px">
           </v-icon>
           DELETE
         </v-btn>
@@ -110,14 +110,14 @@ const columnDefs = [
 ];
 
 const rowData = ref([
-  {
-    title: "단어가 읽기다 기본편",
-    language: "English",
-    unitCount: "0개",
-  },
+  { title: "단어가 읽기다 기본편", language: "English", unitCount: "0개" },
   { title: "단어가 읽기다 실력편", language: "English", unitCount: "1개" },
   { title: "일본어 JLPT N5급", language: "Japanese", unitCount: "2개" },
 ]);
 </script>
 
-<style scoped></style>
+<style scoped>
+.margin-top-1px {
+  margin-top: 1px;
+}
+</style>

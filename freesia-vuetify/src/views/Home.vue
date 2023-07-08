@@ -89,7 +89,7 @@
     <v-window v-model="currentTabItem">
       <v-window-item value="LEARN">
         <learning-start v-if="isLearningStarted"></learning-start>
-        <learning-home v-else class="mt-4"></learning-home>
+        <learning-home v-else></learning-home>
       </v-window-item>
 
       <v-window-item value="ADMIN">
@@ -116,8 +116,8 @@
       <v-window-item value="WORD"> WORD </v-window-item>
     </v-window>
 
-    <v-footer :color="themeStore.theme" class="mt-3" border>
-      <v-row justify="center">
+    <v-footer :color="themeStore.theme" border>
+      <v-row>
         <v-col class="text-center" cols="12">
           <p>
             <strong>Email:</strong> sangwoonin@gmail.com
