@@ -59,13 +59,23 @@ const formData = reactive({
 });
 
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
-watch(props.selectedVocabulary, (voca) => {
+watch(props.selectedVocabulary, (v) => {
+  // 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
+  if (isNullVocabulary(v)) {
+    showDialog.value = false;
+    return;
+  }
+
   Object.assign(formData, {
-    title: voca.title,
-    language: voca.language,
-    unitCount: voca.unitCount,
+    title: v.title,
+    language: v.language,
+    unitCount: v.unitCount,
   });
 });
+
+const isNullVocabulary = (v) => {
+  return v.title == null || v.language == null || v.unitCount == null;
+};
 
 const onClick = () => {
   console.log(`title = ${formData.title}`);

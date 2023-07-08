@@ -148,9 +148,9 @@ const columnDefs = [
 ];
 
 const rowData = ref([
-  { title: "단어가 읽기다 기본편", language: "English", unitCount: "0개" },
-  { title: "단어가 읽기다 실력편", language: "English", unitCount: "1개" },
-  { title: "일본어 JLPT N5급", language: "Japanese", unitCount: "2개" },
+  { title: "단어가 읽기다 기본편", language: "English", unitCount: 0 },
+  { title: "단어가 읽기다 실력편", language: "English", unitCount: 1 },
+  { title: "일본어 JLPT N5급", language: "Japanese", unitCount: 2 },
 ]);
 </script>
 
