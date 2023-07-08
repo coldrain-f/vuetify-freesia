@@ -2,7 +2,7 @@
   <v-dialog v-model="showDialog" width="550">
     <v-card>
       <template #title>
-        <span class="text-primary noto-sans"> ※ 단어장 등록 </span>
+        <span class="text-info noto-sans"> ※ 단어장 수정 </span>
       </template>
       <template #append>
         <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
@@ -14,10 +14,14 @@
           label="Language"
           :items="['English', 'Japanese']"
           v-model="formData.language"
-        />
+          readonly
+        >
+        </v-select>
+        <v-text-field label="Unit Count" v-model="formData.unitCount">
+        </v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn color="primary" @click="onClick"> ADD </v-btn>
+        <v-btn color="info" @click="onClick"> UPDATE </v-btn>
         <v-btn @click="showDialog = false">CANCEL</v-btn>
       </v-card-actions>
     </v-card>
@@ -25,12 +29,15 @@
 </template>
 
 <script setup>
-import { computed, reactive } from "vue";
+import { computed, reactive, watch } from "vue";
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true,
+  },
+  selectedVocabulary: {
+    type: Object,
   },
 });
 
@@ -47,12 +54,23 @@ const showDialog = computed({
 
 const formData = reactive({
   title: null,
-  language: "English",
+  language: null,
+  unitCount: null,
+});
+
+// props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
+watch(props.selectedVocabulary, (voca) => {
+  Object.assign(formData, {
+    title: voca.title,
+    language: voca.language,
+    unitCount: voca.unitCount,
+  });
 });
 
 const onClick = () => {
   console.log(`title = ${formData.title}`);
   console.log(`language = ${formData.language}`);
+  console.log(`unitCount = ${formData.unitCount}`);
 };
 </script>
 
