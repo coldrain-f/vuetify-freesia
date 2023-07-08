@@ -42,36 +42,93 @@
       </v-btn>
 
       <template v-slot:extension>
-        <v-tabs v-model="tab" align-tabs="title">
-          <v-tab value="learn"> LEARN </v-tab>
-          <v-tab value="admin"> ADMIN </v-tab>
-          <v-tab value="analyze" disabled> ANALYZE </v-tab>
+        <v-tabs v-model="currentTabItem" align-tabs="title">
+          <v-tab value="LEARN"> LEARN </v-tab>
+          <!-- 미사용 업데이트 후 삭제 예정 -->
+          <v-tab value="admin" v-if="false"> ADMIN </v-tab>
+
+          <!-- Begin:: Admin Tab Items -->
+          <v-tab v-for="item in adminTabitems" :key="item" :value="item">
+            {{ item }}
+          </v-tab>
+
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn
+                variant="plain"
+                rounded="0"
+                class="align-self-center"
+                height="100%"
+                v-bind="props"
+              >
+                ADMIN
+                <v-icon end> mdi-menu-down </v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item @click="changeAdminTabItem('VOCABULARY')">
+                <v-list-item-title> Vocabulary </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="changeAdminTabItem('UNIT')">
+                <v-list-item-title> Unit </v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="changeAdminTabItem('WORD')">
+                <v-list-item-title> Word </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <!-- End:: Admin Tab Items -->
+
+          <v-tab value="ANALYZE" disabled> ANALYZE </v-tab>
+          <v-tab value="RANK"> RANK </v-tab>
         </v-tabs>
       </template>
     </v-toolbar>
 
-    <v-window v-model="tab">
-      <v-window-item value="learn">
+    <v-window v-model="currentTabItem">
+      <v-window-item value="LEARN">
         <learning-start v-if="isLearningStarted"></learning-start>
         <learning-home v-else class="mt-4"></learning-home>
       </v-window-item>
 
-      <v-window-item value="admin">
+      <v-window-item value="ADMIN">
         <admin-home></admin-home>
       </v-window-item>
 
-      <v-window-item value="analyze">
+      <v-window-item value="ANALYZE">
         <v-card flat>
           <v-card-text>Under development.</v-card-text>
           <v-card-actions> </v-card-actions>
         </v-card>
       </v-window-item>
+      <v-window-item value="RANK">
+        <v-card flat>
+          <v-card-text>Under development.</v-card-text>
+          <v-card-actions> </v-card-actions>
+        </v-card>
+      </v-window-item>
+
+      <v-window-item value="VOCABULARY">
+        <AdminVocabularyGrid class="mt-5" />
+      </v-window-item>
+      <v-window-item value="UNIT"> UNIT </v-window-item>
+      <v-window-item value="WORD"> WORD </v-window-item>
     </v-window>
 
     <v-footer :color="themeStore.theme" class="mt-3" border>
       <v-row justify="center">
         <v-col class="text-center" cols="12">
-          <p>{{ new Date().getFullYear() }} — <strong>㈜ 기묘한</strong></p>
+          <p>
+            <strong>Email:</strong> sangwoonin@gmail.com
+            <v-icon
+              class="ms-1"
+              size="small"
+              icon="mdi-emoticon-kiss-outline"
+            ></v-icon>
+          </p>
+
+          <p>Copyright ⓒ 2023. coldrain-f. All rights reserved.</p>
         </v-col>
       </v-row>
     </v-footer>
@@ -143,15 +200,14 @@ import LearningHome from "@/components/learning/LearningHome.vue";
 import LearningStart from "@/components/learning/LearningStart.vue";
 import LearningPlannerDialog from "@/components/learning/LearningPlannerDialog.vue";
 import AdminHome from "@/components/admin/AdminHome.vue";
+import AdminVocabularyGrid from "@/components/admin/AdminVocabularyGrid.vue";
 
 import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import { useCommonStore } from "@/stores/common";
-
-const tab = ref(null);
 
 // Pinia
 const synthStore = useSpeechSynthesisStore();
@@ -171,13 +227,46 @@ const onClickThemeApply = () => {
   showThemeDialog.value = false;
 };
 
+// Tab
+const currentTabItem = ref(null);
+
+const adminTabitems = ref([]);
+
+const changeAdminTabItem = (item) => {
+  // 기존에 열린 관리자 탭 아이템 제거
+  closeAdminTabItem();
+
+  // 클릭한 관리자 탭 아이템 오픈
+  openAdminTabItem(item);
+
+  nextTick(() => {
+    currentTabItem.value = item;
+  });
+};
+
+const closeAdminTabItem = () => {
+  adminTabitems.value.splice(0);
+};
+
+const openAdminTabItem = (item) => {
+  adminTabitems.value.push(item);
+};
+
+const isAdminTabItem = (item) => {
+  item = item.toUpperCase();
+  return ["VOCABULARY", "UNIT", "WORD"].includes(item);
+};
+
+watch(currentTabItem, () => {
+  if (!isAdminTabItem(currentTabItem.value)) {
+    closeAdminTabItem();
+  }
+});
+
 // Planner
 const showPlannerDialog = ref(false);
 
-/**
- * 한국의 현재 시간을 가지고 오는 함수
- * Format: 오후 9:31:25
- */
+// 한국의 현재 시간을 가지고 오는 함수 ( Format: 오후 9:31:25 )
 const getCurrentDateTime = () => {
   return new Intl.DateTimeFormat("ko-KR", {
     hour: "numeric",
@@ -187,7 +276,7 @@ const getCurrentDateTime = () => {
   }).format();
 };
 
-// 1초 간격으로 현재 시간을 재설정 하는 Interval
+// 초 단위 현재 시간 갱신 인터벌
 const intervalCurrentDateTime = () => {
   setInterval(() => {
     currentDateTime.value = getCurrentDateTime();
@@ -195,10 +284,15 @@ const intervalCurrentDateTime = () => {
 };
 
 // 현재 시간
-const currentDateTime = ref(getCurrentDateTime());
+const currentDateTime = ref();
 
 onMounted(() => {
   synthStore.initializeSpeechSynthesis();
+
+  // 현재 시간 초기값 설정
+  currentDateTime.value = getCurrentDateTime();
+
+  // 초 단위 현재 시간 갱신 인터벌 시작
   intervalCurrentDateTime();
 });
 </script>

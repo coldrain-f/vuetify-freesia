@@ -1,41 +1,62 @@
 <template>
-  <v-row>
-    <v-col cols="4">
-      <v-btn size="small" color="primary" class="w-100">
-        <v-icon start icon="mdi-book-search-outline"></v-icon>
-        SEARCH
-      </v-btn>
-    </v-col>
-    <v-col cols="8" class="text-end">
-      <v-btn size="small" color="info">
-        <v-icon start icon="mdi-book-plus-outline"></v-icon>
-        ADD
-      </v-btn>
-      <v-btn size="small" color="warning" class="ml-2">
-        <v-icon start icon="mdi-book-edit-outline"></v-icon>
-        UPDATE
-      </v-btn>
-      <v-btn size="small" color="error" class="ml-2">
-        <v-icon start icon="mdi-book-remove-outline"></v-icon>
-        DELETE
-      </v-btn>
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col cols="12">
-      <ag-grid-vue
-        style="width: 100%; height: 310px"
-        class="ag-theme-alpine"
-        :columnDefs="columnDefs"
-        :rowData="rowData"
-        :defaultColDef="defaultColDef"
-        :pagination="true"
-        :paginationPageSize="5"
-        rowSelection="single"
-      >
-      </ag-grid-vue>
-    </v-col>
-  </v-row>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <v-select
+          chips
+          label="Language"
+          variant="underlined"
+          modelValue="ALL"
+          :items="['ALL', 'English', 'Japanese']"
+          hide-details
+        >
+        </v-select>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col cols="4">
+        <v-btn size="small" class="w-100">
+          <v-icon start icon="mdi-note-search-outline" style="margin-top: 1px">
+          </v-icon>
+          SEARCH
+        </v-btn>
+      </v-col>
+      <v-col cols="8" class="text-end">
+        <v-btn size="small" color="primary">
+          <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
+          </v-icon>
+          ADD
+        </v-btn>
+        <v-btn size="small" color="info" class="ml-2">
+          <v-icon start icon="mdi-note-edit-outline" style="margin-top: 1px">
+          </v-icon>
+          UPDATE
+        </v-btn>
+        <v-btn size="small" color="error" class="ml-2">
+          <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
+          </v-icon>
+          DELETE
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col cols="12">
+        <ag-grid-vue
+          style="width: 100%; height: 310px"
+          class="ag-theme-alpine"
+          :columnDefs="columnDefs"
+          :rowData="rowData"
+          :defaultColDef="defaultColDef"
+          :pagination="true"
+          :paginationPageSize="5"
+          rowSelection="single"
+        >
+        </ag-grid-vue>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>

@@ -1,34 +1,36 @@
 <template>
   <div>
-    <v-img
-      class="mt-10 border"
-      height="375"
-      width="500"
-      :aspect-ratio="1"
-      :src="titleImage"
-      cover
-      alt="image not found."
-    >
-    </v-img>
-  </div>
-  <v-card flat>
-    <v-card-text> </v-card-text>
-    <v-card-actions v-if="false">
-      <v-btn
-        class="w-100"
-        size="default"
-        :color="themeStore.theme"
-        variant="flat"
-        @click="showPlannerDialog = true"
+    <div>
+      <v-img
+        class="mt-10 border"
+        height="375"
+        width="500"
+        :aspect-ratio="1"
+        :src="titleImage"
+        cover
+        alt="image not found."
       >
-        <v-icon start icon="mdi-calendar-search-outline"></v-icon>
-        PLANNER
-      </v-btn>
-    </v-card-actions>
+      </v-img>
+    </div>
+    <v-card flat>
+      <v-card-text> </v-card-text>
+      <v-card-actions v-if="false">
+        <v-btn
+          class="w-100"
+          size="default"
+          :color="themeStore.theme"
+          variant="flat"
+          @click="showPlannerDialog = true"
+        >
+          <v-icon start icon="mdi-calendar-search-outline"></v-icon>
+          PLANNER
+        </v-btn>
+      </v-card-actions>
 
-    <!-- 학습 플래너 다이얼로그 -->
-    <LearningPlannerDialog v-model="showPlannerDialog" />
-  </v-card>
+      <!-- 학습 플래너 다이얼로그 -->
+      <LearningPlannerDialog v-model="showPlannerDialog" />
+    </v-card>
+  </div>
 </template>
 
 <script setup>
