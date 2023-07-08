@@ -2,13 +2,13 @@
   <v-container>
     <v-row>
       <v-col cols="4">
-        <v-btn size="small" class="w-100">
+        <v-btn size="small" class="w-100" @click="performSearch">
           <v-icon start icon="mdi-note-search-outline" class="margin-top-1px">
           </v-icon>
           SEARCH
         </v-btn>
       </v-col>
-      <v-col cols="8" class="text-end">
+      <v-col cols="8" class="text-end" v-if="isSearchPerformed">
         <v-btn size="small" color="primary" @click="showAddDialog = true">
           <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
           </v-icon>
@@ -69,6 +69,12 @@ import AdminVocabularyGridUpdateDialog from "./AdminVocabularyGridUpdateDialog.v
 import { AgGridVue } from "ag-grid-vue3"; // the AG Grid Vue Component
 
 import { ref } from "vue";
+
+const isSearchPerformed = ref(false);
+
+const performSearch = () => {
+  isSearchPerformed.value = true;
+};
 
 // CRUD Dialogs
 const showAddDialog = ref(false);
