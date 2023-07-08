@@ -67,6 +67,14 @@
         </v-card>
       </v-window-item>
     </v-window>
+
+    <v-footer :color="themeStore.theme" class="mt-3" border>
+      <v-row justify="center">
+        <v-col class="text-center" cols="12">
+          <p>{{ new Date().getFullYear() }} — <strong>㈜ 기묘한</strong></p>
+        </v-col>
+      </v-row>
+    </v-footer>
   </v-card>
 
   <!-- Theme 설정 다이얼로그 -->

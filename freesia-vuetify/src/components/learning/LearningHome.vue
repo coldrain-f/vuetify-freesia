@@ -1,16 +1,19 @@
 <template>
+  <div>
+    <v-img
+      class="mt-10 border"
+      height="375"
+      width="500"
+      :aspect-ratio="1"
+      :src="titleImage"
+      cover
+      alt="image not found."
+    >
+    </v-img>
+  </div>
   <v-card flat>
-    <v-card-text>
-      <v-img
-        height="375"
-        :aspect-ratio="1"
-        :src="titleImage"
-        cover
-        alt="image not found."
-      >
-      </v-img>
-    </v-card-text>
-    <v-card-actions>
+    <v-card-text> </v-card-text>
+    <v-card-actions v-if="false">
       <v-btn
         class="w-100"
         size="default"
