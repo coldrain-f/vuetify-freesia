@@ -1,20 +1,6 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
-        <v-select
-          chips
-          label="Language"
-          variant="underlined"
-          modelValue="ALL"
-          :items="['ALL', 'English', 'Japanese']"
-          hide-details
-        >
-        </v-select>
-      </v-col>
-    </v-row>
-
-    <v-row>
       <v-col cols="4">
         <v-btn size="small" class="w-100">
           <v-icon start icon="mdi-note-search-outline" class="margin-top-1px">
@@ -23,7 +9,7 @@
         </v-btn>
       </v-col>
       <v-col cols="8" class="text-end">
-        <v-btn size="small" color="primary">
+        <v-btn size="small" color="primary" @click="showAddDialog = true">
           <v-icon start icon="mdi-note-plus-outline" class="margin-top-1px">
           </v-icon>
           ADD
@@ -56,14 +42,22 @@
         </ag-grid-vue>
       </v-col>
     </v-row>
+
+    <!-- 단어장 등록 다이얼로그 -->
+    <AdminVocabularyGridAddDialog v-model="showAddDialog" />
   </v-container>
 </template>
 
 <script setup>
+import AdminVocabularyGridAddDialog from "./AdminVocabularyGridAddDialog.vue";
+
 // AG Grid Vue
 import { AgGridVue } from "ag-grid-vue3"; // the AG Grid Vue Component
 
 import { ref } from "vue";
+
+// CRUD Dialogs
+const showAddDialog = ref(false);
 
 const defaultColDef = ref({
   sortable: false,
