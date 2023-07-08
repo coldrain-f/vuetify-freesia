@@ -80,7 +80,7 @@
           </v-menu>
           <!-- End:: Admin Tab Items -->
 
-          <v-tab value="ANALYZE" disabled> ANALYZE </v-tab>
+          <v-tab value="ANALYZE"> ANALYZE </v-tab>
           <v-tab value="RANK"> RANK </v-tab>
         </v-tabs>
       </template>
