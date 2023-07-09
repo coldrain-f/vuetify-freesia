@@ -79,7 +79,7 @@ import AdminVocabularyGridUpdateDialog from "./AdminVocabularyGridUpdateDialog.v
 import AdminVocabularyGridDeleteDialog from "./AdminVocabularyGridDeleteDialog.vue";
 
 // AG Grid Vue
-import { AgGridVue } from "ag-grid-vue3"; // the AG Grid Vue Component
+import { AgGridVue } from "ag-grid-vue3";
 
 import { ref } from "vue";
 

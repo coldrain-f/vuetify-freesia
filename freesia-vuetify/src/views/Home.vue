@@ -100,10 +100,14 @@
         </v-card>
       </v-window-item>
 
+      <!-- 단어장 관리 화면 -->
       <v-window-item value="VOCABULARY">
         <AdminVocabularyGrid class="mt-5" />
       </v-window-item>
-      <v-window-item value="UNIT"> UNIT </v-window-item>
+      <!-- 유닛 관리 화면 -->
+      <v-window-item value="UNIT">
+        <AdminUnitGrid class="mt-5" />
+      </v-window-item>
       <v-window-item value="WORD"> WORD </v-window-item>
     </v-window>
 
@@ -138,6 +142,7 @@ import LearningStart from "@/components/learning/LearningStart.vue";
 import LearningPlannerDialog from "@/components/learning/LearningPlannerDialog.vue";
 import AdminHome from "@/components/admin/AdminHome.vue";
 import AdminVocabularyGrid from "@/components/admin/AdminVocabularyGrid.vue";
+import AdminUnitGrid from "@/components/admin/AdminUnitGrid.vue";
 import MoreThemeSettingDialog from "@/components/more/MoreThemeSettingDialog.vue";
 import CommonMessageDialog from "@/components/common/CommonMessageDialog.vue";
 
