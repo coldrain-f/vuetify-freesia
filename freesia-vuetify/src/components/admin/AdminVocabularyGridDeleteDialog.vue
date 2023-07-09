@@ -25,7 +25,7 @@
         />
         <v-text-field
           label="Unit Count"
-          :model-value="props.selectedVocabulary.unitCount"
+          :model-value="props.selectedVocabulary.unitCount + '개'"
           readonly
           append-inner-icon="mdi-read"
         >

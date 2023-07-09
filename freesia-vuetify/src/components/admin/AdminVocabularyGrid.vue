@@ -164,6 +164,10 @@ const columnDefs = [
     resizable: true,
     sortable: true,
     filter: true,
+    cellRenderer: (params) => {
+      const value = params.value;
+      return value + "개";
+    },
   },
   {
     headerName: "등록일",

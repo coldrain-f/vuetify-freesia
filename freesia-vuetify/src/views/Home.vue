@@ -24,18 +24,11 @@
           transition="slide-x-transition"
         >
           <v-list>
-            <v-list-item :value="1" disabled>
-              <v-list-item-title> TTS(Text-To-Speech) </v-list-item-title>
+            <v-list-item @click="showThemeDialog = true">
+              <v-list-item-title> Theme </v-list-item-title>
             </v-list-item>
-            <v-list-item :value="2">
-              <v-list-item-title @click="showThemeDialog = true">
-                Theme
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item :value="3">
-              <v-list-item-title @click="showPlannerDialog = true">
-                Planner
-              </v-list-item-title>
+            <v-list-item @click="showPlannerDialog = true">
+              <v-list-item-title> Planner </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -44,8 +37,6 @@
       <template v-slot:extension>
         <v-tabs v-model="currentTabItem" align-tabs="title">
           <v-tab value="LEARN"> LEARN </v-tab>
-          <!-- 미사용 업데이트 후 삭제 예정 -->
-          <v-tab value="admin" v-if="false"> ADMIN </v-tab>
 
           <!-- Begin:: Admin Tab Items -->
           <v-tab v-for="item in adminTabitems" :key="item" :value="item">

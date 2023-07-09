@@ -19,7 +19,7 @@
           required
           :messages="
             !isZeroUnitCount()
-              ? '언어는 소속된 Unit 개수가 0인 경우에만 변경할 수 있습니다.'
+              ? '언어는 소속된 Unit 개수가 0개인 경우에만 변경할 수 있습니다.'
               : ''
           "
           :class="!isZeroUnitCount() ? 'mb-4' : ''"
@@ -28,7 +28,7 @@
         </v-select>
         <v-text-field
           label="Unit Count"
-          :model-value="props.selectedVocabulary.unitCount"
+          :model-value="props.selectedVocabulary.unitCount + '개'"
           readonly
           append-inner-icon="mdi-read"
         >
