@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-// 이름 변경 예정 useCommonStore = useCommonMessageDialogStore
 export const useCommonMessageDialogStore = defineStore(
   "commonMessageDialog",
   () => {
