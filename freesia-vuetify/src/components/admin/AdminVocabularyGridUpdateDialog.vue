@@ -9,15 +9,33 @@
         </v-btn>
       </template>
       <v-card-text>
-        <v-text-field label="Title" v-model="formData.title"> </v-text-field>
+        <v-text-field label="Title" v-model="formData.title" required>
+        </v-text-field>
         <v-select
           label="Language"
           :items="['English', 'Japanese']"
           v-model="formData.language"
-          readonly
+          :readonly="!isZeroUnitCount()"
+          required
+          :messages="
+            !isZeroUnitCount()
+              ? '언어는 소속된 Unit 개수가 0인 경우에만 변경할 수 있습니다.'
+              : ''
+          "
+          :class="!isZeroUnitCount() ? 'mb-4' : ''"
+          :append-inner-icon="
+            !isZeroUnitCount()
+              ? 'mdi-file-document-remove-outline'
+              : 'mdi-menu-down'
+          "
         >
         </v-select>
-        <v-text-field label="Unit Count" v-model="formData.unitCount">
+        <v-text-field
+          label="Unit Count"
+          :model-value="props.selectedVocabulary.unitCount"
+          readonly
+          append-inner-icon="mdi-file-document-remove-outline"
+        >
         </v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
@@ -75,6 +93,10 @@ watch(props.selectedVocabulary, (v) => {
 
 const isNullVocabulary = (v) => {
   return v.title == null || v.language == null || v.unitCount == null;
+};
+
+const isZeroUnitCount = () => {
+  return props.selectedVocabulary.unitCount == 0;
 };
 
 const onClick = () => {
