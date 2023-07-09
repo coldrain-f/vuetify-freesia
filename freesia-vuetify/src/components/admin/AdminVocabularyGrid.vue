@@ -56,6 +56,7 @@
           :paginationPageSize="5"
           rowSelection="single"
           @selectionChanged="onSelectionChanged"
+          @grid-ready="onGridReady"
         >
         </ag-grid-vue>
       </v-col>
@@ -86,9 +87,16 @@ import AdminVocabularyGridDeleteDialog from "./AdminVocabularyGridDeleteDialog.v
 // AG Grid Vue
 import { AgGridVue } from "ag-grid-vue3";
 
-import { ref } from "vue";
+import { inject, ref } from "vue";
 
-const isSearchPerformed = ref(false);
+const gridApi = ref(null);
+
+const onGridReady = (params) => {
+  gridApi.value = params.api;
+};
+
+const isSearchPerformed = inject("isVocabularySearchPerformed");
+const rowData = inject("vocabularyRowData");
 
 const performSearch = () => {
   rowData.value = fetchData();
@@ -191,8 +199,6 @@ const columnDefs = [
     width: 130,
   },
 ];
-
-const rowData = ref([]);
 
 const fetchData = () => {
   return [

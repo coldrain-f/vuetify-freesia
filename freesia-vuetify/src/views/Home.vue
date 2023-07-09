@@ -83,10 +83,6 @@
         <learning-home v-else></learning-home>
       </v-window-item>
 
-      <v-window-item value="ADMIN">
-        <admin-home></admin-home>
-      </v-window-item>
-
       <v-window-item value="ANALYZE">
         <v-card flat>
           <v-card-text>Under development.</v-card-text>
@@ -144,7 +140,6 @@ import LearningHome from "@/components/learning/LearningHome.vue";
 import LearningStart from "@/components/learning/LearningStart.vue";
 import LearningPlannerDialog from "@/components/learning/LearningPlannerDialog.vue";
 
-import AdminHome from "@/components/admin/AdminHome.vue";
 import AdminVocabularyGrid from "@/components/admin/AdminVocabularyGrid.vue";
 import AdminUnitGrid from "@/components/admin/AdminUnitGrid.vue";
 import AdminWordGrid from "@/components/admin/AdminWordGrid.vue";
@@ -157,7 +152,7 @@ import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, provide, ref, watch } from "vue";
 
 // Pinia
 const synthStore = useSpeechSynthesisStore();
@@ -165,6 +160,28 @@ const learningStore = useLearningStore();
 const themeStore = useThemeStore();
 
 const { isLearningStarted } = storeToRefs(learningStore);
+
+/**
+ * 부모가 자식의 상태를 변경하는 방법
+ * 1. 부모에서 자식에서 사용할 상태 선언하고 Provide
+ * 2. 자식에서 부모에서 선언한 상태를 Inject하여 사용
+ * 3. 부모에서 자식의 상태를 변경할 때 선언한 상태를 변경하면 된다.
+ */
+const isVocabularySearchPerformed = ref(false);
+const isUnitisSearchPerformed = ref(false);
+const isWordSearchPerformed = ref(false);
+
+const vocabularyRowData = ref([]);
+const unitRowData = ref([]);
+const wordRowData = ref([]);
+
+provide("isVocabularySearchPerformed", isVocabularySearchPerformed);
+provide("isUnitisSearchPerformed", isUnitisSearchPerformed);
+provide("isWordSearchPerformed", isWordSearchPerformed);
+
+provide("vocabularyRowData", vocabularyRowData);
+provide("unitRowData", unitRowData);
+provide("wordRowData", wordRowData);
 
 // Theme
 const showThemeDialog = ref(false);
@@ -174,12 +191,26 @@ const currentTabItem = ref(null);
 
 const adminTabitems = ref([]);
 
+// 모든 관리자 그리드의 상태를 초기화한다.
+const resetAllAdminGridData = () => {
+  isVocabularySearchPerformed.value = false;
+  isUnitisSearchPerformed.value = false;
+  isWordSearchPerformed.value = false;
+
+  vocabularyRowData.value = [];
+  unitRowData.value = [];
+  wordRowData.value = [];
+};
+
 const changeAdminTabItem = (item) => {
   // 기존에 열린 관리자 탭 아이템 제거
   closeAdminTabItem();
 
   // 클릭한 관리자 탭 아이템 오픈
   openAdminTabItem(item);
+
+  // Grid 검색 상태 초기화
+  resetAllAdminGridData();
 
   nextTick(() => {
     currentTabItem.value = item;

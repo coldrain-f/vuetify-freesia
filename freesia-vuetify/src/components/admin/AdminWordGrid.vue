@@ -101,11 +101,12 @@
 // AG Grid Vue
 import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
-import { ref } from "vue";
+import { inject } from "vue";
 
 const themeStore = useThemeStore();
 
-const isSearchPerformed = ref(false);
+const isSearchPerformed = inject("isWordSearchPerformed");
+const rowData = inject("wordRowData");
 
 const performSearch = () => {
   rowData.value = fetchData();
@@ -172,8 +173,6 @@ const columnDefs = [
     width: 130,
   },
 ];
-
-const rowData = ref([]);
 
 const fetchData = () => {
   return [
