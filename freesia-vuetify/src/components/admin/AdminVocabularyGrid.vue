@@ -8,8 +8,13 @@
           SEARCH
         </v-btn>
       </v-col>
-      <v-col cols="8" class="text-end" v-if="isSearchPerformed">
-        <v-btn size="small" color="primary" @click="showAddDialog = true">
+      <v-col cols="8" class="text-end">
+        <v-btn
+          size="small"
+          color="primary"
+          @click="showAddDialog = true"
+          :disabled="!isSearchPerformed"
+        >
           <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
           </v-icon>
           ADD
@@ -19,7 +24,7 @@
           color="info"
           class="ml-2"
           @click="showUpdateDialog = true"
-          :disabled="!selectedVocabulary.title"
+          :disabled="!selectedVocabulary.title || !isSearchPerformed"
         >
           <v-icon start icon="mdi-note-edit-outline" style="margin-top: 1px">
           </v-icon>
@@ -30,7 +35,7 @@
           color="error"
           class="ml-2"
           @click="showDeleteDialog = true"
-          :disabled="!selectedVocabulary.title"
+          :disabled="!selectedVocabulary.title || !isSearchPerformed"
         >
           <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
           </v-icon>
@@ -86,6 +91,7 @@ import { ref } from "vue";
 const isSearchPerformed = ref(false);
 
 const performSearch = () => {
+  rowData.value = fetchData();
   isSearchPerformed.value = true;
 };
 
@@ -124,8 +130,9 @@ const onSelectionChanged = (e) => {
 };
 
 const defaultColDef = ref({
-  sortable: false,
-  filter: false,
+  resizable: true,
+  sortable: true,
+  filter: true,
 });
 
 const columnDefs = [
@@ -135,23 +142,19 @@ const columnDefs = [
     pinned: true,
     headerCheckboxSelection: false, // 헤더 체크박스 disable
     checkboxSelection: true,
+    resizable: false,
     sortable: false,
+    filter: false,
   },
   {
     headerName: "제목",
     field: "title",
     width: 210,
-    resizable: true,
-    sortable: true,
-    filter: true,
   },
   {
     headerName: "언어",
     field: "language",
     width: 130,
-    resizable: true,
-    sortable: true,
-    filter: true,
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
       values: ["English", "Japanese"],
@@ -173,9 +176,6 @@ const columnDefs = [
     headerName: "단위 개수",
     field: "unitCount",
     width: 130,
-    resizable: true,
-    sortable: true,
-    filter: true,
     cellRenderer: (params) => {
       return params.value + "개";
     },
@@ -184,64 +184,62 @@ const columnDefs = [
     headerName: "등록일",
     field: "createdAt",
     width: 130,
-    resizable: true,
-    sortable: true,
-    filter: true,
   },
   {
     headerName: "수정일",
     field: "modifiedAt",
     width: 130,
-    resizable: true,
-    sortable: true,
-    filter: true,
   },
 ];
 
-const rowData = ref([
-  {
-    title: "단어가 읽기다 기본편",
-    language: "English",
-    unitCount: 0,
-    createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-  },
-  {
-    title: "단어가 읽기다 실력편",
-    language: "English",
-    unitCount: 1,
-    createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-  },
-  {
-    title: "일본어 JLPT N5급",
-    language: "Japanese",
-    unitCount: 2,
-    createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-  },
-  {
-    title: "일본어 JLPT N4급",
-    language: "Japanese",
-    unitCount: 3,
-    createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-  },
-  {
-    title: "일본어 JLPT N3급",
-    language: "Japanese",
-    unitCount: 4,
-    createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-  },
-  {
-    title: "일본어 JLPT N2급",
-    language: "Japanese",
-    unitCount: 5,
-    createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-  },
-]);
+const rowData = ref([]);
+
+const fetchData = () => {
+  return [
+    {
+      title: "단어가 읽기다 기본편",
+      language: "English",
+      unitCount: 0,
+      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+    },
+    {
+      title: "단어가 읽기다 실력편",
+      language: "English",
+      unitCount: 1,
+      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+    },
+    {
+      title: "일본어 JLPT N5급",
+      language: "Japanese",
+      unitCount: 2,
+      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+    },
+    {
+      title: "일본어 JLPT N4급",
+      language: "Japanese",
+      unitCount: 3,
+      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+    },
+    {
+      title: "일본어 JLPT N3급",
+      language: "Japanese",
+      unitCount: 4,
+      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+    },
+    {
+      title: "일본어 JLPT N2급",
+      language: "Japanese",
+      unitCount: 5,
+      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
+    },
+  ];
+};
 </script>
 
 <style scoped></style>

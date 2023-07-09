@@ -108,7 +108,10 @@
       <v-window-item value="UNIT">
         <AdminUnitGrid class="mt-5" />
       </v-window-item>
-      <v-window-item value="WORD"> WORD </v-window-item>
+      <!-- 단어 관리 화면 -->
+      <v-window-item value="WORD">
+        <AdminWordGrid class="mt-5" />
+      </v-window-item>
     </v-window>
 
     <v-footer :color="themeStore.theme" border>
@@ -140,10 +143,14 @@
 import LearningHome from "@/components/learning/LearningHome.vue";
 import LearningStart from "@/components/learning/LearningStart.vue";
 import LearningPlannerDialog from "@/components/learning/LearningPlannerDialog.vue";
+
 import AdminHome from "@/components/admin/AdminHome.vue";
 import AdminVocabularyGrid from "@/components/admin/AdminVocabularyGrid.vue";
 import AdminUnitGrid from "@/components/admin/AdminUnitGrid.vue";
+import AdminWordGrid from "@/components/admin/AdminWordGrid.vue";
+
 import MoreThemeSettingDialog from "@/components/more/MoreThemeSettingDialog.vue";
+
 import CommonMessageDialog from "@/components/common/CommonMessageDialog.vue";
 
 import { useLearningStore } from "@/stores/learning";

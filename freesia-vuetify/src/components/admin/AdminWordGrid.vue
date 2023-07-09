@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="7">
         <v-select
           label="Voca"
           variant="underlined"
@@ -13,6 +13,24 @@
           ]"
           item-title="title"
           item-value="vocabularyId"
+          hide-details
+          return-object
+          persistent-hint
+        >
+        </v-select>
+      </v-col>
+      <v-col cols="5">
+        <v-select
+          label="Unit"
+          variant="underlined"
+          density="compact"
+          :modelValue="{ subject: '요리', unitId: 1 }"
+          :items="[
+            { subject: '요리', unitId: 1 },
+            { subject: '일상 1', unitId: 2 },
+          ]"
+          item-title="subject"
+          item-value="unitId"
           hide-details
           return-object
           persistent-hint
@@ -59,7 +77,10 @@
 
     <v-row>
       <v-col cols="12">
-        <h4 :class="`text-${themeStore.theme}`">【 단어가 읽기다 기본편 】</h4>
+        <h4 :class="`text-${themeStore.theme}`">
+          【 단어가 읽기다 기본편 】<span class="ms-2 me-2">》</span>【 요리 -
+          3회독 】
+        </h4>
         <ag-grid-vue
           style="width: 100%; height: 310px"
           class="ag-theme-alpine"
@@ -110,24 +131,34 @@ const columnDefs = [
   },
 
   {
-    headerName: "주제",
-    field: "subject",
-    width: 164,
+    headerName: "학습 단어",
+    field: "studyWord",
+    width: 155,
   },
   {
-    headerName: "단어 개수",
-    field: "wordCount",
+    headerName: "모국 단어",
+    field: "nativeWord",
+    width: 155,
+  },
+  {
+    headerName: "품사",
+    field: "partOfSpeech",
+    width: 130,
+  },
+  {
+    headerName: "맞은 횟수",
+    field: "correctCount",
     width: 116,
     cellRenderer: (params) => {
-      return params.value + "개";
+      return params.value + "회";
     },
   },
   {
-    headerName: "회독수",
-    field: "readCount",
+    headerName: "틀린 횟수",
+    field: "incorrectCount",
     width: 116,
     cellRenderer: (params) => {
-      return params.value + "회독";
+      return params.value + "회";
     },
   },
   {
@@ -147,44 +178,56 @@ const rowData = ref([]);
 const fetchData = () => {
   return [
     {
-      subject: "요리",
-      wordCount: 0,
-      readCount: 0,
+      studyWord: "spice",
+      nativeWord: "양념",
+      partOfSpeech: "명사",
+      correctCount: 0,
+      incorrectCount: 0,
       createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
       modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
     },
     {
-      subject: "일상 1",
-      wordCount: 0,
-      readCount: 0,
+      studyWord: "hot",
+      nativeWord: "뜨거운",
+      partOfSpeech: "형용사",
+      correctCount: 0,
+      incorrectCount: 0,
       createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
       modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
     },
     {
-      subject: "일상 2",
-      wordCount: 0,
-      readCount: 0,
+      studyWord: "add",
+      nativeWord: "추가하다",
+      partOfSpeech: "동사",
+      correctCount: 0,
+      incorrectCount: 0,
       createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
       modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
     },
     {
-      subject: "개인",
-      wordCount: 0,
-      readCount: 0,
+      studyWord: "tea",
+      nativeWord: "(마시는) 차",
+      partOfSpeech: "명사",
+      correctCount: 0,
+      incorrectCount: 0,
       createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
       modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
     },
     {
-      subject: "신체",
-      wordCount: 0,
-      readCount: 0,
+      studyWord: "pot",
+      nativeWord: "주전자",
+      partOfSpeech: "명사",
+      correctCount: 0,
+      incorrectCount: 0,
       createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
       modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
     },
     {
-      subject: "취미 1",
-      wordCount: 0,
-      readCount: 0,
+      studyWord: "tea pot",
+      nativeWord: "찻 주전자",
+      partOfSpeech: "명사",
+      correctCount: 0,
+      incorrectCount: 0,
       createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
       modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
     },
