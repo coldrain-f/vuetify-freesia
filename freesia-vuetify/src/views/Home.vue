@@ -121,11 +121,8 @@
         <v-col class="text-center" cols="12">
           <p>
             <strong>Email:</strong> sangwoonin@gmail.com
-            <v-icon
-              class="ms-1"
-              size="small"
-              icon="mdi-emoticon-kiss-outline"
-            ></v-icon>
+            <v-icon class="ms-1" size="small" icon="mdi-emoticon-kiss-outline">
+            </v-icon>
           </p>
 
           <p>Copyright ⓒ 2023. coldrain-f. All rights reserved.</p>
@@ -134,65 +131,14 @@
     </v-footer>
   </v-card>
 
-  <!-- Theme 설정 다이얼로그 -->
-  <v-dialog v-model="showThemeDialog" width="500">
-    <v-card>
-      <template #title>
-        <span class="text-primary"> ※ Theme </span>
-      </template>
-      <template #append>
-        <v-btn variant="text" icon="mdi-close" @click="showThemeDialog = false">
-        </v-btn>
-      </template>
-      <v-card-text class="mt-5">
-        <v-select
-          v-model="selectedTheme"
-          label="Theme"
-          :items="['primary', 'error', 'info', 'success', 'warning', 'dark']"
-        />
-      </v-card-text>
-      <v-card-actions class="d-flex justify-center">
-        <v-btn color="primary" style="width: 48%" @click="onClickThemeApply()">
-          APPLY
-        </v-btn>
-        <v-btn style="width: 48%" @click="showThemeDialog = false">
-          CANCEL
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-
   <!-- Planner 다이얼로그 -->
   <LearningPlannerDialog v-model="showPlannerDialog" />
 
-  <!-- 공통 메시지 다이얼로그 -->
-  <v-dialog v-model="showMessageDialog" width="auto">
-    <v-card>
-      <template #title>
-        <span class="noto-sans text-primary"> ※ Alert </span>
-      </template>
-      <template #append>
-        <v-btn
-          variant="text"
-          icon="mdi-close"
-          @click="showMessageDialog = false"
-        >
-        </v-btn>
-      </template>
-      <v-card-text>
-        {{ messageDialogText }}
-      </v-card-text>
-      <v-card-actions class="d-flex justify-center">
-        <v-btn
-          style="width: 100%"
-          color="primary"
-          @click="showMessageDialog = false"
-        >
-          CONFIRM
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <!-- Theme 설정 다이얼로그 -->
+  <MoreThemeSettingDialog v-model="showThemeDialog" />
+
+  <!-- 공통 메시지 다잉러로그 -->
+  <CommonMessageDialog />
 </template>
 
 <script setup>
@@ -201,31 +147,24 @@ import LearningStart from "@/components/learning/LearningStart.vue";
 import LearningPlannerDialog from "@/components/learning/LearningPlannerDialog.vue";
 import AdminHome from "@/components/admin/AdminHome.vue";
 import AdminVocabularyGrid from "@/components/admin/AdminVocabularyGrid.vue";
+import MoreThemeSettingDialog from "@/components/more/MoreThemeSettingDialog.vue";
+import CommonMessageDialog from "@/components/common/CommonMessageDialog.vue";
 
 import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
 import { nextTick, onMounted, ref, watch } from "vue";
-import { useCommonStore } from "@/stores/common";
 
 // Pinia
 const synthStore = useSpeechSynthesisStore();
 const learningStore = useLearningStore();
 const themeStore = useThemeStore();
-const commonStore = useCommonStore();
 
 const { isLearningStarted } = storeToRefs(learningStore);
-const { showMessageDialog, messageDialogText } = storeToRefs(commonStore);
 
 // Theme
 const showThemeDialog = ref(false);
-const selectedTheme = ref("primary");
-
-const onClickThemeApply = () => {
-  themeStore.theme = selectedTheme.value;
-  showThemeDialog.value = false;
-};
 
 // Tab
 const currentTabItem = ref(null);
