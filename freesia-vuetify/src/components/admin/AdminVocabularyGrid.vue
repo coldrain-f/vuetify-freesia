@@ -148,13 +148,25 @@ const columnDefs = [
   {
     headerName: "언어",
     field: "language",
-    width: 120,
+    width: 130,
     resizable: true,
     sortable: true,
     filter: true,
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
       values: ["English", "Japanese"],
+    },
+    cellRenderer: (params) => {
+      let url = "https://flags.fmcdn.net/data/flags/mini/";
+
+      if (params.value == "English") {
+        url += "us.png";
+      } else if (params.value == "Japanese") {
+        url += "jp.png";
+      }
+
+      const flagImage = `<img class="flag" border="0" width="15" height="10" src="${url}">`;
+      return flagImage + " " + params.value;
     },
   },
   {
@@ -165,8 +177,7 @@ const columnDefs = [
     sortable: true,
     filter: true,
     cellRenderer: (params) => {
-      const value = params.value;
-      return value + "개";
+      return params.value + "개";
     },
   },
   {
