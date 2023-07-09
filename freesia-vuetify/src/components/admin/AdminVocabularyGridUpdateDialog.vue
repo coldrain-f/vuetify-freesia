@@ -23,18 +23,14 @@
               : ''
           "
           :class="!isZeroUnitCount() ? 'mb-4' : ''"
-          :append-inner-icon="
-            !isZeroUnitCount()
-              ? 'mdi-file-document-remove-outline'
-              : 'mdi-menu-down'
-          "
+          :append-inner-icon="!isZeroUnitCount() ? 'mdi-read' : 'mdi-menu-down'"
         >
         </v-select>
         <v-text-field
           label="Unit Count"
           :model-value="props.selectedVocabulary.unitCount"
           readonly
-          append-inner-icon="mdi-file-document-remove-outline"
+          append-inner-icon="mdi-read"
         >
         </v-text-field>
       </v-card-text>

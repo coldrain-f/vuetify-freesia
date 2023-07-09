@@ -25,7 +25,13 @@
           </v-icon>
           UPDATE
         </v-btn>
-        <v-btn size="small" color="error" class="ml-2">
+        <v-btn
+          size="small"
+          color="error"
+          class="ml-2"
+          @click="showDeleteDialog = true"
+          :disabled="!selectedVocabulary.title"
+        >
           <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
           </v-icon>
           DELETE
@@ -58,12 +64,19 @@
       v-model="showUpdateDialog"
       :selectedVocabulary="selectedVocabulary"
     />
+
+    <!-- 단어장 삭제 다이얼로그 -->
+    <AdminVocabularyGridDeleteDialog
+      v-model="showDeleteDialog"
+      :selectedVocabulary="selectedVocabulary"
+    />
   </v-container>
 </template>
 
 <script setup>
 import AdminVocabularyGridAddDialog from "./AdminVocabularyGridAddDialog.vue";
 import AdminVocabularyGridUpdateDialog from "./AdminVocabularyGridUpdateDialog.vue";
+import AdminVocabularyGridDeleteDialog from "./AdminVocabularyGridDeleteDialog.vue";
 
 // AG Grid Vue
 import { AgGridVue } from "ag-grid-vue3"; // the AG Grid Vue Component
@@ -79,6 +92,7 @@ const performSearch = () => {
 // CRUD Dialogs
 const showAddDialog = ref(false);
 const showUpdateDialog = ref(false);
+const showDeleteDialog = ref(false);
 
 const selectedVocabulary = ref({
   title: null,
