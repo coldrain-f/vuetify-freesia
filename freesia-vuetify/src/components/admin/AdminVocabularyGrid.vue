@@ -13,7 +13,7 @@
           size="small"
           color="primary"
           @click="showAddDialog = true"
-          :disabled="!isSearchPerformed"
+          :disabled="!vocabularyGrid.isSearchPerformed"
         >
           <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
           </v-icon>
@@ -24,7 +24,10 @@
           color="info"
           class="ml-2"
           @click="showUpdateDialog = true"
-          :disabled="!selectedVocabulary.title || !isSearchPerformed"
+          :disabled="
+            !vocabularyGrid.selectedVocabulary.title ||
+            !vocabularyGrid.isSearchPerformed
+          "
         >
           <v-icon start icon="mdi-note-edit-outline" style="margin-top: 1px">
           </v-icon>
@@ -35,7 +38,10 @@
           color="error"
           class="ml-2"
           @click="showDeleteDialog = true"
-          :disabled="!selectedVocabulary.title || !isSearchPerformed"
+          :disabled="
+            !vocabularyGrid.selectedVocabulary.title ||
+            !vocabularyGrid.isSearchPerformed
+          "
         >
           <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
           </v-icon>
@@ -50,7 +56,7 @@
           style="width: 100%; height: 310px"
           class="ag-theme-alpine"
           :columnDefs="columnDefs"
-          :rowData="rowData"
+          :rowData="vocabularyGrid.rowData"
           :defaultColDef="defaultColDef"
           :pagination="true"
           :paginationPageSize="5"
@@ -68,13 +74,13 @@
     <!-- 단어장 수정 다이얼로그 -->
     <AdminVocabularyGridUpdateDialog
       v-model="showUpdateDialog"
-      :selectedVocabulary="selectedVocabulary"
+      :selectedVocabulary="vocabularyGrid.selectedVocabulary"
     />
 
     <!-- 단어장 삭제 다이얼로그 -->
     <AdminVocabularyGridDeleteDialog
       v-model="showDeleteDialog"
-      :selectedVocabulary="selectedVocabulary"
+      :selectedVocabulary="vocabularyGrid.selectedVocabulary"
     />
   </v-container>
 </template>
@@ -95,12 +101,11 @@ const onGridReady = (params) => {
   gridApi.value = params.api;
 };
 
-const isSearchPerformed = inject("isVocabularySearchPerformed");
-const rowData = inject("vocabularyRowData");
+const vocabularyGrid = inject("vocabularyGrid");
 
 const performSearch = () => {
-  rowData.value = fetchData();
-  isSearchPerformed.value = true;
+  vocabularyGrid.rowData = fetchData();
+  vocabularyGrid.isSearchPerformed = true;
 };
 
 // CRUD Dialogs
@@ -108,16 +113,10 @@ const showAddDialog = ref(false);
 const showUpdateDialog = ref(false);
 const showDeleteDialog = ref(false);
 
-const selectedVocabulary = ref({
-  title: null,
-  language: null,
-  unitCount: null,
-});
-
 const onSelectionChanged = (e) => {
   // 체크했다가 풀었을 경우엔 초기화 처리
   if (e.api.getSelectedNodes().length == 0) {
-    Object.assign(selectedVocabulary.value, {
+    Object.assign(vocabularyGrid.selectedVocabulary, {
       title: null,
       language: null,
       unitCount: null,
@@ -130,7 +129,7 @@ const onSelectionChanged = (e) => {
   const selectedData = selectedNodes.map((node) => node.data);
 
   // rowSelection="single" 이므로 항상 0번 Index에만 데이터가 있음.
-  Object.assign(selectedVocabulary.value, {
+  Object.assign(vocabularyGrid.selectedVocabulary, {
     title: selectedData[0].title,
     language: selectedData[0].language,
     unitCount: selectedData[0].unitCount,

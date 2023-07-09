@@ -152,7 +152,7 @@ import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
-import { nextTick, onMounted, provide, ref, watch } from "vue";
+import { nextTick, onMounted, provide, reactive, ref, watch } from "vue";
 
 // Pinia
 const synthStore = useSpeechSynthesisStore();
@@ -167,19 +167,23 @@ const { isLearningStarted } = storeToRefs(learningStore);
  * 2. 자식에서 부모에서 선언한 상태를 Inject하여 사용
  * 3. 부모에서 자식의 상태를 변경할 때 선언한 상태를 변경하면 된다.
  */
-const isVocabularySearchPerformed = ref(false);
 const isUnitisSearchPerformed = ref(false);
 const isWordSearchPerformed = ref(false);
 
-const vocabularyRowData = ref([]);
 const unitRowData = ref([]);
 const wordRowData = ref([]);
 
-provide("isVocabularySearchPerformed", isVocabularySearchPerformed);
+const vocabularyGrid = reactive({
+  isSearchPerformed: false,
+  rowData: [],
+  selectedVocabulary: { title: null, language: null, unitCount: null },
+});
+
+provide("vocabularyGrid", vocabularyGrid);
+
 provide("isUnitisSearchPerformed", isUnitisSearchPerformed);
 provide("isWordSearchPerformed", isWordSearchPerformed);
 
-provide("vocabularyRowData", vocabularyRowData);
 provide("unitRowData", unitRowData);
 provide("wordRowData", wordRowData);
 
@@ -193,13 +197,21 @@ const adminTabitems = ref([]);
 
 // 모든 관리자 그리드의 상태를 초기화한다.
 const resetAllAdminGridData = () => {
-  isVocabularySearchPerformed.value = false;
+  vocabularyGrid.isSearchPerformed = false;
+
   isUnitisSearchPerformed.value = false;
   isWordSearchPerformed.value = false;
 
-  vocabularyRowData.value = [];
+  vocabularyGrid.rowData = [];
+
   unitRowData.value = [];
   wordRowData.value = [];
+
+  Object.assign(vocabularyGrid.selectedVocabulary, {
+    title: null,
+    language: null,
+    unitCount: null,
+  });
 };
 
 const changeAdminTabItem = (item) => {
