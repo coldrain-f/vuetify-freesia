@@ -49,6 +49,7 @@
 
     <v-row>
       <v-col cols="12">
+        <h4 :class="`text-${themeStore.theme}`">【 단어가 읽기다 기본편 】</h4>
         <ag-grid-vue
           style="width: 100%; height: 310px"
           class="ag-theme-alpine"
@@ -67,8 +68,11 @@
 
 <script setup>
 // AG Grid Vue
+import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
 import { ref } from "vue";
+
+const themeStore = useThemeStore();
 
 const defaultColDef = {
   resizable: true,
