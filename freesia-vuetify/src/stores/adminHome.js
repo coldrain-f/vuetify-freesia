@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { utils } from "@/common/utils";
+import { utils } from "@/common/commonUtils";
 import { vocabularyService } from "@/service/vocabularyService";
 import { unitService } from "@/service/unitService";
 
