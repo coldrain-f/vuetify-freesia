@@ -121,13 +121,14 @@ const onSelectionChanged = (e) => {
   }
 
   const selectedNodes = e.api.getSelectedNodes();
-  const selectedData = selectedNodes.map((node) => node.data);
 
-  // rowSelection="single" 이므로 항상 0번 Index에만 데이터가 있음.
+  // 단일 선택 이므로 항상 0번 Index에만 데이터가 있음.
+  const selectedData = selectedNodes.map((node) => node.data)[0];
+
   Object.assign(vocabularyGridManager.selectedVocabulary, {
-    title: selectedData[0].title,
-    language: selectedData[0].language,
-    unitCount: selectedData[0].unitCount,
+    title: selectedData.title,
+    language: selectedData.language,
+    unitCount: selectedData.unitCount,
   });
 };
 

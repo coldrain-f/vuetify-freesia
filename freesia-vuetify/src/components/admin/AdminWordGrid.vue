@@ -48,28 +48,25 @@
       </v-col>
       <v-col cols="8" class="text-end">
         <v-btn size="small" color="primary" :disabled="!isSearchPerformed">
-          <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-plus-outline"> </v-icon>
           ADD
         </v-btn>
         <v-btn
           size="small"
           color="info"
           class="ml-2"
-          :disabled="!isSearchPerformed"
+          :disabled="isEmptyObject(selectedWord) || !isSearchPerformed"
         >
-          <v-icon start icon="mdi-note-edit-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-edit-outline"> </v-icon>
           UPDATE
         </v-btn>
         <v-btn
           size="small"
           color="error"
           class="ml-2"
-          :disabled="!isSearchPerformed"
+          :disabled="isEmptyObject(selectedWord) || !isSearchPerformed"
         >
-          <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-remove-outline"> </v-icon>
           DELETE
         </v-btn>
       </v-col>
@@ -90,6 +87,8 @@
           :pagination="true"
           :paginationPageSize="5"
           rowSelection="single"
+          @selectionChanged="onSelectionChanged"
+          @grid-ready="onGridReady"
         >
         </ag-grid-vue>
       </v-col>
@@ -99,18 +98,50 @@
 
 <script setup>
 // AG Grid Vue
+import { commonUtils } from "@/common/commonUtils";
 import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
-import { inject } from "vue";
+import { inject, ref, toRefs } from "vue";
+
+// Utils
+const { isEmptyObject } = commonUtils;
 
 const themeStore = useThemeStore();
 
-const isSearchPerformed = inject("isWordSearchPerformed");
-const rowData = inject("wordRowData");
+const wordGridManager = inject("wordGridManager");
+
+const { isSearchPerformed, rowData, selectedWord } = toRefs(wordGridManager);
 
 const performSearch = () => {
   rowData.value = fetchData();
   isSearchPerformed.value = true;
+};
+
+const onSelectionChanged = (e) => {
+  // 체크했다가 풀었을 경우엔 초기화 처리
+  if (e.api.getSelectedNodes().length == 0) {
+    wordGridManager.selectedWord = {};
+    return;
+  }
+
+  const selectedNodes = e.api.getSelectedNodes();
+
+  // 단일 선택 이므로 항상 0번 Index에만 데이터가 있음.
+  const selectedData = selectedNodes.map((node) => node.data)[0];
+
+  Object.assign(wordGridManager.selectedWord, {
+    studyWord: selectedData.studyWord,
+    nativeWord: selectedData.nativeWord,
+    partOfSpeech: selectedData.partOfSpeech,
+    incorrectCount: selectedData.incorrectCount,
+    correctCount: selectedData.correctCount,
+  });
+};
+
+const gridApi = ref(null);
+
+const onGridReady = (params) => {
+  gridApi.value = params.api;
 };
 
 const defaultColDef = {

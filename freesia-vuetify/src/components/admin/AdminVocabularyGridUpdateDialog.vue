@@ -66,11 +66,7 @@ const showDialog = computed({
   },
 });
 
-const formData = reactive({
-  title: null,
-  language: null,
-  unitCount: null,
-});
+const formData = reactive({});
 
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
 watch(props.selectedVocabulary, (v) => {
@@ -80,11 +76,9 @@ watch(props.selectedVocabulary, (v) => {
     return;
   }
 
-  Object.assign(formData, {
-    title: v.title,
-    language: v.language,
-    unitCount: v.unitCount,
-  });
+  formData.title = v.title;
+  formData.language = v.language;
+  formData.unitCount = v.unitCount;
 });
 
 const isNullVocabulary = (v) => {
