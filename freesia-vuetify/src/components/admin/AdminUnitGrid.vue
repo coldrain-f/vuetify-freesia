@@ -23,8 +23,7 @@
     <v-row class="mt-5">
       <v-col cols="4">
         <v-btn size="small" class="w-100" @click="performSearch">
-          <v-icon start icon="mdi-note-search-outline" class="margin-top-1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-search-outline"> </v-icon>
           SEARCH
         </v-btn>
       </v-col>
@@ -38,20 +37,18 @@
           size="small"
           color="info"
           class="ml-2"
-          :disabled="!isSearchPerformed"
+          :disabled="isEmptyObject(selectedUnit) || !isSearchPerformed"
         >
-          <v-icon start icon="mdi-note-edit-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-edit-outline"> </v-icon>
           UPDATE
         </v-btn>
         <v-btn
           size="small"
           color="error"
           class="ml-2"
-          :disabled="!isSearchPerformed"
+          :disabled="isEmptyObject(selectedUnit) || !isSearchPerformed"
         >
-          <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-remove-outline"> </v-icon>
           DELETE
         </v-btn>
       </v-col>
@@ -69,6 +66,8 @@
           :pagination="true"
           :paginationPageSize="5"
           rowSelection="single"
+          @selectionChanged="onSelectionChanged"
+          @grid-ready="onGridReady"
         >
         </ag-grid-vue>
       </v-col>
@@ -80,18 +79,46 @@
 // AG Grid Vue
 import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
-import { inject } from "vue";
+import { commonUtils } from "@/common/commonUtils";
+import { inject, ref, toRefs } from "vue";
+
+// Utils
+const { isEmptyObject } = commonUtils;
 
 const themeStore = useThemeStore();
 
-const isSearchPerformed = inject("isUnitSearchPerformed");
-const rowData = inject("unitRowData");
-
 const unitGridManager = inject("unitGridManager");
 
+// readonly
+const { isSearchPerformed, rowData, selectedUnit } = toRefs(unitGridManager);
+
 const performSearch = () => {
-  rowData.value = fetchData();
-  isSearchPerformed.value = true;
+  unitGridManager.rowData = fetchData();
+  unitGridManager.isSearchPerformed = true;
+};
+
+const gridApi = ref(null);
+
+const onGridReady = (params) => {
+  gridApi.value = params.api;
+};
+
+const onSelectionChanged = (e) => {
+  // 체크했다가 풀었을 경우엔 초기화 처리
+  if (e.api.getSelectedNodes().length == 0) {
+    unitGridManager.selectedUnit = {};
+    return;
+  }
+
+  const selectedNodes = e.api.getSelectedNodes();
+  const selectedData = selectedNodes.map((node) => node.data);
+
+  // rowSelection="single" 이므로 항상 0번 Index에만 데이터가 있음.
+  Object.assign(unitGridManager.selectedUnit, {
+    title: selectedData[0].title,
+    language: selectedData[0].language,
+    unitCount: selectedData[0].unitCount,
+  });
 };
 
 const defaultColDef = {
