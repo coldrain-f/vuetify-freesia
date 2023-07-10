@@ -43,7 +43,7 @@
       </v-card-actions>
     </v-card>
 
-    <!-- 정말 삭제하시겠습니까? -->
+    <!-- 삭제 재확인 Dialog -->
     <v-dialog v-model="showDeleteConfirmDialog" width="350">
       <v-card>
         <template #title>

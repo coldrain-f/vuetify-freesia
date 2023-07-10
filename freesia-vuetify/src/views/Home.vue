@@ -161,31 +161,27 @@ const themeStore = useThemeStore();
 
 const { isLearningStarted } = storeToRefs(learningStore);
 
-/**
- * 부모가 자식의 상태를 변경하는 방법
- * 1. 부모에서 자식에서 사용할 상태 선언하고 Provide
- * 2. 자식에서 부모에서 선언한 상태를 Inject하여 사용
- * 3. 부모에서 자식의 상태를 변경할 때 선언한 상태를 변경하면 된다.
- */
-const isUnitisSearchPerformed = ref(false);
-const isWordSearchPerformed = ref(false);
-
-const unitRowData = ref([]);
-const wordRowData = ref([]);
-
-const vocabularyGrid = reactive({
+const vocabularyGridManager = reactive({
   isSearchPerformed: false,
+  selectedVocabulary: {},
   rowData: [],
-  selectedVocabulary: { title: null, language: null, unitCount: null },
 });
 
-provide("vocabularyGrid", vocabularyGrid);
+const unitGridManager = reactive({
+  isSearchPerformed: false,
+  selectedUnit: {},
+  rowData: [],
+});
 
-provide("isUnitisSearchPerformed", isUnitisSearchPerformed);
-provide("isWordSearchPerformed", isWordSearchPerformed);
+const wordGridManager = reactive({
+  isSearchPerformed: false,
+  selectedWord: {},
+  rowData: [],
+});
 
-provide("unitRowData", unitRowData);
-provide("wordRowData", wordRowData);
+provide("vocabularyGridManager", vocabularyGridManager);
+provide("unitGridManager", unitGridManager);
+provide("wordGridManager", wordGridManager);
 
 // Theme
 const showThemeDialog = ref(false);
@@ -195,23 +191,29 @@ const currentTabItem = ref(null);
 
 const adminTabitems = ref([]);
 
+const clearVocabularyGridManager = () => {
+  vocabularyGridManager.isSearchPerformed = false;
+  vocabularyGridManager.rowData = [];
+  vocabularyGridManager.selectedVocabulary = {};
+};
+
+const clearUnitGridManager = () => {
+  unitGridManager.isSearchPerformed = false;
+  unitGridManager.rowData = [];
+  unitGridManager.selectedUnit = {};
+};
+
+const clearWordGridManager = () => {
+  wordGridManager.isSearchPerformed = false;
+  wordGridManager.rowData = [];
+  wordGridManager.selectedWord = {};
+};
+
 // 모든 관리자 그리드의 상태를 초기화한다.
 const resetAllAdminGridData = () => {
-  vocabularyGrid.isSearchPerformed = false;
-
-  isUnitisSearchPerformed.value = false;
-  isWordSearchPerformed.value = false;
-
-  vocabularyGrid.rowData = [];
-
-  unitRowData.value = [];
-  wordRowData.value = [];
-
-  Object.assign(vocabularyGrid.selectedVocabulary, {
-    title: null,
-    language: null,
-    unitCount: null,
-  });
+  clearVocabularyGridManager();
+  clearUnitGridManager();
+  clearWordGridManager();
 };
 
 const changeAdminTabItem = (item) => {

@@ -11,9 +11,13 @@
 // if (isEmptyArray(arr)) { ... };
 
 // 유틸 생성 방법 2.
-export const utils = {
+export const commonUtils = {
   isEmptyArray(arr) {
     return !arr || arr.length === 0;
+  },
+
+  isEmptyObject(obj) {
+    return Object.keys(obj).length == 0;
   },
 };
 

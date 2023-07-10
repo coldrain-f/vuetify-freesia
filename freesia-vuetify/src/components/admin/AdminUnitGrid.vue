@@ -87,6 +87,8 @@ const themeStore = useThemeStore();
 const isSearchPerformed = inject("isUnitSearchPerformed");
 const rowData = inject("unitRowData");
 
+const unitGridManager = inject("unitGridManager");
+
 const performSearch = () => {
   rowData.value = fetchData();
   isSearchPerformed.value = true;

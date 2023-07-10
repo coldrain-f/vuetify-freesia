@@ -3,8 +3,7 @@
     <v-row>
       <v-col cols="4">
         <v-btn size="small" class="w-100" @click="performSearch">
-          <v-icon start icon="mdi-note-search-outline" class="margin-top-1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-search-outline"> </v-icon>
           SEARCH
         </v-btn>
       </v-col>
@@ -13,10 +12,9 @@
           size="small"
           color="primary"
           @click="showAddDialog = true"
-          :disabled="!vocabularyGrid.isSearchPerformed"
+          :disabled="!isSearchPerformed"
         >
-          <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-plus-outline"> </v-icon>
           ADD
         </v-btn>
         <v-btn
@@ -24,13 +22,9 @@
           color="info"
           class="ml-2"
           @click="showUpdateDialog = true"
-          :disabled="
-            !vocabularyGrid.selectedVocabulary.title ||
-            !vocabularyGrid.isSearchPerformed
-          "
+          :disabled="isEmptyObject(selectedVocabulary) || !isSearchPerformed"
         >
-          <v-icon start icon="mdi-note-edit-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-edit-outline"></v-icon>
           UPDATE
         </v-btn>
         <v-btn
@@ -38,13 +32,9 @@
           color="error"
           class="ml-2"
           @click="showDeleteDialog = true"
-          :disabled="
-            !vocabularyGrid.selectedVocabulary.title ||
-            !vocabularyGrid.isSearchPerformed
-          "
+          :disabled="isEmptyObject(selectedVocabulary) || !isSearchPerformed"
         >
-          <v-icon start icon="mdi-note-remove-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-remove-outline"> </v-icon>
           DELETE
         </v-btn>
       </v-col>
@@ -56,7 +46,7 @@
           style="width: 100%; height: 310px"
           class="ag-theme-alpine"
           :columnDefs="columnDefs"
-          :rowData="vocabularyGrid.rowData"
+          :rowData="rowData"
           :defaultColDef="defaultColDef"
           :pagination="true"
           :paginationPageSize="5"
@@ -74,13 +64,13 @@
     <!-- 단어장 수정 다이얼로그 -->
     <AdminVocabularyGridUpdateDialog
       v-model="showUpdateDialog"
-      :selectedVocabulary="vocabularyGrid.selectedVocabulary"
+      :selectedVocabulary="selectedVocabulary"
     />
 
     <!-- 단어장 삭제 다이얼로그 -->
     <AdminVocabularyGridDeleteDialog
       v-model="showDeleteDialog"
-      :selectedVocabulary="vocabularyGrid.selectedVocabulary"
+      :selectedVocabulary="selectedVocabulary"
     />
   </v-container>
 </template>
@@ -93,7 +83,12 @@ import AdminVocabularyGridDeleteDialog from "./AdminVocabularyGridDeleteDialog.v
 // AG Grid Vue
 import { AgGridVue } from "ag-grid-vue3";
 
-import { inject, ref } from "vue";
+import { inject, ref, toRefs } from "vue";
+
+// Utils
+import { commonUtils } from "@/common/commonUtils";
+
+const { isEmptyObject } = commonUtils;
 
 const gridApi = ref(null);
 
@@ -101,11 +96,16 @@ const onGridReady = (params) => {
   gridApi.value = params.api;
 };
 
-const vocabularyGrid = inject("vocabularyGrid");
+const vocabularyGridManager = inject("vocabularyGridManager");
+
+// reactive 구조 분해 할당 -> readonly
+const { isSearchPerformed, rowData, selectedVocabulary } = toRefs(
+  vocabularyGridManager
+);
 
 const performSearch = () => {
-  vocabularyGrid.rowData = fetchData();
-  vocabularyGrid.isSearchPerformed = true;
+  vocabularyGridManager.rowData = fetchData();
+  vocabularyGridManager.isSearchPerformed = true;
 };
 
 // CRUD Dialogs
@@ -116,12 +116,7 @@ const showDeleteDialog = ref(false);
 const onSelectionChanged = (e) => {
   // 체크했다가 풀었을 경우엔 초기화 처리
   if (e.api.getSelectedNodes().length == 0) {
-    Object.assign(vocabularyGrid.selectedVocabulary, {
-      title: null,
-      language: null,
-      unitCount: null,
-    });
-
+    vocabularyGridManager.selectedVocabulary = {};
     return;
   }
 
@@ -129,7 +124,7 @@ const onSelectionChanged = (e) => {
   const selectedData = selectedNodes.map((node) => node.data);
 
   // rowSelection="single" 이므로 항상 0번 Index에만 데이터가 있음.
-  Object.assign(vocabularyGrid.selectedVocabulary, {
+  Object.assign(vocabularyGridManager.selectedVocabulary, {
     title: selectedData[0].title,
     language: selectedData[0].language,
     unitCount: selectedData[0].unitCount,
