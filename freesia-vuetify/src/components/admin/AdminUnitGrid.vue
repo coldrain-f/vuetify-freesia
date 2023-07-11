@@ -28,7 +28,12 @@
         </v-btn>
       </v-col>
       <v-col cols="8" class="text-end">
-        <v-btn size="small" color="primary" :disabled="!isSearchPerformed">
+        <v-btn
+          size="small"
+          color="primary"
+          :disabled="!isSearchPerformed"
+          @click="showUnitAddDialog = true"
+        >
           <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
           </v-icon>
           ADD
@@ -72,10 +77,14 @@
         </ag-grid-vue>
       </v-col>
     </v-row>
+
+    <AdminUnitGridAddDialog v-model="showUnitAddDialog" />
   </v-container>
 </template>
 
 <script setup>
+import AdminUnitGridAddDialog from "./AdminUnitGridAddDialog.vue";
+
 // AG Grid Vue
 import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
@@ -91,6 +100,10 @@ const unitGridManager = inject("unitGridManager");
 
 // readonly
 const { isSearchPerformed, rowData, selectedUnit } = toRefs(unitGridManager);
+
+const showUnitAddDialog = ref(false);
+const showUnitUpdateDialog = ref(false);
+const showUnitDeleteDialog = ref(false);
 
 const performSearch = () => {
   unitGridManager.rowData = fetchData();
