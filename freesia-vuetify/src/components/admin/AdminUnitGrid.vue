@@ -43,6 +43,7 @@
           color="info"
           class="ml-2"
           :disabled="isEmptyObject(selectedUnit) || !isSearchPerformed"
+          @click="showUnitUpdateDialog = true"
         >
           <v-icon start icon="mdi-note-edit-outline"> </v-icon>
           UPDATE
@@ -78,12 +79,20 @@
       </v-col>
     </v-row>
 
+    <!-- 단위 등록 다이얼로그 -->
     <AdminUnitGridAddDialog v-model="showUnitAddDialog" />
+
+    <!-- 단위 수정 다이얼로그 -->
+    <AdminUnitGridUpdateDialog
+      v-model="showUnitUpdateDialog"
+      :selectedUnit="selectedUnit"
+    />
   </v-container>
 </template>
 
 <script setup>
 import AdminUnitGridAddDialog from "./AdminUnitGridAddDialog.vue";
+import AdminUnitGridUpdateDialog from "./AdminUnitGridUpdateDialog.vue";
 
 // AG Grid Vue
 import { useThemeStore } from "@/stores/theme";
