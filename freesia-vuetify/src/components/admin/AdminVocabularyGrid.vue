@@ -142,12 +142,20 @@ const columnDefs = [
   {
     headerName: "선택",
     width: 70,
-    pinned: true,
+    pinned: "right",
     headerCheckboxSelection: false, // 헤더 체크박스 disable
     checkboxSelection: true,
     resizable: false,
     sortable: false,
     filter: false,
+  },
+  {
+    headerName: "#",
+    field: "#",
+    width: 70,
+    valueGetter: (params) => {
+      return rowData.value.length - params.node.rowIndex;
+    },
   },
   {
     headerName: "제목",

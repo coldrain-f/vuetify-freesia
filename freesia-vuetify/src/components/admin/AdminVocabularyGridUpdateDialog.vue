@@ -15,15 +15,15 @@
           label="Language"
           :items="['English', 'Japanese']"
           v-model="formData.language"
-          :readonly="!isZeroUnitCount()"
+          :readonly="!isUnitCountZero()"
           required
           :messages="
-            !isZeroUnitCount()
+            !isUnitCountZero()
               ? '언어는 소속된 Unit 개수가 0개인 경우에만 변경할 수 있습니다.'
               : ''
           "
-          :class="!isZeroUnitCount() ? 'mb-4' : ''"
-          :append-inner-icon="!isZeroUnitCount() ? 'mdi-read' : 'mdi-menu-down'"
+          :class="!isUnitCountZero() ? 'mb-4' : ''"
+          :append-inner-icon="!isUnitCountZero() ? 'mdi-read' : 'mdi-menu-down'"
         >
         </v-select>
         <v-text-field
@@ -43,7 +43,10 @@
 </template>
 
 <script setup>
+import { commonUtils } from "@/common/commonUtils";
 import { computed, reactive, watch } from "vue";
+
+const { isEmptyObject } = commonUtils;
 
 const props = defineProps({
   modelValue: {
@@ -71,7 +74,7 @@ const formData = reactive({});
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
 watch(props.selectedVocabulary, (v) => {
   // 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-  if (isNullVocabulary(v)) {
+  if (isEmptyObject(v)) {
     showDialog.value = false;
     return;
   }
@@ -81,11 +84,7 @@ watch(props.selectedVocabulary, (v) => {
   formData.unitCount = v.unitCount;
 });
 
-const isNullVocabulary = (v) => {
-  return v.title == null || v.language == null || v.unitCount == null;
-};
-
-const isZeroUnitCount = () => {
+const isUnitCountZero = () => {
   return props.selectedVocabulary.unitCount == 0;
 };
 

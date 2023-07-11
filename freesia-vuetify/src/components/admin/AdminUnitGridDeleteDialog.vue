@@ -2,7 +2,7 @@
   <v-dialog v-model="showDialog" width="550">
     <v-card>
       <template #title>
-        <span class="text-error noto-sans"> ※ 단어장 삭제 </span>
+        <span class="text-error noto-sans"> ※ 유닛 삭제 </span>
       </template>
       <template #append>
         <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
@@ -11,22 +11,21 @@
       <v-card-text>
         <v-text-field
           label="Title"
-          :model-value="props.selectedVocabulary.title"
+          :model-value="props.selectedUnit.subject"
           readonly
           append-inner-icon="mdi-read"
         >
         </v-text-field>
-        <v-select
-          label="Language"
-          :items="['English', 'Japanese']"
-          :model-value="props.selectedVocabulary.language"
-          append-inner-icon="mdi-read"
-          readonly
-        >
-        </v-select>
         <v-text-field
-          label="Unit Count"
-          :model-value="props.selectedVocabulary.unitCount + '개'"
+          label="Word Count"
+          :model-value="props.selectedUnit.wordCount + '개'"
+          readonly
+          append-inner-icon="mdi-read"
+        >
+        </v-text-field>
+        <v-text-field
+          label="Read Count"
+          :model-value="props.selectedUnit.readCount + '개'"
           readonly
           append-inner-icon="mdi-read"
         >
@@ -34,7 +33,7 @@
         <v-alert
           type="error"
           title="Warning"
-          text="단어장을 삭제하면 소속된 모든 유닛과 단어들이 삭제됩니다. 반드시 확인 후 삭제해주세요."
+          text="단위를 삭제하면 소속된 모든 단어들이 삭제됩니다. 반드시 확인 후 삭제해주세요."
         >
         </v-alert>
       </v-card-text>
@@ -81,7 +80,7 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  selectedVocabulary: {
+  selectedUnit: {
     type: Object,
   },
 });
@@ -89,8 +88,8 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 // 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-watch(props.selectedVocabulary, (v) => {
-  if (isEmptyObject(v)) {
+watch(props.selectedUnit, (u) => {
+  if (isEmptyObject(u)) {
     showDialog.value = false;
     return;
   }

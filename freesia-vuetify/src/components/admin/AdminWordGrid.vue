@@ -75,8 +75,8 @@
     <v-row>
       <v-col cols="12">
         <h4 :class="`text-${themeStore.theme}`">
-          【 단어가 읽기다 기본편 】<span class="ms-2 me-2">》</span>【 요리 -
-          3회독 】
+          【 단어가 읽기다 기본편 】<span class="ms-2 me-2">》</span>【 요리 】
+          <span>- 3회독 √</span>
         </h4>
         <ag-grid-vue
           style="width: 100%; height: 310px"
@@ -154,14 +154,21 @@ const columnDefs = [
   {
     headerName: "선택",
     width: 70,
-    pinned: true,
+    pinned: "right",
     headerCheckboxSelection: false, // 헤더 체크박스 disable
     checkboxSelection: true,
     resizable: false,
     sortable: false,
     filter: false,
   },
-
+  {
+    headerName: "#",
+    field: "#",
+    width: 70,
+    valueGetter: (params) => {
+      return rowData.value.length - params.node.rowIndex;
+    },
+  },
   {
     headerName: "학습 단어",
     field: "studyWord",

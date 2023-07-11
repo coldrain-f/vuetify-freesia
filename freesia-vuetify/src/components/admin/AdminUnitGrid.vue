@@ -53,6 +53,7 @@
           color="error"
           class="ml-2"
           :disabled="isEmptyObject(selectedUnit) || !isSearchPerformed"
+          @click="showUnitDeleteDialog = true"
         >
           <v-icon start icon="mdi-note-remove-outline"> </v-icon>
           DELETE
@@ -87,6 +88,12 @@
       v-model="showUnitUpdateDialog"
       :selectedUnit="selectedUnit"
     />
+
+    <!-- 단위 삭제 다이얼로그 -->
+    <AdminUnitGridDeleteDialog
+      v-model="showUnitDeleteDialog"
+      :selectedUnit="selectedUnit"
+    />
   </v-container>
 </template>
 
@@ -99,6 +106,7 @@ import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
 import { commonUtils } from "@/common/commonUtils";
 import { inject, ref, toRefs } from "vue";
+import AdminUnitGridDeleteDialog from "./AdminUnitGridDeleteDialog.vue";
 
 // Utils
 const { isEmptyObject } = commonUtils;
@@ -154,14 +162,21 @@ const columnDefs = [
   {
     headerName: "선택",
     width: 70,
-    pinned: true,
+    pinned: "right",
     headerCheckboxSelection: false, // 헤더 체크박스 disable
     checkboxSelection: true,
     resizable: false,
     sortable: false,
     filter: false,
   },
-
+  {
+    headerName: "#",
+    field: "#",
+    width: 70,
+    valueGetter: (params) => {
+      return rowData.value.length - params.node.rowIndex;
+    },
+  },
   {
     headerName: "주제",
     field: "subject",
@@ -186,7 +201,7 @@ const columnDefs = [
   {
     headerName: "등록일",
     field: "createdAt",
-    width: 130,
+    width: 120,
   },
   {
     headerName: "수정일",
