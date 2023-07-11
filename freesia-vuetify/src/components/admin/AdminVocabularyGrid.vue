@@ -27,6 +27,7 @@
           <v-icon start icon="mdi-note-edit-outline"></v-icon>
           UPDATE
         </v-btn>
+
         <v-btn
           size="small"
           color="error"
@@ -43,7 +44,7 @@
     <v-row>
       <v-col cols="12">
         <ag-grid-vue
-          style="width: 100%; height: 310px"
+          style="width: 100%; height: 312px"
           class="ag-theme-alpine"
           :columnDefs="columnDefs"
           :rowData="rowData"
@@ -136,6 +137,7 @@ const defaultColDef = ref({
   resizable: true,
   sortable: true,
   filter: true,
+  floatingFilter: false,
 });
 
 const columnDefs = [
@@ -151,8 +153,9 @@ const columnDefs = [
   },
   {
     headerName: "#",
-    field: "#",
     width: 70,
+    filter: false,
+    resizable: false,
     valueGetter: (params) => {
       return rowData.value.length - params.node.rowIndex;
     },

@@ -65,7 +65,7 @@
       <v-col cols="12">
         <h4 :class="`text-${themeStore.theme}`">【 단어가 읽기다 기본편 】</h4>
         <ag-grid-vue
-          style="width: 100%; height: 310px"
+          style="width: 100%; height: 312px"
           class="ag-theme-alpine"
           :columnDefs="columnDefs"
           :defaultColDef="defaultColDef"
@@ -156,6 +156,7 @@ const defaultColDef = {
   resizable: true,
   sortable: true,
   filter: true,
+  floatingFilter: false,
 };
 
 const columnDefs = [
@@ -171,8 +172,9 @@ const columnDefs = [
   },
   {
     headerName: "#",
-    field: "#",
     width: 70,
+    resizable: false,
+    filter: false,
     valueGetter: (params) => {
       return rowData.value.length - params.node.rowIndex;
     },

@@ -79,7 +79,7 @@
           <span>- 3회독 √</span>
         </h4>
         <ag-grid-vue
-          style="width: 100%; height: 310px"
+          style="width: 100%; height: 312px"
           class="ag-theme-alpine"
           :columnDefs="columnDefs"
           :defaultColDef="defaultColDef"
@@ -148,6 +148,7 @@ const defaultColDef = {
   resizable: true,
   sortable: true,
   filter: true,
+  floatingFilter: false,
 };
 
 const columnDefs = [
@@ -163,8 +164,9 @@ const columnDefs = [
   },
   {
     headerName: "#",
-    field: "#",
     width: 70,
+    filter: false,
+    resizable: false,
     valueGetter: (params) => {
       return rowData.value.length - params.node.rowIndex;
     },
