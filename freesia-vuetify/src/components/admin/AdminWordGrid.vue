@@ -47,7 +47,12 @@
         </v-btn>
       </v-col>
       <v-col cols="8" class="text-end">
-        <v-btn size="small" color="primary" :disabled="!isSearchPerformed">
+        <v-btn
+          size="small"
+          color="primary"
+          :disabled="!isSearchPerformed"
+          @click="showWordAddDialog = true"
+        >
           <v-icon start icon="mdi-note-plus-outline"> </v-icon>
           ADD
         </v-btn>
@@ -56,6 +61,7 @@
           color="info"
           class="ml-2"
           :disabled="isEmptyObject(selectedWord) || !isSearchPerformed"
+          @click="showWordUpdateDialog = true"
         >
           <v-icon start icon="mdi-note-edit-outline"> </v-icon>
           UPDATE
@@ -65,6 +71,7 @@
           color="error"
           class="ml-2"
           :disabled="isEmptyObject(selectedWord) || !isSearchPerformed"
+          @click="showWordDeleteDialog = true"
         >
           <v-icon start icon="mdi-note-remove-outline"> </v-icon>
           DELETE
@@ -93,10 +100,15 @@
         </ag-grid-vue>
       </v-col>
     </v-row>
+
+    <!-- 단어 등록 다이얼로그 -->
+    <AdminWordGridAddDialog v-model="showWordAddDialog" />
   </v-container>
 </template>
 
 <script setup>
+import AdminWordGridAddDialog from "./AdminWordGridAddDialog.vue";
+
 // AG Grid Vue
 import { commonUtils } from "@/common/commonUtils";
 import { useThemeStore } from "@/stores/theme";
@@ -111,6 +123,10 @@ const themeStore = useThemeStore();
 const wordGridManager = inject("wordGridManager");
 
 const { isSearchPerformed, rowData, selectedWord } = toRefs(wordGridManager);
+
+const showWordAddDialog = ref(false);
+const showWordUpdateDialog = ref(false);
+const showWordDeleteDialog = ref(false);
 
 const performSearch = () => {
   rowData.value = fetchData();
