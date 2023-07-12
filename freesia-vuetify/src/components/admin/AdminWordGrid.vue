@@ -103,11 +103,18 @@
 
     <!-- 단어 등록 다이얼로그 -->
     <AdminWordGridAddDialog v-model="showWordAddDialog" />
+
+    <!-- 단어 수정 다이얼로그 -->
+    <AdminWordGridUpdateDialog
+      v-model="showWordUpdateDialog"
+      :selectedWord="selectedWord"
+    />
   </v-container>
 </template>
 
 <script setup>
 import AdminWordGridAddDialog from "./AdminWordGridAddDialog.vue";
+import AdminWordGridUpdateDialog from "./AdminWordGridUpdateDialog.vue";
 
 // AG Grid Vue
 import { commonUtils } from "@/common/commonUtils";

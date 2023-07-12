@@ -50,7 +50,7 @@ const showDialog = computed({
 });
 
 const formData = reactive({
-  partOfSpeech: "명사", // default
+  partOfSpeech: "명사", // Default
 });
 
 const onClick = () => {};
