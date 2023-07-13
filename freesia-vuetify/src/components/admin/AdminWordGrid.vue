@@ -109,12 +109,18 @@
       v-model="showWordUpdateDialog"
       :selectedWord="selectedWord"
     />
+
+    <AdminWordGridDeleteDialog
+      v-model="showWordDeleteDialog"
+      :selectedWord="selectedWord"
+    />
   </v-container>
 </template>
 
 <script setup>
 import AdminWordGridAddDialog from "./AdminWordGridAddDialog.vue";
 import AdminWordGridUpdateDialog from "./AdminWordGridUpdateDialog.vue";
+import AdminWordGridDeleteDialog from "./AdminWordGridDeleteDialog.vue";
 
 // AG Grid Vue
 import { commonUtils } from "@/common/commonUtils";

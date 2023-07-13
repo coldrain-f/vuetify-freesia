@@ -19,20 +19,26 @@
           :items="['명사', '형용사', '동사']"
         >
         </v-select>
-        <v-text-field
-          label="Correct Count"
-          :model-value="props.selectedWord.correctCount + '개'"
-          readonly
-          append-inner-icon="mdi-read"
-        >
-        </v-text-field>
-        <v-text-field
-          label="Incorrect Count"
-          :model-value="props.selectedWord.incorrectCount + '개'"
-          readonly
-          append-inner-icon="mdi-read"
-        >
-        </v-text-field>
+        <v-row>
+          <v-col cols="6">
+            <v-text-field
+              label="Correct Count"
+              :model-value="props.selectedWord.correctCount + '개'"
+              readonly
+              append-inner-icon="mdi-read"
+            >
+            </v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              label="Incorrect Count"
+              :model-value="props.selectedWord.incorrectCount + '개'"
+              readonly
+              append-inner-icon="mdi-read"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="info" @click="onClick"> UPDATE </v-btn>
@@ -69,7 +75,9 @@ const showDialog = computed({
   },
 });
 
-const formData = reactive({});
+const formData = reactive({
+  partOfSpeech: "명사", // Default
+});
 
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
 watch(props.selectedWord, (w) => {

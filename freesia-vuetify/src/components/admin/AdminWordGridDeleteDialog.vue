@@ -2,7 +2,7 @@
   <v-dialog v-model="showDialog" width="550">
     <v-card>
       <template #title>
-        <span class="text-error noto-sans"> ※ 유닛 삭제 </span>
+        <span class="text-error noto-sans"> ※ 단어 삭제 </span>
       </template>
       <template #append>
         <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
@@ -10,17 +10,32 @@
       </template>
       <v-card-text>
         <v-text-field
-          label="Title"
-          :model-value="props.selectedUnit.subject"
+          label="Study Word"
+          :model-value="props.selectedWord.studyWord"
           readonly
           append-inner-icon="mdi-read"
         >
         </v-text-field>
+        <v-text-field
+          label="Native Word"
+          :model-value="props.selectedWord.nativeWord"
+          readonly
+          append-inner-icon="mdi-read"
+        >
+        </v-text-field>
+        <v-select
+          label="Part Of Speech"
+          :model-value="props.selectedWord.partOfSpeech"
+          :items="['명사', '형용사', '동사']"
+          readonly
+          append-inner-icon="mdi-read"
+        >
+        </v-select>
         <v-row>
           <v-col cols="6">
             <v-text-field
-              label="Word Count"
-              :model-value="props.selectedUnit.wordCount + '개'"
+              label="Correct Count"
+              :model-value="props.selectedWord.correctCount + '개'"
               readonly
               append-inner-icon="mdi-read"
             >
@@ -28,55 +43,20 @@
           </v-col>
           <v-col cols="6">
             <v-text-field
-              label="Read Count"
-              :model-value="props.selectedUnit.readCount + '개'"
+              label="Incorrect Count"
+              :model-value="props.selectedWord.incorrectCount + '개'"
               readonly
               append-inner-icon="mdi-read"
             >
             </v-text-field>
           </v-col>
         </v-row>
-        <v-alert
-          type="error"
-          icon="mdi-material-design"
-          title="Warning"
-          border="start"
-          prominent
-          closable
-          variant="tonal"
-          text="단위를 삭제하면 소속된 모든 단어들이 삭제됩니다. 반드시 확인 후 삭제해주세요."
-        >
-        </v-alert>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="error" @click="onClick"> DELETE </v-btn>
         <v-btn @click="showDialog = false" class="me-4">CANCEL</v-btn>
       </v-card-actions>
     </v-card>
-
-    <!-- 삭제 재확인 Dialog -->
-    <v-dialog v-model="showDeleteConfirmDialog" width="350">
-      <v-card>
-        <template #title>
-          <span class="text-error noto-sans"> ※ Alert </span>
-        </template>
-        <template #append>
-          <v-btn
-            variant="text"
-            icon="mdi-close"
-            @click="showDeleteConfirmDialog = false"
-          >
-          </v-btn>
-        </template>
-        <v-card-text> 정말 삭제하시겠습니까? </v-card-text>
-        <v-card-actions class="d-flex justify-end">
-          <v-btn color="error"> CONFIRM </v-btn>
-          <v-btn @click="showDeleteConfirmDialog = false" class="me-4">
-            CANCEL
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-dialog>
 </template>
 
@@ -91,7 +71,7 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  selectedUnit: {
+  selectedWord: {
     type: Object,
   },
 });
@@ -99,8 +79,8 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 // 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-watch(props.selectedUnit, (u) => {
-  if (isEmptyObject(u)) {
+watch(props.selectedWord, (w) => {
+  if (isEmptyObject(w)) {
     showDialog.value = false;
     return;
   }

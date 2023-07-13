@@ -33,7 +33,12 @@
         </v-text-field>
         <v-alert
           type="error"
+          icon="mdi-material-design"
           title="Warning"
+          border="start"
+          prominent
+          closable
+          variant="tonal"
           text="단어장을 삭제하면 소속된 모든 유닛과 단어들이 삭제됩니다. 반드시 확인 후 삭제해주세요."
         >
         </v-alert>
