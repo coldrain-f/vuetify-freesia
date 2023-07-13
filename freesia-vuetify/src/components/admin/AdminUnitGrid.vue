@@ -1,15 +1,33 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="5">
+        <v-select
+          label="Language"
+          variant="underlined"
+          density="compact"
+          :modelValue="{ id: 1, name: 'English' }"
+          :items="[
+            { id: 1, name: 'English' },
+            { id: 2, name: 'Japanese' },
+          ]"
+          item-title="name"
+          item-value="id"
+          hide-details
+          return-object
+          persistent-hint
+        >
+        </v-select>
+      </v-col>
+      <v-col cols="7">
         <v-select
           label="Voca"
           variant="underlined"
           density="compact"
-          :modelValue="{ title: '단어가 읽기다 기본편', vocabularyId: 1 }"
+          :modelValue="{ id: 1, title: '단어가 읽기다 기본편' }"
           :items="[
-            { title: '단어가 읽기다 기본편', vocabularyId: 1 },
-            { title: '단어가 읽기다 실력편', vocabularyId: 2 },
+            { id: 1, title: '단어가 읽기다 기본편' },
+            { id: 2, title: '단어가 읽기다 실력편' },
           ]"
           item-title="title"
           item-value="vocabularyId"

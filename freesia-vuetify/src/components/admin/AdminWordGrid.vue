@@ -1,6 +1,24 @@
 <template>
   <v-container>
     <v-row>
+      <v-col cols="5">
+        <v-select
+          label="Language"
+          variant="underlined"
+          density="compact"
+          :modelValue="{ id: 1, name: 'English' }"
+          :items="[
+            { id: 1, name: 'English' },
+            { id: 2, name: 'Japanese' },
+          ]"
+          item-title="name"
+          item-value="id"
+          hide-details
+          return-object
+          persistent-hint
+        >
+        </v-select>
+      </v-col>
       <v-col cols="7">
         <v-select
           label="Voca"
@@ -19,7 +37,9 @@
         >
         </v-select>
       </v-col>
-      <v-col cols="5">
+    </v-row>
+    <v-row>
+      <v-col cols="12">
         <v-select
           label="Unit"
           variant="underlined"
@@ -110,6 +130,7 @@
       :selectedWord="selectedWord"
     />
 
+    <!-- 단어 삭제 다이얼로그 -->
     <AdminWordGridDeleteDialog
       v-model="showWordDeleteDialog"
       :selectedWord="selectedWord"
