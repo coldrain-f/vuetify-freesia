@@ -1,13 +1,24 @@
 <template>
   <v-card flat>
-    <v-breadcrumbs :items="breadcrumbsItems">
-      <template v-slot:prepend>
-        <v-icon size="small" icon="mdi-book-heart" class="mb-1" />
-      </template>
-      <template v-slot:divider>
-        <v-icon icon="mdi-chevron-right"></v-icon>
-      </template>
-    </v-breadcrumbs>
+    <v-row>
+      <v-col cols="10">
+        <v-breadcrumbs :items="breadcrumbsItems">
+          <template v-slot:prepend>
+            <v-icon size="small" icon="mdi-book-heart" class="mb-1" />
+          </template>
+          <template v-slot:divider>
+            <v-icon icon="mdi-chevron-right"></v-icon>
+          </template>
+        </v-breadcrumbs>
+      </v-col>
+      <v-col>
+        <v-btn
+          icon="mdi-exit-to-app"
+          variant="flat"
+          @click="learningStore.showLearningTerminationDialog = true"
+        ></v-btn>
+      </v-col>
+    </v-row>
     <v-divider></v-divider>
     <v-card-text>
       <v-row>
@@ -117,7 +128,7 @@
       </v-table>
       <v-divider></v-divider>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions v-if="false">
       <v-btn
         variant="flat"
         :color="themeStore.theme"
@@ -137,12 +148,14 @@
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="showLearningTerminationDialog" width="auto">
+  <v-dialog v-model="showLearningTerminationDialog" width="350">
     <v-card>
       <template #title>
-        <span>※ Alarm</span>
+        <span class="text-primary">※ Alert</span>
       </template>
-      <v-card-text>정말 처음으로 돌아가시겠습니까?</v-card-text>
+      <v-card-text>
+        학습을 중간에 종료하면 미학습으로 처리됩니다. 정말 종료하시겠습니까?
+      </v-card-text>
       <v-card-actions class="justify-end">
         <v-btn
           color="primary"
@@ -152,11 +165,10 @@
               showLearningTerminationDialog = false;
             }
           "
-          >YES</v-btn
         >
-        <v-btn color="primary" @click="showLearningTerminationDialog = false"
-          >NO</v-btn
-        >
+          CONFIRM
+        </v-btn>
+        <v-btn @click="showLearningTerminationDialog = false"> CANCEL </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -258,7 +270,6 @@ const words = ref([
   { id: 1, name: "spice", meaning: "양념" },
   { id: 2, name: "delicious", meaning: "맛있는" },
   { id: 3, name: "hot", meaning: "뜨거운" },
-  { id: 4, name: "ファーストクラス", meaning: "퍼스트클래스" },
 ]);
 
 /** 학습 브레드크럼  */

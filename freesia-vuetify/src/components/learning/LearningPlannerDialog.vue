@@ -14,18 +14,32 @@
             <v-select
               label="Language"
               variant="underlined"
-              :items="['English', 'Japanese']"
-              model-value="English"
+              :model-value="{ name: 'English', id: 1 }"
+              :items="[
+                { name: 'English', id: 1 },
+                { name: 'Japanese', id: 2 },
+              ]"
               :readonly="isEditMode"
+              item-title="name"
+              item-value="id"
+              return-object
+              persistent-hint
             />
           </v-col>
           <v-col cols="3">
             <v-select
               label="Voca"
               variant="underlined"
-              :items="['단어가 읽기다 기본편', '단어가 읽기다 실력편']"
-              model-value="단어가 읽기다 기본편"
+              :model-value="{ title: '단어가 읽기다 기본편', id: 1 }"
+              :items="[
+                { title: '단어가 읽기다 기본편', id: 1 },
+                { title: '단어가 읽기다 실력편', id: 2 },
+              ]"
               :readonly="isEditMode"
+              item-title="title"
+              item-value="id"
+              return-object
+              persistent-hint
             />
           </v-col>
           <v-col cols="2">
@@ -88,14 +102,14 @@
               CANCEL
             </v-btn>
             <v-btn
-              class="mt-4 border"
+              class="mt-4"
               size="small"
               variant="flat"
               color="success"
               v-if="!isEditMode"
             >
               <v-icon start icon="mdi-file-export-outline"></v-icon>
-              EXPORT
+              EXPORT CSV
             </v-btn>
           </v-col>
         </v-row>
@@ -295,7 +309,7 @@ const rowData = ref([]);
 const makeTempRowData = () => {
   const rowData = [];
 
-  for (let i = 1; i <= 365; i++) {
+  for (let i = 1; i <= 100; i++) {
     const data = {
       studyDay: "Day " + i,
       learningStatus: "미학습",
