@@ -15,7 +15,6 @@
           item-value="id"
           hide-details
           return-object
-          persistent-hint
         >
         </v-select>
       </v-col>
@@ -33,7 +32,6 @@
           item-value="vocabularyId"
           hide-details
           return-object
-          persistent-hint
         >
         </v-select>
       </v-col>
@@ -53,7 +51,6 @@
           item-value="unitId"
           hide-details
           return-object
-          persistent-hint
         >
         </v-select>
       </v-col>
@@ -107,7 +104,7 @@
         </h4>
         <ag-grid-vue
           style="width: 100%; height: 312px"
-          class="ag-theme-alpine"
+          class="ag-theme-alpine noto-sans"
           :columnDefs="columnDefs"
           :defaultColDef="defaultColDef"
           :rowData="rowData"

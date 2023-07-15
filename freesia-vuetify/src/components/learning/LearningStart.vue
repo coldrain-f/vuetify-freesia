@@ -13,6 +13,7 @@
       </v-col>
       <v-col>
         <v-btn
+          class="mt-1"
           icon="mdi-exit-to-app"
           variant="flat"
           @click="learningStore.showLearningTerminationDialog = true"
@@ -21,18 +22,15 @@
     </v-row>
     <v-divider></v-divider>
     <v-card-text>
-      <v-row>
-        <v-col cols="10"
-          ><v-progress-linear
+      <v-row class="noto-sans">
+        <v-col cols="10">
+          <v-progress-linear
             v-model="progress"
             height="15"
             :color="themeStore.theme"
             class="mb-5 font-weight-bold"
             striped
           >
-            <!-- <p :class="themeStore.theme === 'dark' ? 'text-white' : ''">
-          <span>{{ currentWordNumber }}/</span><span>{{ totalWordCount }}</span>
-        </p> -->
           </v-progress-linear>
         </v-col>
         <v-col cols="2">
@@ -43,7 +41,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row class="noto-sans">
         <v-col cols="4">
           <strong>시도: </strong>
           <span>{{ tryCount }}회</span>
@@ -72,15 +70,22 @@
             readonly
             hide-details
             persistent-placeholder
+            prepend-icon="mdi-school"
           >
-            <span v-if="currentLearningWord.lang == 'en'"
-              >{{ currentLearningWord.name }}
+            <span v-if="currentLearningWord.lang == 'en'">
+              {{ currentLearningWord.name }}
             </span>
 
             <ruby v-if="currentLearningWord.lang == 'ja'">
-              <h2 class="text-h6">{{ currentLearningWord.name }}</h2>
+              <h6 class="noto-sans-jp text-h6-jp">
+                {{ currentLearningWord.name }}
+              </h6>
+
               <rp v-show="showFurigana">(</rp>
-              <rt class="text-subtitle-2 text-primary" v-show="showFurigana">
+              <rt
+                class="text-primary noto-sans-jp text-subtitle-2-jp"
+                v-show="showFurigana"
+              >
                 {{ currentLearningWord.furigana }}
               </rt>
               <rp v-show="showFurigana">)</rp>
@@ -149,18 +154,26 @@
             v-model="inputMeaning"
             counter
             @keyup.enter="handleEnter"
+            prepend-icon="mdi-shield-sword-outline"
           >
             <template v-slot:append-inner>
-              <v-tooltip activator="parent" location="top">
-                정답이 표시되는 대신 틀린 단어에 포함됩니다.
-              </v-tooltip>
-              <v-btn
-                variant="flat"
-                size="small"
-                icon="mdi-chat-question"
-                @click="handleHelpButtonClick"
+              <v-btn variant="text" size="small" icon="mdi-send"> </v-btn>
+
+              <v-tooltip
+                text="정답이 표시되는 대신 틀린 단어에 포함됩니다."
+                location="top"
               >
-              </v-btn>
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    variant="flat"
+                    size="small"
+                    icon="mdi-chat-question"
+                    @click="handleHelpButtonClick"
+                    v-bind="props"
+                  >
+                  </v-btn>
+                </template>
+              </v-tooltip>
             </template>
           </v-text-field>
         </v-col>
@@ -480,11 +493,29 @@ watch(
 );
 </script>
 
-<!-- 공통 스타일로 분리 예정  -->
-<style>
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap");
+<style scoped>
+.text-h5-jp {
+  font-size: 1.5rem !important;
+  font-weight: 400;
+  line-height: 2rem;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
 
-.noto-sans {
-  font-family: "Noto Sans KR", sans-serif;
+.text-h6-jp {
+  font-size: 1.25rem !important;
+  /* font-weight: 500; */
+  font-weight: 400;
+  line-height: 2rem;
+  letter-spacing: 0.0125em !important;
+  text-transform: none !important;
+}
+
+.text-subtitle-2-jp {
+  font-size: 0.875rem !important;
+  font-weight: 500;
+  line-height: 1.375rem;
+  letter-spacing: 0.0071428571em !important;
+  text-transform: none !important;
 }
 </style>

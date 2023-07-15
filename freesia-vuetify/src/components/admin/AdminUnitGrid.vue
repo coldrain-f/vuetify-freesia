@@ -84,7 +84,7 @@
         <h4 :class="`text-${themeStore.theme}`">【 단어가 읽기다 기본편 】</h4>
         <ag-grid-vue
           style="width: 100%; height: 312px"
-          class="ag-theme-alpine"
+          class="ag-theme-alpine noto-sans"
           :columnDefs="columnDefs"
           :defaultColDef="defaultColDef"
           :rowData="rowData"

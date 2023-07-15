@@ -45,7 +45,7 @@
       <v-col cols="12">
         <ag-grid-vue
           style="width: 100%; height: 312px"
-          class="ag-theme-alpine"
+          class="ag-theme-alpine noto-sans"
           :columnDefs="columnDefs"
           :rowData="rowData"
           :defaultColDef="defaultColDef"
