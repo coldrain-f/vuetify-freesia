@@ -69,9 +69,9 @@
         <v-col cols="12">
           <v-text-field
             variant="underlined"
-            persistent-placeholder
             readonly
             hide-details
+            persistent-placeholder
           >
             <span v-if="currentLearningWord.lang == 'en'"
               >{{ currentLearningWord.name }}
@@ -129,7 +129,7 @@
                     icon="mdi-furigana-horizontal"
                     size="small"
                     v-bind="props"
-                    @click="showFurigana = true"
+                    @click="showFurigana = !showFurigana"
                   >
                   </v-btn>
                 </template>

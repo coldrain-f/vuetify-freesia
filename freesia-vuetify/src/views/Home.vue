@@ -113,12 +113,6 @@
     <v-footer :color="themeStore.theme" border>
       <v-row>
         <v-col class="text-center" cols="12">
-          <p>
-            <strong>Email:</strong> sangwoonin@gmail.com
-            <v-icon class="ms-1" size="small" icon="mdi-emoticon-kiss-outline">
-            </v-icon>
-          </p>
-
           <p>Copyright ⓒ 2023. coldrain-f. All rights reserved.</p>
         </v-col>
       </v-row>
