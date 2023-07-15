@@ -69,10 +69,23 @@
         <v-col cols="12">
           <v-text-field
             variant="underlined"
-            :model-value="currentLearningWord.name"
+            persistent-placeholder
             readonly
             hide-details
           >
+            <span v-if="currentLearningWord.lang == 'en'"
+              >{{ currentLearningWord.name }}
+            </span>
+
+            <ruby v-if="currentLearningWord.lang == 'ja'">
+              <h2 class="text-h6">{{ currentLearningWord.name }}</h2>
+              <rp v-show="showFurigana">(</rp>
+              <rt class="text-subtitle-2 text-primary" v-show="showFurigana">
+                {{ currentLearningWord.furigana }}
+              </rt>
+              <rp v-show="showFurigana">)</rp>
+            </ruby>
+
             <template v-slot:label>
               <span class="me-2">Study Word</span>
               <v-icon
@@ -92,33 +105,53 @@
               </v-icon>
             </template>
             <template v-slot:append-inner>
-              <v-tooltip activator="parent" location="right">
-                발음 듣기
+              <v-tooltip text="발음 듣기" location="top">
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    variant="flat"
+                    icon="mdi-volume-high"
+                    size="small"
+                    @click="speakText(currentLearningWord.name)"
+                    v-bind="props"
+                  >
+                  </v-btn>
+                </template>
               </v-tooltip>
-              <v-btn
-                variant="flat"
-                size="small"
-                icon="mdi-volume-high"
-                @click="speakText(currentLearningWord.name)"
+
+              <v-tooltip
+                text="후리가나"
+                location="top"
+                v-if="currentLearningWord.lang == 'ja'"
               >
-              </v-btn>
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    variant="flat"
+                    icon="mdi-furigana-horizontal"
+                    size="small"
+                    v-bind="props"
+                    @click="showFurigana = true"
+                  >
+                  </v-btn>
+                </template>
+              </v-tooltip>
             </template>
           </v-text-field>
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row class="mb-2">
         <v-col cols="12">
           <v-text-field
+            :hint="maskMeaning"
             label="Native Word"
-            :placeholder="maskMeaning"
             :ref="inputMeaningField"
             variant="underlined"
             v-model="inputMeaning"
+            counter
             @keyup.enter="handleEnter"
           >
             <template v-slot:append-inner>
-              <v-tooltip activator="parent" location="right">
+              <v-tooltip activator="parent" location="top">
                 정답이 표시되는 대신 틀린 단어에 포함됩니다.
               </v-tooltip>
               <v-btn
@@ -135,18 +168,7 @@
 
       <v-divider></v-divider>
     </v-card-text>
-    <v-card-actions v-if="false">
-      <v-btn
-        variant="flat"
-        :color="themeStore.theme"
-        class="w-100"
-        size="default"
-        @click="learningStore.showLearningTerminationDialog = true"
-      >
-        <v-icon start icon="mdi-exit-to-app"></v-icon>
-        BACK
-      </v-btn>
-    </v-card-actions>
+    <v-card-actions v-if="false"> </v-card-actions>
   </v-card>
 
   <v-dialog width="auto">
@@ -227,6 +249,8 @@ const themeStore = useThemeStore();
 // the action can just be destructured
 const { speakText } = synthStore;
 
+const showFurigana = ref(false);
+
 const { isLearningStarted, showLearningTerminationDialog } =
   storeToRefs(learningStore);
 
@@ -274,9 +298,11 @@ function showDialogMessage(
 
 /** TODO: DB에서 조회하도록 변경 후 삭제 예정 */
 const words = ref([
-  { id: 1, name: "spice", meaning: "양념" },
-  { id: 2, name: "delicious", meaning: "맛있는" },
-  { id: 3, name: "hot", meaning: "뜨거운" },
+  { id: 1, name: "spice", meaning: "양념", lang: "en" },
+  { id: 2, name: "delicious", meaning: "맛있는", lang: "en" },
+  { id: 3, name: "hot", meaning: "뜨거운", lang: "en" },
+  { id: 4, name: "家庭", meaning: "가정", lang: "ja", furigana: "かてい" },
+  { id: 5, name: "民族", meaning: "민족", lang: "ja", furigana: "みんぞく" },
 ]);
 
 /** 학습 브레드크럼  */
@@ -379,6 +405,8 @@ function resetCorrectAnswer() {
   currentCatImage.value = catWhatImage;
   showSuccessIcon.value = false;
   inputMeaning.value = null;
+
+  showFurigana.value = false;
 }
 
 /** 사용자가 입력한 답이 정답이 아닌 경우 표시했던 데이터를 초기화하는 함수 */
