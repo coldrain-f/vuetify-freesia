@@ -65,67 +65,74 @@
         </v-col>
       </v-row>
 
-      <v-table>
-        <thead>
-          <tr>
-            <th class="font-weight-bold">WORD</th>
-            <th class="font-weight-bold">MEANING</th>
-            <th class="font-weight-bold">OPTIONS</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="width: 35%">
-              {{ currentLearningWord.name }}
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            variant="underlined"
+            :model-value="currentLearningWord.name"
+            readonly
+            hide-details
+          >
+            <template v-slot:label>
+              <span class="me-2">Study Word</span>
               <v-icon
                 v-show="showSuccessIcon"
                 icon="mdi-check"
                 color="info"
+                size="small"
                 class="mb-1"
-                size="x-small"
-              />
-
+              >
+              </v-icon>
               <v-icon
                 v-show="showFailIcon"
                 icon="mdi-close"
                 color="error"
-                size="x-small"
-              />
-            </td>
-            <td style="width: 35%">
-              <v-text-field
-                :placeholder="maskMeaning"
-                :clearable="false"
-                variant="underlined"
-                ref="inputMeaningField"
-                v-model="inputMeaning"
-                @keyup.enter="handleEnter"
-              >
-              </v-text-field>
-            </td>
-            <td style="width: 30%">
-              <span>
-                <v-tooltip activator="parent" location="top">
-                  정답이 표시되는 대신 틀린 단어에 포함됩니다.
-                </v-tooltip>
-                <v-btn
-                  variant="text"
-                  size="small"
-                  icon="mdi-chat-question"
-                  @click="handleHelpButtonClick"
-                >
-                </v-btn>
-              </span>
-              <v-btn
-                variant="text"
                 size="small"
-                icon="mdi-volume-medium"
+              >
+              </v-icon>
+            </template>
+            <template v-slot:append-inner>
+              <v-tooltip activator="parent" location="right">
+                발음 듣기
+              </v-tooltip>
+              <v-btn
+                variant="flat"
+                size="small"
+                icon="mdi-volume-high"
                 @click="speakText(currentLearningWord.name)"
-              ></v-btn>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+              >
+              </v-btn>
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            label="Native Word"
+            :placeholder="maskMeaning"
+            :ref="inputMeaningField"
+            variant="underlined"
+            v-model="inputMeaning"
+            @keyup.enter="handleEnter"
+          >
+            <template v-slot:append-inner>
+              <v-tooltip activator="parent" location="right">
+                정답이 표시되는 대신 틀린 단어에 포함됩니다.
+              </v-tooltip>
+              <v-btn
+                variant="flat"
+                size="small"
+                icon="mdi-chat-question"
+                @click="handleHelpButtonClick"
+              >
+              </v-btn>
+            </template>
+          </v-text-field>
+        </v-col>
+      </v-row>
+
       <v-divider></v-divider>
     </v-card-text>
     <v-card-actions v-if="false">
