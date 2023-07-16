@@ -15,13 +15,10 @@ export const vocabularyService = {
   },
 
   /** 단어장 등록 API */
-  registerVocabulary: async (formData) => {
-    const { title, language } = formData;
-    const response = await $axios.post("/vocabulary", {
-      title,
-      language,
-    });
-    return response.data;
+  register: async (formData) => {
+    const response = await $axios.post("/vocabulary", formData);
+    const savedVocaId = response.data;
+    return savedVocaId;
   },
 
   /** 단어장 삭제 API */

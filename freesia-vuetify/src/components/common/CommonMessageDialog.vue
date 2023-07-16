@@ -13,7 +13,7 @@
   <v-dialog v-model="showMessageDialog" width="350">
     <v-card>
       <template #title>
-        <span class="noto-sans text-primary"> ※ Alert </span>
+        <span class="text-primary"> ※ Alert </span>
       </template>
       <template #append>
         <v-btn
@@ -24,10 +24,12 @@
         </v-btn>
       </template>
       <v-card-text>
-        {{ messageDialogText }}
+        <span class="noto-sans">
+          {{ messageDialogText }}
+        </span>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn color="primary" @click="showMessageDialog = false" class="me-4">
+        <v-btn color="primary" @click="showMessageDialog = false" class="w-100">
           CONFIRM
         </v-btn>
       </v-card-actions>

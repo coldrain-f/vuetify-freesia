@@ -12,9 +12,12 @@
         <v-text-field label="Title" v-model="formData.title"> </v-text-field>
         <v-select
           label="Language"
-          :items="['English', 'Japanese']"
+          :items="languageItems"
           v-model="formData.language"
-        />
+          item-title="name"
+          item-value="name"
+        >
+        </v-select>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="primary" @click="onClick"> ADD </v-btn>
@@ -25,7 +28,17 @@
 </template>
 
 <script setup>
-import { computed, reactive } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
+
+import { languageService } from "@/service/languageService";
+import { vocabularyService } from "@/service/vocabularyService";
+
+import { LanguageType } from "@/common/enum/languageType";
+
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
@@ -47,12 +60,30 @@ const showDialog = computed({
 
 const formData = reactive({
   title: null,
-  language: "English",
+  language: LanguageType.ENGLISH,
 });
 
-const onClick = () => {
-  console.log(`title = ${formData.title}`);
-  console.log(`language = ${formData.language}`);
+const languageItems = ref([]);
+
+onMounted(async () => {
+  Object.assign(languageItems.value, await languageService.findAll());
+});
+
+const clearFormData = () => {
+  formData.title = null;
+  formData.language = LanguageType.ENGLISH;
+};
+
+const onClick = async () => {
+  try {
+    await vocabularyService.register(formData);
+    showDialog.value = false;
+    showCommonMessageDialog("단어장 등록을 완료했습니다.");
+    clearFormData();
+  } catch (err) {
+    console.error(err);
+    showCommonMessageDialog("단어장 등록을 실패했습니다.");
+  }
 };
 </script>
 

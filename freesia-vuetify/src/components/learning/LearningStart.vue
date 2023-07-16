@@ -149,7 +149,7 @@
           <v-text-field
             :hint="maskMeaning"
             label="Native Word"
-            :ref="inputMeaningField"
+            ref="inputMeaningField"
             variant="underlined"
             v-model="inputMeaning"
             counter
@@ -457,7 +457,7 @@ function handleHelpButtonClick() {
   inputMeaning.value = currentLearningWord.value.meaning;
   inputMeaningField.value.focus();
 
-  // 이미 클릭했던 단어라면 중복으로 추가하지 않는다.
+  // 이미 틀렸던 단어라면 중복으로 추가하지 않는다.
   if (!incorrectWords.value.includes(currentLearningWord.value.name)) {
     incorrectWords.value.push(currentLearningWord.value.name);
   }
