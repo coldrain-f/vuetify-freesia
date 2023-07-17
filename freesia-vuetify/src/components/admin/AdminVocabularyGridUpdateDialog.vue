@@ -72,17 +72,16 @@ const showDialog = computed({
 const formData = reactive({});
 
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
-watch(props.selectedVocabulary, (v) => {
-  // 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-  if (isEmptyObject(v)) {
-    showDialog.value = false;
-    return;
-  }
-
-  formData.title = v.title;
-  formData.language = v.language;
-  formData.unitCount = v.unitCount;
-});
+// reactive를 감시하려면 deep: true를 설정 해줘야 하는듯...
+watch(
+  () => props.selectedVocabulary,
+  (selectedVocabulary) => {
+    formData.title = selectedVocabulary.title;
+    formData.language = selectedVocabulary.language;
+    formData.unitCount = selectedVocabulary.unitCount;
+  },
+  { deep: true }
+);
 
 const isUnitCountZero = () => {
   return props.selectedVocabulary.unitCount == 0;

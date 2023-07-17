@@ -60,7 +60,10 @@
     </v-row>
 
     <!-- 단어장 등록 다이얼로그 -->
-    <AdminVocabularyGridAddDialog v-model="showAddDialog" />
+    <AdminVocabularyGridAddDialog
+      v-model="showAddDialog"
+      @success="setRowData"
+    />
 
     <!-- 단어장 수정 다이얼로그 -->
     <AdminVocabularyGridUpdateDialog
@@ -80,6 +83,8 @@
 import AdminVocabularyGridAddDialog from "./AdminVocabularyGridAddDialog.vue";
 import AdminVocabularyGridUpdateDialog from "./AdminVocabularyGridUpdateDialog.vue";
 import AdminVocabularyGridDeleteDialog from "./AdminVocabularyGridDeleteDialog.vue";
+
+import { vocabularyService } from "@/service/vocabularyService";
 
 // AG Grid Vue
 import { AgGridVue } from "ag-grid-vue3";
@@ -104,9 +109,20 @@ const { isSearchPerformed, rowData, selectedVocabulary } = toRefs(
   vocabularyGridManager
 );
 
-const performSearch = () => {
-  vocabularyGridManager.rowData = fetchData();
+const performSearch = async () => {
+  await setRowData();
+
+  vocabularyGridManager.selectedVocabulary = {};
   vocabularyGridManager.isSearchPerformed = true;
+};
+
+const setRowData = async () => {
+  const vocabularyPageable = await vocabularyService.getPageable({
+    page: 0,
+    size: 2000,
+  });
+
+  vocabularyGridManager.rowData = vocabularyPageable.content;
 };
 
 // CRUD Dialogs
@@ -205,53 +221,6 @@ const columnDefs = [
     width: 130,
   },
 ];
-
-const fetchData = () => {
-  return [
-    {
-      title: "단어가 읽기다 기본편",
-      language: "English",
-      unitCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      title: "단어가 읽기다 실력편",
-      language: "English",
-      unitCount: 1,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      title: "일본어 JLPT N5급",
-      language: "Japanese",
-      unitCount: 2,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      title: "일본어 JLPT N4급",
-      language: "Japanese",
-      unitCount: 3,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      title: "일본어 JLPT N3급",
-      language: "Japanese",
-      unitCount: 4,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      title: "일본어 JLPT N2급",
-      language: "Japanese",
-      unitCount: 5,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-  ];
-};
 </script>
 
 <style scoped></style>

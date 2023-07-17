@@ -47,7 +47,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -78,8 +78,11 @@ const onClick = async () => {
   try {
     await vocabularyService.register(formData);
     showDialog.value = false;
+
     showCommonMessageDialog("단어장 등록을 완료했습니다.");
     clearFormData();
+
+    emit("success");
   } catch (err) {
     console.error(err);
     showCommonMessageDialog("단어장 등록을 실패했습니다.");
