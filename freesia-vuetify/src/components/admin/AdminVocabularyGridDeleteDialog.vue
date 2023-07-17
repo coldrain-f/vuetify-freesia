@@ -65,10 +65,8 @@
         </template>
         <v-card-text> 정말 삭제하시겠습니까? </v-card-text>
         <v-card-actions class="d-flex justify-end">
-          <v-btn color="error"> CONFIRM </v-btn>
-          <v-btn @click="showDeleteConfirmDialog = false" class="me-4">
-            CANCEL
-          </v-btn>
+          <v-btn color="error" @click="onDeleteVocabulary"> CONFIRM </v-btn>
+          <v-btn class="me-4"> CANCEL </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -76,10 +74,14 @@
 </template>
 
 <script setup>
-import { commonUtils } from "@/common/commonUtils";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 
-const { isEmptyObject } = commonUtils;
+import { vocabularyService } from "@/service/vocabularyService";
+
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
@@ -91,15 +93,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
-// 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-watch(props.selectedVocabulary, (v) => {
-  if (isEmptyObject(v)) {
-    showDialog.value = false;
-    return;
-  }
-});
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -114,6 +108,27 @@ const showDeleteConfirmDialog = ref(false);
 
 const onClick = () => {
   showDeleteConfirmDialog.value = true;
+};
+
+const closeAllDialogs = () => {
+  showDeleteConfirmDialog.value = false;
+  showDialog.value = false;
+};
+
+const onDeleteVocabulary = async () => {
+  try {
+    await vocabularyService.deleteById(props.selectedVocabulary.id);
+
+    closeAllDialogs();
+    showCommonMessageDialog("단어장 삭제를 완료했습니다.");
+
+    emit("success");
+  } catch (err) {
+    console.error(err);
+
+    closeAllDialogs();
+    showCommonMessageDialog("단어장 삭제를 실패했습니다.");
+  }
 };
 </script>
 

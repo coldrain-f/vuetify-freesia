@@ -75,6 +75,7 @@
     <AdminVocabularyGridDeleteDialog
       v-model="showDeleteDialog"
       :selectedVocabulary="selectedVocabulary"
+      @success="setRowData"
     />
   </v-container>
 </template>
@@ -143,6 +144,7 @@ const onSelectionChanged = (e) => {
   const selectedData = selectedNodes.map((node) => node.data)[0];
 
   Object.assign(vocabularyGridManager.selectedVocabulary, {
+    id: selectedData.id,
     title: selectedData.title,
     language: selectedData.language,
     unitCount: selectedData.unitCount,
@@ -175,6 +177,15 @@ const columnDefs = [
     valueGetter: (params) => {
       return rowData.value.length - params.node.rowIndex;
     },
+  },
+  {
+    headerName: "ID",
+    field: "id",
+    width: 70,
+    filter: false,
+    resizable: false,
+    sortable: false,
+    hide: true,
   },
   {
     headerName: "제목",

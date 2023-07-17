@@ -43,10 +43,7 @@
 </template>
 
 <script setup>
-import { commonUtils } from "@/common/commonUtils";
 import { computed, reactive, watch } from "vue";
-
-const { isEmptyObject } = commonUtils;
 
 const props = defineProps({
   modelValue: {

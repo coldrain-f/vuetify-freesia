@@ -22,7 +22,7 @@ export const vocabularyService = {
   },
 
   /** 단어장 삭제 API */
-  remove: async (vocabularyId) => {
+  deleteById: async (vocabularyId) => {
     await $axios.delete(`/vocabulary/${vocabularyId}`);
   },
 
