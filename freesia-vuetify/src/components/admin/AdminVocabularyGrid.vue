@@ -69,6 +69,7 @@
     <AdminVocabularyGridUpdateDialog
       v-model="showUpdateDialog"
       :selectedVocabulary="selectedVocabulary"
+      @success="setRowData"
     />
 
     <!-- 단어장 삭제 다이얼로그 -->

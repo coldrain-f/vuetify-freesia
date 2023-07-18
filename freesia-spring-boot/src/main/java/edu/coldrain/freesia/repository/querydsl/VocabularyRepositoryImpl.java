@@ -31,7 +31,9 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                                 vocabulary.id,
                                 vocabulary.title,
                                 language.name,
-                                Expressions.asNumber(0L) // unitCount
+                                Expressions.asNumber(0L), // unitCount
+                                vocabulary.createdAt,
+                                vocabulary.modifiedAt
                         )
                 )
                 .from(vocabulary)
@@ -68,7 +70,9 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                                 JPAExpressions.select(unit.count()) // unitCount
                                         .from(unit)
                                         .innerJoin(unit.vocabulary, vocabulary)
-                                        .where(unit.vocabulary.id.eq(vocabularyId))
+                                        .where(unit.vocabulary.id.eq(vocabularyId)),
+                                vocabulary.createdAt,
+                                vocabulary.modifiedAt
                         )
                 )
                 .from(vocabulary)

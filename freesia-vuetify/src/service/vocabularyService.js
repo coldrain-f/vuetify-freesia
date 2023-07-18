@@ -28,7 +28,7 @@ export const vocabularyService = {
 
   /** 단어장 수정 API */
   modify: async (formData) => {
-    const { id, title } = formData;
-    await $axios.patch(`/vocabulary/${id}`, { title });
+    const { id, title, language } = formData;
+    await $axios.patch(`/vocabulary/${id}`, { title, language });
   },
 };

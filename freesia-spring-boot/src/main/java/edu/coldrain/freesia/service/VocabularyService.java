@@ -49,7 +49,10 @@ public class VocabularyService {
         final Vocabulary vocabulary = vocabularyRepository.findById(vocabularyId)
                 .orElseThrow(() -> new VocabularyNotFoundException("Vocabulary not found exception."));
 
-        vocabulary.changeTitle(request.getTitle());
+        final Language language = languageRepository.findByName(request.getLanguage())
+                        .orElseThrow(() -> new LanguageNotFoundException("Language not found exception."));
+        
+        vocabulary.modifyVocabulary(request.getTitle(), language);
     }
 
     @Transactional

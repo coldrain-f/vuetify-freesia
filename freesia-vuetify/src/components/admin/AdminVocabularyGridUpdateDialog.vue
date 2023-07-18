@@ -13,10 +13,11 @@
         </v-text-field>
         <v-select
           label="Language"
-          :items="['English', 'Japanese']"
+          :items="languageItems"
           v-model="formData.language"
+          item-title="name"
+          item-value="name"
           :readonly="!isUnitCountZero()"
-          required
           :messages="
             !isUnitCountZero()
               ? '언어는 소속된 Unit 개수가 0개인 경우에만 변경할 수 있습니다.'
@@ -24,6 +25,7 @@
           "
           :class="!isUnitCountZero() ? 'mb-4' : ''"
           :append-inner-icon="!isUnitCountZero() ? 'mdi-read' : 'mdi-menu-down'"
+          required
         >
         </v-select>
         <v-text-field
@@ -43,7 +45,15 @@
 </template>
 
 <script setup>
-import { computed, reactive, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
+
+import { languageService } from "@/service/languageService";
+import { vocabularyService } from "@/service/vocabularyService";
+
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
@@ -55,7 +65,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -68,11 +78,14 @@ const showDialog = computed({
 
 const formData = reactive({});
 
+const languageItems = ref([]);
+
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
 // reactive를 감시하려면 deep: true를 설정 해줘야 하는듯...
 watch(
   () => props.selectedVocabulary,
   (selectedVocabulary) => {
+    formData.id = selectedVocabulary.id;
     formData.title = selectedVocabulary.title;
     formData.language = selectedVocabulary.language;
     formData.unitCount = selectedVocabulary.unitCount;
@@ -84,11 +97,24 @@ const isUnitCountZero = () => {
   return props.selectedVocabulary.unitCount == 0;
 };
 
-const onClick = () => {
-  console.log(`title = ${formData.title}`);
-  console.log(`language = ${formData.language}`);
-  console.log(`unitCount = ${formData.unitCount}`);
+const onClick = async () => {
+  try {
+    await vocabularyService.modify(formData);
+
+    showDialog.value = false;
+    showCommonMessageDialog("단어장 수정을 완료했습니다.");
+    emit("success");
+  } catch (err) {
+    console.error(err);
+
+    showDialog.value = false;
+    showCommonMessageDialog("단어장 수정을 실패했습니다.");
+  }
 };
+
+onMounted(async () => {
+  Object.assign(languageItems.value, await languageService.findAll());
+});
 </script>
 
 <style scoped></style>
