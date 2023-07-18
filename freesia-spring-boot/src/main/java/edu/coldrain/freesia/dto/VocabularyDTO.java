@@ -43,10 +43,10 @@ public class VocabularyDTO {
         private String language;
         private Long unitCount;
 
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+        @JsonFormat(pattern = "yyyy. MM. dd. HH:mm")
         private LocalDateTime createdAt;
 
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+        @JsonFormat(pattern = "yyyy. MM. dd. HH:mm")
         private LocalDateTime modifiedAt;
 
 

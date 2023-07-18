@@ -51,7 +51,7 @@ public class VocabularyService {
 
         final Language language = languageRepository.findByName(request.getLanguage())
                         .orElseThrow(() -> new LanguageNotFoundException("Language not found exception."));
-        
+
         vocabulary.modifyVocabulary(request.getTitle(), language);
     }
 
