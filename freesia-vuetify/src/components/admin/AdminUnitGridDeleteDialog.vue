@@ -8,6 +8,7 @@
         <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
         </v-btn>
       </template>
+
       <v-card-text>
         <v-text-field
           label="Title"
@@ -16,26 +17,20 @@
           append-inner-icon="mdi-read"
         >
         </v-text-field>
-        <v-row>
-          <v-col cols="6">
-            <v-text-field
-              label="Word Count"
-              :model-value="props.selectedUnit.wordCount + '개'"
-              readonly
-              append-inner-icon="mdi-read"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              label="Read Count"
-              :model-value="props.selectedUnit.readCount + '개'"
-              readonly
-              append-inner-icon="mdi-read"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
+        <v-text-field
+          label="Word Count"
+          :model-value="props.selectedUnit.wordCount + '개'"
+          readonly
+          append-inner-icon="mdi-read"
+        >
+        </v-text-field>
+        <v-text-field
+          label="Read Count"
+          :model-value="props.selectedUnit.readCount + '개'"
+          readonly
+          append-inner-icon="mdi-read"
+        >
+        </v-text-field>
         <v-alert
           type="error"
           icon="mdi-material-design"

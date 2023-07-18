@@ -11,26 +11,20 @@
       <v-card-text>
         <v-text-field label="Subject" v-model="formData.subject" required>
         </v-text-field>
-        <v-row>
-          <v-col cols="6">
-            <v-text-field
-              label="Word Count"
-              :model-value="props.selectedUnit.wordCount + '개'"
-              readonly
-              append-inner-icon="mdi-read"
-            >
-            </v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              label="Read Count"
-              :model-value="props.selectedUnit.readCount + '개'"
-              readonly
-              append-inner-icon="mdi-read"
-            >
-            </v-text-field>
-          </v-col>
-        </v-row>
+        <v-text-field
+          label="Word Count"
+          :model-value="props.selectedUnit.wordCount + '개'"
+          readonly
+          append-inner-icon="mdi-read"
+        >
+        </v-text-field>
+        <v-text-field
+          label="Read Count"
+          :model-value="props.selectedUnit.readCount + '개'"
+          readonly
+          append-inner-icon="mdi-read"
+        >
+        </v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="info" @click="onClick"> UPDATE </v-btn>
