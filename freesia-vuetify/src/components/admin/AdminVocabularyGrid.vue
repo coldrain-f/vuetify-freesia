@@ -225,12 +225,12 @@ const columnDefs = [
   {
     headerName: "등록일",
     field: "createdAt",
-    width: 130,
+    width: 160,
   },
   {
     headerName: "수정일",
     field: "modifiedAt",
-    width: 130,
+    width: 160,
   },
 ];
 </script>
