@@ -74,8 +74,14 @@
 
     <v-row>
       <v-col cols="12">
-        <h4 :class="`text-${themeStore.theme}`">
-          【 {{ searchedVocabularyTitle || "None" }} 】
+        <h4 :class="`text-${themeStore.theme}`" v-if="isSearchPerformed">
+          <span class="me-2">【 </span>
+          <span> {{ searchedLanguage }} </span>
+          <span class="ms-2"> 】</span>
+          <span class="ms-2 me-2"> 》</span>
+          <span class="me-2">【 </span>
+          <span class="me-2">{{ searchedVocabularyTitle }}</span>
+          <span> 】</span>
         </h4>
         <ag-grid-vue
           style="width: 100%; height: 312px"
@@ -141,8 +147,13 @@ const languageSelectManager = inject("languageSelectManager");
 const vocabularySelectManager = inject("vocabularySelectManager");
 
 // readonly
-const { isSearchPerformed, rowData, selectedUnit, searchedVocabularyTitle } =
-  toRefs(unitGridManager);
+const {
+  isSearchPerformed,
+  rowData,
+  selectedUnit,
+  searchedVocabularyTitle,
+  searchedLanguage,
+} = toRefs(unitGridManager);
 
 const showUnitAddDialog = ref(false);
 const showUnitUpdateDialog = ref(false);
@@ -150,6 +161,8 @@ const showUnitDeleteDialog = ref(false);
 
 const performSearch = async () => {
   await fetchRowData();
+
+  unitGridManager.searchedLanguage = languageSelectManager.selectedItem;
 
   unitGridManager.searchedVocabularyTitle =
     vocabularySelectManager.selectedItem.title;
