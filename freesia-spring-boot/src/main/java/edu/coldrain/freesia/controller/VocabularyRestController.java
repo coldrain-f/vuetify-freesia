@@ -1,6 +1,7 @@
 package edu.coldrain.freesia.controller;
 
 import edu.coldrain.freesia.dto.VocabularyDTO;
+import edu.coldrain.freesia.dto.VocabularySearchCondition;
 import edu.coldrain.freesia.service.VocabularyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,8 +32,10 @@ public class VocabularyRestController {
     }
 
     @GetMapping
-    public Page<VocabularyDTO.Response> searchResponsePage(@PageableDefault(size = 3) Pageable pageable) {
-        return vocabularyService.searchResponsePage(pageable);
+    public Page<VocabularyDTO.Response> searchResponsePage(
+            @PageableDefault(size = 3) Pageable pageable,
+            @ModelAttribute VocabularySearchCondition searchCondition) {
+        return vocabularyService.searchResponsePage(pageable, searchCondition);
     }
 
     @GetMapping("/{vocabularyId}")

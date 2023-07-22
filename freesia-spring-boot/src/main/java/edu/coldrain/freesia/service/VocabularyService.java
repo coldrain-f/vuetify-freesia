@@ -1,6 +1,7 @@
 package edu.coldrain.freesia.service;
 
 import edu.coldrain.freesia.dto.VocabularyDTO;
+import edu.coldrain.freesia.dto.VocabularySearchCondition;
 import edu.coldrain.freesia.entity.Language;
 import edu.coldrain.freesia.entity.Unit;
 import edu.coldrain.freesia.entity.Vocabulary;
@@ -75,8 +76,8 @@ public class VocabularyService {
         vocabularyRepository.deleteById(vocabularyId);
     }
 
-    public Page<VocabularyDTO.Response> searchResponsePage(Pageable pageable) {
-        return vocabularyRepository.searchResponsePage(pageable);
+    public Page<VocabularyDTO.Response> searchResponsePage(Pageable pageable, VocabularySearchCondition searchCondition) {
+        return vocabularyRepository.searchResponsePage(pageable, searchCondition);
     }
 
     public VocabularyDTO.Response getResponseById(Long vocabularyId) {

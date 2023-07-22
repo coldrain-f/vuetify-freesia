@@ -1,13 +1,16 @@
 package edu.coldrain.freesia.repository.querydsl;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import edu.coldrain.freesia.dto.QVocabularyDTO_Response;
 import edu.coldrain.freesia.dto.VocabularyDTO;
+import edu.coldrain.freesia.dto.VocabularySearchCondition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -25,7 +28,7 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
     }
 
     @Override
-    public Page<VocabularyDTO.Response> searchResponsePage(Pageable pageable) {
+    public Page<VocabularyDTO.Response> searchResponsePage(Pageable pageable, VocabularySearchCondition searchCondition) {
         final List<VocabularyDTO.Response> content = query.select(
                         new QVocabularyDTO_Response(
                                 vocabulary.id,
@@ -37,6 +40,7 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                         )
                 )
                 .from(vocabulary)
+                .where(languageEq(searchCondition.getLanguage()))
                 .innerJoin(vocabulary.language, language)
                 .orderBy(vocabulary.id.desc())
                 .offset(pageable.getOffset()) // page number
@@ -58,6 +62,10 @@ public class VocabularyRepositoryImpl implements VocabularyRepositoryQuerydsl {
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total == null ? 0L : total);
+    }
+
+    private BooleanExpression languageEq(String language) {
+        return StringUtils.hasText(language) ? vocabulary.language.name.eq(language) : null;
     }
 
     @Override
