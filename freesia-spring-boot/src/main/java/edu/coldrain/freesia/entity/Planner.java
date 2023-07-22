@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SequenceGenerator(name = "PLANNER_SEQ_GENERATOR", sequenceName = "PLANNER_SEQ", allocationSize = 1)
-public class Planner {
+public class Planner extends Timestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PLANNER_SEQ_GENERATOR")

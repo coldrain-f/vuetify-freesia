@@ -1,10 +1,15 @@
 package edu.coldrain.freesia.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 public class UnitDTO {
 
@@ -17,12 +22,20 @@ public class UnitDTO {
 
         private Long wordCount;
 
+        @JsonFormat(pattern = "yyyy. MM. dd. HH:mm")
+        private LocalDateTime createdAt;
+
+        @JsonFormat(pattern = "yyyy. MM. dd. HH:mm")
+        private LocalDateTime modifiedAt;
+
         @Builder
         @QueryProjection // new QUnitDTO_Response
-        public Response(Long id, String subject, Long wordCount) {
+        public Response(Long id, String subject, Long wordCount, LocalDateTime createdAt, LocalDateTime modifiedAt) {
             this.id = id;
             this.subject = subject;
             this.wordCount = wordCount;
+            this.createdAt = createdAt;
+            this.modifiedAt = modifiedAt;
         }
     }
 

@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SequenceGenerator(name = "UNIT_SEQ_GENERATOR", sequenceName = "UNIT_SEQ")
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"SUBJECT", "VOCABULARY_ID"}))
-public class Unit {
+public class Unit extends Timestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UNIT_SEQ_GENERATOR")

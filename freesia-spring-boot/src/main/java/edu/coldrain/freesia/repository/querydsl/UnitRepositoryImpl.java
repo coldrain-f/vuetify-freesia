@@ -34,7 +34,9 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
         final List<UnitDTO.Response> content = query.select(new QUnitDTO_Response(
                         unit.id,
                         unit.subject,
-                        Expressions.asNumber(0L) // wordCount
+                        Expressions.asNumber(0L), // wordCount
+                        unit.createdAt,
+                        unit.modifiedAt
                 ))
                 .from(unit)
                 .innerJoin(unit.vocabulary, vocabulary)
@@ -71,7 +73,9 @@ public class UnitRepositoryImpl implements UnitRepositoryQuerydsl {
                         JPAExpressions.select(word.count()) // wordCount
                                 .from(word)
                                 .innerJoin(word.unit, unit)
-                                .where(unit.id.eq(unitId))
+                                .where(unit.id.eq(unitId)),
+                        unit.createdAt,
+                        unit.modifiedAt
                 ))
                 .from(unit)
                 .innerJoin(unit.vocabulary, vocabulary)

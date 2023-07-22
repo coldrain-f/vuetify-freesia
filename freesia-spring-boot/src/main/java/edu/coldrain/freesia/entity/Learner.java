@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SequenceGenerator(name = "LEARNER_SEQ_GENERATOR", sequenceName = "LEARNER_SEQ", allocationSize = 1)
-public class Learner {
+public class Learner extends Timestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LEARNER_SEQ_GENERATOR")

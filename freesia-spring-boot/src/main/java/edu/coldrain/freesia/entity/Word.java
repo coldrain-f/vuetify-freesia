@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SequenceGenerator(name = "WORD_SEQ_GENERATOR", sequenceName = "WORD_SEQ")
-public class Word {
+public class Word extends Timestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "WORD_SEQ_GENERATOR")
