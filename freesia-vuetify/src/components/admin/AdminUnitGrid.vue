@@ -148,10 +148,13 @@ const performSearch = async () => {
 };
 
 const fetchRowData = async () => {
-  const unitPageable = await unitService.getPageable({
-    page: 0,
-    size: 2000,
-  });
+  const pageableParams = { page: 0, size: 2000 };
+  const vocabularyId = vocabularySelectManager.selectedItem.id;
+
+  const unitPageable = await unitService.getPageable(
+    vocabularyId,
+    pageableParams
+  );
 
   unitGridManager.rowData = unitPageable.concat;
 };
