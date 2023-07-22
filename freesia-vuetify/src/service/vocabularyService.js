@@ -2,9 +2,20 @@ import { $axios } from "@/common/axios";
 
 export const vocabularyService = {
   /** 단어장 목록 페이지 조회 API */
-  getPageable: async (pageable = { page: 0, size: 3 }) => {
+  getPageable: async (pageable = { page: 0, size: 3 }, searchCondition) => {
     const { page, size } = pageable;
-    const response = await $axios.get(`/vocabulary?page=${page}&size=${size}`);
+
+    let requestURI = `/vocabulary?page=${page}&size=${size}`;
+    if (!searchCondition) {
+      const response = await $axios.get(requestURI);
+      return response.data;
+    }
+
+    if (searchCondition.language) {
+      requestURI += `&language=${searchCondition.language}`;
+    }
+
+    const response = await $axios.get(requestURI);
     return response.data;
   },
 

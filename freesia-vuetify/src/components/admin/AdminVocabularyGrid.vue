@@ -62,21 +62,21 @@
     <!-- 단어장 등록 다이얼로그 -->
     <AdminVocabularyGridAddDialog
       v-model="showAddDialog"
-      @success="setRowData"
+      @success="fetchRowData"
     />
 
     <!-- 단어장 수정 다이얼로그 -->
     <AdminVocabularyGridUpdateDialog
       v-model="showUpdateDialog"
       :selectedVocabulary="selectedVocabulary"
-      @success="setRowData"
+      @success="fetchRowData"
     />
 
     <!-- 단어장 삭제 다이얼로그 -->
     <AdminVocabularyGridDeleteDialog
       v-model="showDeleteDialog"
       :selectedVocabulary="selectedVocabulary"
-      @success="setRowData"
+      @success="fetchRowData"
     />
   </v-container>
 </template>
@@ -112,13 +112,13 @@ const { isSearchPerformed, rowData, selectedVocabulary } = toRefs(
 );
 
 const performSearch = async () => {
-  await setRowData();
+  await fetchRowData();
 
   vocabularyGridManager.selectedVocabulary = {};
   vocabularyGridManager.isSearchPerformed = true;
 };
 
-const setRowData = async () => {
+const fetchRowData = async () => {
   const vocabularyPageable = await vocabularyService.getPageable({
     page: 0,
     size: 2000,

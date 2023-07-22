@@ -6,16 +6,14 @@
           label="Language"
           variant="underlined"
           density="compact"
-          :modelValue="{ id: 1, name: 'English' }"
-          :items="[
-            { id: 1, name: 'English' },
-            { id: 2, name: 'Japanese' },
-          ]"
+          v-model="languageSelectManager.selectedItem"
+          :items="languageSelectManager.items"
           item-title="name"
-          item-value="id"
+          item-value="name"
           hide-details
-          return-object
-          persistent-hint
+          @update:model-value="
+            (changedLanguage) => emit('handleLanguageChange', changedLanguage)
+          "
         >
         </v-select>
       </v-col>
@@ -24,16 +22,12 @@
           label="Voca"
           variant="underlined"
           density="compact"
-          :modelValue="{ id: 1, title: '단어가 읽기다 기본편' }"
-          :items="[
-            { id: 1, title: '단어가 읽기다 기본편' },
-            { id: 2, title: '단어가 읽기다 실력편' },
-          ]"
+          v-model="vocabularySelectManager.selectedItem"
+          :items="vocabularySelectManager.items"
           item-title="title"
-          item-value="vocabularyId"
-          hide-details
+          item-value="id"
           return-object
-          persistent-hint
+          hide-details
         >
         </v-select>
       </v-col>
@@ -52,8 +46,7 @@
           :disabled="!isSearchPerformed"
           @click="showUnitAddDialog = true"
         >
-          <v-icon start icon="mdi-note-plus-outline" style="margin-top: 1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-plus-outline"> </v-icon>
           ADD
         </v-btn>
         <v-btn
@@ -118,20 +111,28 @@
 <script setup>
 import AdminUnitGridAddDialog from "./AdminUnitGridAddDialog.vue";
 import AdminUnitGridUpdateDialog from "./AdminUnitGridUpdateDialog.vue";
+import AdminUnitGridDeleteDialog from "./AdminUnitGridDeleteDialog.vue";
 
 // AG Grid Vue
-import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
+
 import { commonUtils } from "@/common/commonUtils";
+import { useThemeStore } from "@/stores/theme";
 import { inject, ref, toRefs } from "vue";
-import AdminUnitGridDeleteDialog from "./AdminUnitGridDeleteDialog.vue";
+
+import { unitService } from "@/service/unitService";
 
 // Utils
 const { isEmptyObject } = commonUtils;
 
 const themeStore = useThemeStore();
 
+const emit = defineEmits(["handleLanguageChange"]);
+
 const unitGridManager = inject("unitGridManager");
+
+const languageSelectManager = inject("languageSelectManager");
+const vocabularySelectManager = inject("vocabularySelectManager");
 
 // readonly
 const { isSearchPerformed, rowData, selectedUnit } = toRefs(unitGridManager);
@@ -140,9 +141,19 @@ const showUnitAddDialog = ref(false);
 const showUnitUpdateDialog = ref(false);
 const showUnitDeleteDialog = ref(false);
 
-const performSearch = () => {
-  unitGridManager.rowData = fetchData();
+const performSearch = async () => {
+  await fetchRowData();
+
   unitGridManager.isSearchPerformed = true;
+};
+
+const fetchRowData = async () => {
+  const unitPageable = await unitService.getPageable({
+    page: 0,
+    size: 2000,
+  });
+
+  unitGridManager.rowData = unitPageable.concat;
 };
 
 const gridApi = ref(null);
@@ -229,53 +240,6 @@ const columnDefs = [
     width: 160,
   },
 ];
-
-const fetchData = () => {
-  return [
-    {
-      subject: "요리",
-      wordCount: 0,
-      readCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      subject: "일상 1",
-      wordCount: 0,
-      readCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      subject: "일상 2",
-      wordCount: 0,
-      readCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      subject: "개인",
-      wordCount: 0,
-      readCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      subject: "신체",
-      wordCount: 0,
-      readCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      subject: "취미 1",
-      wordCount: 0,
-      readCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-  ];
-};
 </script>
 
 <style scoped></style>

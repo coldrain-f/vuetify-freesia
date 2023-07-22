@@ -6,15 +6,14 @@
           label="Language"
           variant="underlined"
           density="compact"
-          :modelValue="{ id: 1, name: 'English' }"
-          :items="[
-            { id: 1, name: 'English' },
-            { id: 2, name: 'Japanese' },
-          ]"
+          v-model="languageSelectManager.selectedItem"
+          :items="languageSelectManager.items"
           item-title="name"
-          item-value="id"
+          item-value="name"
           hide-details
-          return-object
+          @update:model-value="
+            (changedLanguage) => emit('handleLanguageChange', changedLanguage)
+          "
         >
         </v-select>
       </v-col>
@@ -23,15 +22,12 @@
           label="Voca"
           variant="underlined"
           density="compact"
-          :modelValue="{ title: '단어가 읽기다 기본편', vocabularyId: 1 }"
-          :items="[
-            { title: '단어가 읽기다 기본편', vocabularyId: 1 },
-            { title: '단어가 읽기다 실력편', vocabularyId: 2 },
-          ]"
+          v-model="vocabularySelectManager.selectedItem"
+          :items="vocabularySelectManager.items"
           item-title="title"
-          item-value="vocabularyId"
-          hide-details
+          item-value="id"
           return-object
+          hide-details
         >
         </v-select>
       </v-col>
@@ -151,7 +147,12 @@ const { isEmptyObject } = commonUtils;
 
 const themeStore = useThemeStore();
 
+const emit = defineEmits(["handleLanguageChange"]);
+
 const wordGridManager = inject("wordGridManager");
+
+const languageSelectManager = inject("languageSelectManager");
+const vocabularySelectManager = inject("vocabularySelectManager");
 
 const { isSearchPerformed, rowData, selectedWord } = toRefs(wordGridManager);
 

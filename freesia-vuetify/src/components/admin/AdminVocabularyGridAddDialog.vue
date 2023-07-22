@@ -65,10 +65,6 @@ const formData = reactive({
 
 const languageItems = ref([]);
 
-onMounted(async () => {
-  Object.assign(languageItems.value, await languageService.findAll());
-});
-
 const clearFormData = () => {
   formData.title = null;
   formData.language = LanguageType.ENGLISH;
@@ -88,6 +84,10 @@ const onClick = async () => {
     showCommonMessageDialog("단어장 등록을 실패했습니다.");
   }
 };
+
+onMounted(async () => {
+  Object.assign(languageItems.value, await languageService.findAll());
+});
 </script>
 
 <style scoped></style>

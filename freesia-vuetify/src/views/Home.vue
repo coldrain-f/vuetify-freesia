@@ -30,6 +30,9 @@
             <v-list-item @click="showPlannerDialog = true">
               <v-list-item-title> Planner </v-list-item-title>
             </v-list-item>
+            <v-list-item @click="handleGoogleAuth">
+              <v-list-item-title> Google Login </v-list-item-title>
+            </v-list-item>
           </v-list>
         </v-menu>
       </v-btn>
@@ -79,8 +82,8 @@
 
     <v-window v-model="currentTabItem">
       <v-window-item value="LEARN">
-        <learning-start v-if="isLearningStarted"></learning-start>
-        <learning-home v-else></learning-home>
+        <LearningStart v-if="isLearningStarted" />
+        <LearningHome v-else />
       </v-window-item>
 
       <v-window-item value="ANALYZE">
@@ -96,17 +99,26 @@
         </v-card>
       </v-window-item>
 
-      <!-- 단어장 관리 화면 -->
       <v-window-item value="VOCABULARY">
         <AdminVocabularyGrid class="mt-5" />
       </v-window-item>
-      <!-- 유닛 관리 화면 -->
+
       <v-window-item value="UNIT">
-        <AdminUnitGrid class="mt-5" />
+        <AdminUnitGrid
+          class="mt-5"
+          @handleLanguageChange="
+            (changedLanguage) => handleLanguageChange(changedLanguage)
+          "
+        />
       </v-window-item>
-      <!-- 단어 관리 화면 -->
+
       <v-window-item value="WORD">
-        <AdminWordGrid class="mt-5" />
+        <AdminWordGrid
+          class="mt-5"
+          @handleLanguageChange="
+            (changedLanguage) => handleLanguageChange(changedLanguage)
+          "
+        />
       </v-window-item>
     </v-window>
 
@@ -145,8 +157,14 @@ import CommonMessageDialog from "@/components/common/CommonMessageDialog.vue";
 import { useLearningStore } from "@/stores/learning";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useThemeStore } from "@/stores/theme";
+
 import { storeToRefs } from "pinia";
+
 import { nextTick, onMounted, provide, reactive, ref, watch } from "vue";
+
+import { LanguageType } from "@/common/enum/languageType";
+import { languageService } from "@/service/languageService";
+import { vocabularyService } from "@/service/vocabularyService";
 
 // Pinia
 const synthStore = useSpeechSynthesisStore();
@@ -177,6 +195,20 @@ provide("vocabularyGridManager", vocabularyGridManager);
 provide("unitGridManager", unitGridManager);
 provide("wordGridManager", wordGridManager);
 
+// Unit, Word 관리 컴포넌트에서 사용
+const languageSelectManager = reactive({
+  items: [],
+  selectedItem: LanguageType.ENGLISH,
+});
+
+const vocabularySelectManager = reactive({
+  items: [],
+  selectedItem: {},
+});
+
+provide("languageSelectManager", languageSelectManager);
+provide("vocabularySelectManager", vocabularySelectManager);
+
 // Theme
 const showThemeDialog = ref(false);
 
@@ -204,10 +236,34 @@ const clearWordGridManager = () => {
 };
 
 // 모든 관리자 그리드의 상태를 초기화한다.
-const resetAllAdminGridData = () => {
+const clearAdminGridManager = () => {
   clearVocabularyGridManager();
   clearUnitGridManager();
   clearWordGridManager();
+};
+
+const handleLanguageChange = async (changedLanguage) => {
+  await fetchVocabularySelectManager(changedLanguage);
+};
+
+// 언어 선택창을 조회한다.
+const fetchLanguageSelectManager = async () => {
+  languageSelectManager.items = await languageService.findAll();
+  languageSelectManager.selectedItem = LanguageType.ENGLISH;
+};
+
+// 단어장 선택창을 조회한다.
+const fetchVocabularySelectManager = async (language) => {
+  const pageableParams = { page: 0, size: 2000 };
+  const searchCondition = { language };
+  const vocabularyPageable = await vocabularyService.getPageable(
+    pageableParams,
+    searchCondition
+  );
+
+  vocabularySelectManager.items = vocabularyPageable.content;
+  vocabularySelectManager.selectedItem =
+    vocabularyPageable.content[0] || "No data available";
 };
 
 const changeAdminTabItem = (item) => {
@@ -218,7 +274,10 @@ const changeAdminTabItem = (item) => {
   openAdminTabItem(item);
 
   // Grid 검색 상태 초기화
-  resetAllAdminGridData();
+  clearAdminGridManager();
+
+  fetchLanguageSelectManager();
+  fetchVocabularySelectManager(LanguageType.ENGLISH);
 
   nextTick(() => {
     currentTabItem.value = item;
@@ -247,12 +306,12 @@ watch(currentTabItem, () => {
 // Planner
 const showPlannerDialog = ref(false);
 
-// 한국의 현재 시간을 가지고 오는 함수 ( Format: 오후 9:31:25 )
+// 한국의 현재 시간을 가지고 오는 함수
+// Format: 오후 9:31:25
 const getCurrentDateTime = () => {
   return new Intl.DateTimeFormat("ko-KR", {
     hour: "numeric",
     minute: "numeric",
-    // second: "numeric",
     hour12: true,
   }).format();
 };

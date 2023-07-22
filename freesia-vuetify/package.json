@@ -25,6 +25,7 @@
     "vue": "^3.2.0",
     "vue-flag-icon": "^2.1.0",
     "vue-router": "^4.0.0",
+    "vue3-google-login": "^2.0.18",
     "vue3-tui-grid": "^0.1.51",
     "vuetify": "^3.0.0",
     "webfontloader": "^1.0.0"
