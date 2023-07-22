@@ -23,14 +23,24 @@
 <script setup>
 import { computed, reactive } from "vue";
 
+import { unitService } from "@/service/unitService";
+
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
+
 const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true,
   },
+  vocabularyId: {
+    type: Number,
+  },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -45,8 +55,24 @@ const formData = reactive({
   subject: null,
 });
 
-const onClick = () => {
-  console.log(`title = ${formData.subject}`);
+const clearFormData = () => {
+  formData.subject = null;
+};
+
+const onClick = async () => {
+  try {
+    await unitService.register(props.vocabularyId, formData);
+
+    showDialog.value = false;
+    clearFormData();
+    showCommonMessageDialog("단위 등록을 완료했습니다.");
+    emit("success");
+  } catch (err) {
+    console.error(err);
+
+    showDialog.value = false;
+    showCommonMessageDialog("단위 등록을 실패했습니다.");
+  }
 };
 </script>
 

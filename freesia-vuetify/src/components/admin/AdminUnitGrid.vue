@@ -74,7 +74,9 @@
 
     <v-row>
       <v-col cols="12">
-        <h4 :class="`text-${themeStore.theme}`">【 단어가 읽기다 기본편 】</h4>
+        <h4 :class="`text-${themeStore.theme}`">
+          【 {{ searchedVocabularyTitle || "None" }} 】
+        </h4>
         <ag-grid-vue
           style="width: 100%; height: 312px"
           class="ag-theme-alpine noto-sans"
@@ -92,7 +94,11 @@
     </v-row>
 
     <!-- 단위 등록 다이얼로그 -->
-    <AdminUnitGridAddDialog v-model="showUnitAddDialog" />
+    <AdminUnitGridAddDialog
+      v-model="showUnitAddDialog"
+      :vocabularyId="vocabularySelectManager.selectedItem.id"
+      @success="fetchRowData"
+    />
 
     <!-- 단위 수정 다이얼로그 -->
     <AdminUnitGridUpdateDialog
@@ -135,7 +141,8 @@ const languageSelectManager = inject("languageSelectManager");
 const vocabularySelectManager = inject("vocabularySelectManager");
 
 // readonly
-const { isSearchPerformed, rowData, selectedUnit } = toRefs(unitGridManager);
+const { isSearchPerformed, rowData, selectedUnit, searchedVocabularyTitle } =
+  toRefs(unitGridManager);
 
 const showUnitAddDialog = ref(false);
 const showUnitUpdateDialog = ref(false);
@@ -143,6 +150,9 @@ const showUnitDeleteDialog = ref(false);
 
 const performSearch = async () => {
   await fetchRowData();
+
+  unitGridManager.searchedVocabularyTitle =
+    vocabularySelectManager.selectedItem.title;
 
   unitGridManager.isSearchPerformed = true;
 };
@@ -156,7 +166,7 @@ const fetchRowData = async () => {
     pageableParams
   );
 
-  unitGridManager.rowData = unitPageable.concat;
+  unitGridManager.rowData = unitPageable.content;
 };
 
 const gridApi = ref(null);
@@ -229,6 +239,9 @@ const columnDefs = [
     field: "readCount",
     width: 116,
     cellRenderer: (params) => {
+      if (!params.value) {
+        return "0회독";
+      }
       return params.value + "회독";
     },
   },

@@ -183,6 +183,7 @@ const unitGridManager = reactive({
   isSearchPerformed: false,
   selectedUnit: {},
   rowData: [],
+  searchedVocabularyTitle: "None",
 });
 
 const wordGridManager = reactive({
@@ -227,6 +228,7 @@ const clearUnitGridManager = () => {
   unitGridManager.isSearchPerformed = false;
   unitGridManager.rowData = [];
   unitGridManager.selectedUnit = {};
+  unitGridManager.searchedVocabularyTitle = "None";
 };
 
 const clearWordGridManager = () => {
