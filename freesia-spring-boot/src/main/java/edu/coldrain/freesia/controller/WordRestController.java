@@ -43,9 +43,4 @@ public class WordRestController {
     public void modifyWord(@PathVariable Long wordId, @RequestBody WordDTO.ModifyRequest request) {
         wordService.modifyWord(wordId, request);
     }
-
-    @GetMapping("/vocabulary/{vocabularyId}/units/{unitId}/learning-words")
-    public List<WordDTO.LearningWord> findLearningWords(@PathVariable Long vocabularyId, @PathVariable Long unitId) {
-        return wordRepository.findAllLearningWordList(vocabularyId, unitId);
-    }
 }
