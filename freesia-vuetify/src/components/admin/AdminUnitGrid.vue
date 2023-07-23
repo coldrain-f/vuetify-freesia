@@ -116,6 +116,7 @@
     <AdminUnitGridDeleteDialog
       v-model="showUnitDeleteDialog"
       :selectedUnit="selectedUnit"
+      @success="fetchRowData"
     />
   </v-container>
 </template>
@@ -180,6 +181,7 @@ const fetchRowData = async () => {
   );
 
   unitGridManager.rowData = unitPageable.content;
+  unitGridManager.selectedUnit = {};
 };
 
 const gridApi = ref(null);
@@ -201,6 +203,7 @@ const onSelectionChanged = (e) => {
   const selectedData = selectedNodes.map((node) => node.data)[0];
 
   Object.assign(unitGridManager.selectedUnit, {
+    id: selectedData.id,
     subject: selectedData.subject,
     wordCount: selectedData.wordCount,
     readCount: selectedData.readCount,
@@ -233,6 +236,15 @@ const columnDefs = [
     valueGetter: (params) => {
       return rowData.value.length - params.node.rowIndex;
     },
+  },
+  {
+    headerName: "ID",
+    field: "id",
+    width: 70,
+    resizable: false,
+    sortable: false,
+    filter: false,
+    hide: true,
   },
   {
     headerName: "주제",

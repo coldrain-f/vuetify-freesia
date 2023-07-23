@@ -11,7 +11,7 @@
 
       <v-card-text>
         <v-text-field
-          label="Title"
+          label="Subject"
           :model-value="props.selectedUnit.subject"
           readonly
           append-inner-icon="mdi-read"
@@ -26,7 +26,7 @@
         </v-text-field>
         <v-text-field
           label="Read Count"
-          :model-value="props.selectedUnit.readCount + '개'"
+          :model-value="props.selectedUnit.readCount || 0 + '개'"
           readonly
           append-inner-icon="mdi-read"
         >
@@ -65,7 +65,7 @@
         </template>
         <v-card-text> 정말 삭제하시겠습니까? </v-card-text>
         <v-card-actions class="d-flex justify-end">
-          <v-btn color="error"> CONFIRM </v-btn>
+          <v-btn color="error" @click="handleConfirmClick"> CONFIRM </v-btn>
           <v-btn @click="showDeleteConfirmDialog = false" class="me-4">
             CANCEL
           </v-btn>
@@ -76,10 +76,13 @@
 </template>
 
 <script setup>
-import { commonUtils } from "@/common/commonUtils";
-import { computed, ref, watch } from "vue";
+import { unitService } from "@/service/unitService";
+import { computed, ref } from "vue";
 
-const { isEmptyObject } = commonUtils;
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
@@ -91,15 +94,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
-// 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-watch(props.selectedUnit, (u) => {
-  if (isEmptyObject(u)) {
-    showDialog.value = false;
-    return;
-  }
-});
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -114,6 +109,21 @@ const showDeleteConfirmDialog = ref(false);
 
 const onClick = () => {
   showDeleteConfirmDialog.value = true;
+};
+
+const handleConfirmClick = async () => {
+  const unitId = props.selectedUnit.id;
+
+  try {
+    await unitService.removeById(unitId);
+    showDialog.value = false;
+    showCommonMessageDialog("단위 삭제를 완료했습니다.");
+    emit("success");
+  } catch (err) {
+    console.error(err);
+    showDialog.value = false;
+    showCommonMessageDialog("단위 삭제를 실패했습니다.");
+  }
 };
 </script>
 

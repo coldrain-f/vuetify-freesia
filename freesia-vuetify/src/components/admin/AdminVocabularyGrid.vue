@@ -125,6 +125,7 @@ const fetchRowData = async () => {
   });
 
   vocabularyGridManager.rowData = vocabularyPageable.content;
+  vocabularyGridManager.selectedVocabulary = {};
 };
 
 // CRUD Dialogs
