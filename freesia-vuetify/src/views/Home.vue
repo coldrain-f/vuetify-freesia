@@ -115,6 +115,9 @@
           @handleLanguageChange="
             (changedLanguage) => handleLanguageChange(changedLanguage)
           "
+          @handleVocabularyChange="
+            (changedVocabulary) => handleVocabularyChange(changedVocabulary)
+          "
         />
       </v-window-item>
     </v-window>
@@ -268,6 +271,11 @@ const clearAdminGridManager = () => {
 
 const handleLanguageChange = async (changedLanguage) => {
   await fetchVocabularySelectManager(changedLanguage);
+  await fetchUnitSelectManager(vocabularySelectManager.selectedItem.id);
+};
+
+const handleVocabularyChange = async (changedVocabulary) => {
+  await fetchUnitSelectManager(changedVocabulary.id);
 };
 
 // 언어 선택창을 조회한다.

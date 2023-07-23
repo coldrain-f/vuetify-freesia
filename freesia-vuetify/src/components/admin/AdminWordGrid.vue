@@ -28,6 +28,10 @@
           item-value="id"
           return-object
           hide-details
+          @update:model-value="
+            (changedVocabulary) =>
+              emit('handleVocabularyChange', changedVocabulary)
+          "
         >
         </v-select>
       </v-col>
@@ -160,7 +164,7 @@ const { isEmptyObject } = commonUtils;
 
 const themeStore = useThemeStore();
 
-const emit = defineEmits(["handleLanguageChange"]);
+const emit = defineEmits(["handleLanguageChange", "handleVocabularyChange"]);
 
 const wordGridManager = inject("wordGridManager");
 
