@@ -30,9 +30,6 @@
             <v-list-item @click="showPlannerDialog = true">
               <v-list-item-title> Planner </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="handleGoogleAuth">
-              <v-list-item-title> Google Login </v-list-item-title>
-            </v-list-item>
           </v-list>
         </v-menu>
       </v-btn>
@@ -184,7 +181,10 @@ const unitGridManager = reactive({
   selectedUnit: {},
   rowData: [],
   searchedLanguage: "",
-  searchedVocabularyTitle: "",
+  searchedVocabulary: {
+    id: new Number(),
+    title: "",
+  },
 });
 
 const wordGridManager = reactive({

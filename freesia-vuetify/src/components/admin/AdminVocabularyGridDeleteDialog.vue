@@ -117,7 +117,8 @@ const closeAllDialogs = () => {
 
 const onDeleteVocabulary = async () => {
   try {
-    await vocabularyService.deleteById(props.selectedVocabulary.id);
+    const vocabularyId = props.selectedVocabulary.id;
+    await vocabularyService.deleteById(vocabularyId);
 
     closeAllDialogs();
     showCommonMessageDialog("단어장 삭제를 완료했습니다.");

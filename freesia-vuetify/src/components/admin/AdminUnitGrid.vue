@@ -80,7 +80,7 @@
           <span class="ms-2"> 】</span>
           <span class="ms-2 me-2"> 》</span>
           <span class="me-2">【 </span>
-          <span class="me-2">{{ searchedVocabularyTitle }}</span>
+          <span class="me-2">{{ searchedVocabulary.title }}</span>
           <span> 】</span>
         </h4>
         <ag-grid-vue
@@ -102,21 +102,22 @@
     <!-- 단위 등록 다이얼로그 -->
     <AdminUnitGridAddDialog
       v-model="showUnitAddDialog"
-      :vocabularyId="vocabularySelectManager.selectedItem.id"
-      @success="fetchRowData"
+      :vocabularyId="searchedVocabulary.id"
+      @success="fetchRowData(searchedVocabulary.id)"
     />
 
     <!-- 단위 수정 다이얼로그 -->
     <AdminUnitGridUpdateDialog
       v-model="showUnitUpdateDialog"
       :selectedUnit="selectedUnit"
+      @success="fetchRowData(searchedVocabulary.id)"
     />
 
     <!-- 단위 삭제 다이얼로그 -->
     <AdminUnitGridDeleteDialog
       v-model="showUnitDeleteDialog"
       :selectedUnit="selectedUnit"
-      @success="fetchRowData"
+      @success="fetchRowData(searchedVocabulary.id)"
     />
   </v-container>
 </template>
@@ -152,7 +153,7 @@ const {
   isSearchPerformed,
   rowData,
   selectedUnit,
-  searchedVocabularyTitle,
+  searchedVocabulary,
   searchedLanguage,
 } = toRefs(unitGridManager);
 
@@ -161,19 +162,21 @@ const showUnitUpdateDialog = ref(false);
 const showUnitDeleteDialog = ref(false);
 
 const performSearch = async () => {
-  await fetchRowData();
+  await fetchRowData(vocabularySelectManager.selectedItem.id);
 
   unitGridManager.searchedLanguage = languageSelectManager.selectedItem;
 
-  unitGridManager.searchedVocabularyTitle =
+  unitGridManager.searchedVocabulary.title =
     vocabularySelectManager.selectedItem.title;
+
+  unitGridManager.searchedVocabulary.id =
+    vocabularySelectManager.selectedItem.id;
 
   unitGridManager.isSearchPerformed = true;
 };
 
-const fetchRowData = async () => {
+const fetchRowData = async (vocabularyId) => {
   const pageableParams = { page: 0, size: 2000 };
-  const vocabularyId = vocabularySelectManager.selectedItem.id;
 
   const unitPageable = await unitService.getPageable(
     vocabularyId,

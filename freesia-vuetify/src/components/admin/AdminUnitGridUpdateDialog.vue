@@ -20,7 +20,7 @@
         </v-text-field>
         <v-text-field
           label="Read Count"
-          :model-value="props.selectedUnit.readCount + '개'"
+          :model-value="props.selectedUnit.readCount || 0 + '개'"
           readonly
           append-inner-icon="mdi-read"
         >
@@ -35,10 +35,13 @@
 </template>
 
 <script setup>
-import { commonUtils } from "@/common/commonUtils";
 import { computed, reactive, watch } from "vue";
 
-const { isEmptyObject } = commonUtils;
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+import { unitService } from "@/service/unitService";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
@@ -50,7 +53,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -64,19 +67,30 @@ const showDialog = computed({
 const formData = reactive({});
 
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
-watch(props.selectedUnit, (u) => {
-  // 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-  if (isEmptyObject(u)) {
+watch(
+  () => props.selectedUnit,
+  (selectedUnit) => {
+    formData.id = selectedUnit.id;
+    formData.subject = selectedUnit.subject;
+  },
+  { deep: true }
+);
+
+const onClick = async () => {
+  try {
+    const unitId = formData.id;
+    await unitService.modifyById(unitId, formData);
+
     showDialog.value = false;
-    return;
+    showCommonMessageDialog("단위 수정을 완료했습니다.");
+    emit("success");
+  } catch (err) {
+    console.error(err);
+
+    showDialog.value = false;
+    showCommonMessageDialog("단위 수정을 실패했습니다.");
   }
-
-  formData.subject = u.subject;
-  formData.wordCount = u.wordCount;
-  formData.readCount = u.readCount;
-});
-
-const onClick = () => {};
+};
 </script>
 
 <style scoped></style>
