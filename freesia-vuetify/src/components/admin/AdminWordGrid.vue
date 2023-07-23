@@ -153,6 +153,7 @@ import { commonUtils } from "@/common/commonUtils";
 import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
 import { inject, ref, toRefs } from "vue";
+import { wordService } from "@/service/wordService";
 
 // Utils
 const { isEmptyObject } = commonUtils;
@@ -182,7 +183,7 @@ const showWordUpdateDialog = ref(false);
 const showWordDeleteDialog = ref(false);
 
 const performSearch = () => {
-  rowData.value = fetchData();
+  fetchData(unitSelectManager.selectedItem.id);
 
   wordGridManager.searchedLanguage = languageSelectManager.selectedItem;
 
@@ -279,63 +280,12 @@ const columnDefs = [
   },
 ];
 
-const fetchData = () => {
-  return [
-    {
-      studyWord: "spice",
-      nativeWord: "양념",
-      partOfSpeech: "명사",
-      correctCount: 0,
-      incorrectCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      studyWord: "hot",
-      nativeWord: "뜨거운",
-      partOfSpeech: "형용사",
-      correctCount: 0,
-      incorrectCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      studyWord: "add",
-      nativeWord: "추가하다",
-      partOfSpeech: "동사",
-      correctCount: 0,
-      incorrectCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      studyWord: "tea",
-      nativeWord: "(마시는) 차",
-      partOfSpeech: "명사",
-      correctCount: 0,
-      incorrectCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      studyWord: "pot",
-      nativeWord: "주전자",
-      partOfSpeech: "명사",
-      correctCount: 0,
-      incorrectCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-    {
-      studyWord: "tea pot",
-      nativeWord: "찻 주전자",
-      partOfSpeech: "명사",
-      correctCount: 0,
-      incorrectCount: 0,
-      createdAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-      modifiedAt: new Intl.DateTimeFormat("ko-KR").format(new Date()),
-    },
-  ];
+const fetchData = async (unitId) => {
+  const pageableParams = { page: 0, size: 2000 };
+  const unitPageable = await wordService.getPageable(unitId, pageableParams);
+
+  wordGridManager.rowData = unitPageable.content;
+  wordGridManager.selectedUnit = {};
 };
 </script>
 
