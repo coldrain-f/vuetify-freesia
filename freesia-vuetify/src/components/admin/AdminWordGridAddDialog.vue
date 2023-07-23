@@ -16,7 +16,10 @@
         <v-select
           label="Part Of Speech"
           v-model="formData.partOfSpeech"
-          :items="['명사', '형용사', '동사']"
+          :items="partOfSpeechItems"
+          item-title="title"
+          item-value="value"
+          return-object
         >
         </v-select>
       </v-card-text>
@@ -29,16 +32,25 @@
 </template>
 
 <script setup>
-import { computed, reactive } from "vue";
+import { wordService } from "@/service/wordService";
+import { computed, reactive, ref } from "vue";
+
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true,
   },
+  unitId: {
+    type: Number,
+  },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -49,11 +61,50 @@ const showDialog = computed({
   },
 });
 
+const partOfSpeechItems = ref([
+  { title: "명사", value: "Noun" },
+  { title: "대명사", value: "Pronoun" },
+  { title: "동사", value: "Verb" },
+  { title: "형용사", value: "Adjective" },
+  { title: "부사", value: "Adverb" },
+  { title: "접속사", value: "Conjunction" },
+  { title: "전치사", value: "Preposition" },
+  { title: "감탄사", value: "Interjection" },
+]);
+
 const formData = reactive({
-  partOfSpeech: "명사", // Default
+  studyWord: "",
+  nativeWord: "",
+  partOfSpeech: { title: "명사", value: "Noun" },
 });
 
-const onClick = () => {};
+const clearFormData = () => {
+  formData.studyWord = "";
+  formData.nativeWord = "";
+  formData.partOfSpeech = { title: "명사", value: "Noun" };
+};
+
+const onClick = async () => {
+  const unitId = props.unitId;
+  const { studyWord, nativeWord, partOfSpeech } = formData;
+
+  try {
+    await wordService.register(unitId, {
+      studyWord,
+      nativeWord,
+      partOfSpeech: partOfSpeech.value,
+    });
+
+    showDialog.value = false;
+    showCommonMessageDialog("단어 등록을 완료했습니다.");
+    clearFormData();
+
+    emit("success");
+  } catch (err) {
+    console.error(err);
+    showCommonMessageDialog("단어 등록을 실패했습니다.");
+  }
+};
 </script>
 
 <style scoped></style>

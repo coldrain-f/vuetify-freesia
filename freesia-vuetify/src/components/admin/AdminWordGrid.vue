@@ -127,7 +127,11 @@
     </v-row>
 
     <!-- 단어 등록 다이얼로그 -->
-    <AdminWordGridAddDialog v-model="showWordAddDialog" />
+    <AdminWordGridAddDialog
+      v-model="showWordAddDialog"
+      :unitId="searchedUnit.id"
+      @success="fetchRowData(searchedUnit.id)"
+    />
 
     <!-- 단어 수정 다이얼로그 -->
     <AdminWordGridUpdateDialog
@@ -183,7 +187,7 @@ const showWordUpdateDialog = ref(false);
 const showWordDeleteDialog = ref(false);
 
 const performSearch = () => {
-  fetchData(unitSelectManager.selectedItem.id);
+  fetchRowData(unitSelectManager.selectedItem.id);
 
   wordGridManager.searchedLanguage = languageSelectManager.selectedItem;
 
@@ -220,6 +224,14 @@ const onSelectionChanged = (e) => {
   });
 };
 
+const fetchRowData = async (unitId) => {
+  const pageableParams = { page: 0, size: 2000 };
+  const unitPageable = await wordService.getPageable(unitId, pageableParams);
+
+  wordGridManager.rowData = unitPageable.content;
+  wordGridManager.selectedUnit = {};
+};
+
 const gridApi = ref(null);
 
 const onGridReady = (params) => {
@@ -231,6 +243,26 @@ const defaultColDef = {
   sortable: true,
   filter: true,
   floatingFilter: false,
+};
+
+const partOfSpeechCellRenderer = (params) => {
+  if (params.value == "Noun") {
+    return "명사";
+  } else if (params.value == "Pronoun") {
+    return "대명사";
+  } else if (params.value == "Verb") {
+    return "동사";
+  } else if (params.value == "Adjective") {
+    return "형용사";
+  } else if (params.value == "Adverb") {
+    return "부사";
+  } else if (params.value == "Conjunction") {
+    return "접속사";
+  } else if (params.value == "Preposition") {
+    return "전치사";
+  } else if (params.value == "Interjection") {
+    return "감탄사";
+  }
 };
 
 const columnDefs = [
@@ -267,6 +299,7 @@ const columnDefs = [
     headerName: "품사",
     field: "partOfSpeech",
     width: 130,
+    cellRenderer: partOfSpeechCellRenderer,
   },
   {
     headerName: "등록일",
@@ -279,14 +312,6 @@ const columnDefs = [
     width: 160,
   },
 ];
-
-const fetchData = async (unitId) => {
-  const pageableParams = { page: 0, size: 2000 };
-  const unitPageable = await wordService.getPageable(unitId, pageableParams);
-
-  wordGridManager.rowData = unitPageable.content;
-  wordGridManager.selectedUnit = {};
-};
 </script>
 
 <style scoped></style>
