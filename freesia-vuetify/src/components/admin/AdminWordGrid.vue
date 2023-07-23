@@ -105,15 +105,10 @@
             <span class="me-2">{{ searchedVocabulary.title }}</span>
             <span> 】</span>
           </p>
-          <v-row>
-            <v-col class="noto-sans" cols="10">
-              <span class="ms-1 me-2">▣</span>
-              <span> {{ searchedUnit.subject }}</span>
-            </v-col>
-            <v-col class="noto-sans text-end" cols="2">
-              <span> 0회독</span>
-            </v-col>
-          </v-row>
+          <p class="noto-sans">
+            <span class="ms-1 me-2">▣</span>
+            <span> {{ searchedUnit.subject }}</span>
+          </p>
         </div>
         <ag-grid-vue
           style="width: 100%; height: 312px"
@@ -271,22 +266,6 @@ const columnDefs = [
     headerName: "품사",
     field: "partOfSpeech",
     width: 130,
-  },
-  {
-    headerName: "맞은 횟수",
-    field: "correctCount",
-    width: 116,
-    cellRenderer: (params) => {
-      return params.value + "회";
-    },
-  },
-  {
-    headerName: "틀린 횟수",
-    field: "incorrectCount",
-    width: 116,
-    cellRenderer: (params) => {
-      return params.value + "회";
-    },
   },
   {
     headerName: "등록일",

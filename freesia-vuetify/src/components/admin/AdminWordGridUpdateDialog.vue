@@ -19,20 +19,6 @@
           :items="['명사', '형용사', '동사']"
         >
         </v-select>
-        <v-text-field
-          label="Correct Count"
-          :model-value="props.selectedWord.correctCount + '개'"
-          readonly
-          append-inner-icon="mdi-read"
-        >
-        </v-text-field>
-        <v-text-field
-          label="Incorrect Count"
-          :model-value="props.selectedWord.incorrectCount + '개'"
-          readonly
-          append-inner-icon="mdi-read"
-        >
-        </v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="info" @click="onClick"> UPDATE </v-btn>
