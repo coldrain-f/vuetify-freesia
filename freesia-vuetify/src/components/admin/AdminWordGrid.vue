@@ -92,7 +92,7 @@
     <v-row>
       <v-col cols="12">
         <div :class="`text-${themeStore.theme}`" v-if="isSearchPerformed">
-          <p class="text-subtitle-1 font-weight-bold">
+          <p class="noto-sans">
             <span class="me-2">【 </span>
             <span> {{ searchedLanguage }} </span>
             <span class="ms-2"> 】</span>
@@ -101,11 +101,15 @@
             <span class="me-2">{{ searchedVocabulary.title }}</span>
             <span> 】</span>
           </p>
-          <p class="text-subtitle-1">
-            <span class="me-2">▣</span>
-            <span> {{ searchedUnit.subject }}</span>
-            <span> - 0회독 </span>
-          </p>
+          <v-row>
+            <v-col class="noto-sans" cols="10">
+              <span class="ms-1 me-2">▣</span>
+              <span> {{ searchedUnit.subject }}</span>
+            </v-col>
+            <v-col class="noto-sans text-end" cols="2">
+              <span> 0회독</span>
+            </v-col>
+          </v-row>
         </div>
         <ag-grid-vue
           style="width: 100%; height: 312px"
@@ -189,8 +193,8 @@ const performSearch = () => {
   wordGridManager.searchedVocabulary.title =
     vocabularySelectManager.selectedItem.title;
 
-  // 임시
-  wordGridManager.searchedUnit.subject = "N5급 초등단어 300개";
+  wordGridManager.searchedUnit.id = unitSelectManager.selectedItem.id;
+  wordGridManager.searchedUnit.subject = unitSelectManager.selectedItem.subject;
 
   isSearchPerformed.value = true;
 };

@@ -74,15 +74,17 @@
 
     <v-row>
       <v-col cols="12">
-        <h4 :class="`text-${themeStore.theme}`" v-if="isSearchPerformed">
-          <span class="me-2">【 </span>
-          <span> {{ searchedLanguage }} </span>
-          <span class="ms-2"> 】</span>
-          <span class="ms-2 me-2"> 》</span>
-          <span class="me-2">【 </span>
-          <span class="me-2">{{ searchedVocabulary.title }}</span>
-          <span> 】</span>
-        </h4>
+        <div :class="`text-${themeStore.theme} mb-1`" v-if="isSearchPerformed">
+          <p class="noto-sans">
+            <span class="me-2">【 </span>
+            <span> {{ searchedLanguage }} </span>
+            <span class="ms-2"> 】</span>
+            <span class="ms-2 me-2"> 》</span>
+            <span class="me-2">【 </span>
+            <span class="me-2">{{ searchedVocabulary.title }}</span>
+            <span> 】</span>
+          </p>
+        </div>
         <ag-grid-vue
           style="width: 100%; height: 312px"
           class="ag-theme-alpine noto-sans"
