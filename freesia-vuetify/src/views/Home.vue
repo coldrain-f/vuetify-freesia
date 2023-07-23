@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto mt-10" max-width="500">
+  <v-card class="mx-auto" max-width="500">
     <v-system-bar app :color="themeStore.theme" class="pt-3" absolute>
       <v-icon icon="mdi-wifi-strength-4"></v-icon>
       <v-icon icon="mdi-signal" class="ms-2"></v-icon>
@@ -162,6 +162,7 @@ import { nextTick, onMounted, provide, reactive, ref, watch } from "vue";
 import { LanguageType } from "@/common/enum/languageType";
 import { languageService } from "@/service/languageService";
 import { vocabularyService } from "@/service/vocabularyService";
+import { unitService } from "@/service/unitService";
 
 // Pinia
 const synthStore = useSpeechSynthesisStore();
@@ -191,6 +192,15 @@ const wordGridManager = reactive({
   isSearchPerformed: false,
   selectedWord: {},
   rowData: [],
+  searchedLanguage: "",
+  searchedVocabulary: {
+    id: new Number(),
+    title: "",
+  },
+  searchedUnit: {
+    id: new Number(),
+    subject: "",
+  },
 });
 
 provide("vocabularyGridManager", vocabularyGridManager);
@@ -208,8 +218,14 @@ const vocabularySelectManager = reactive({
   selectedItem: {},
 });
 
+const unitSelectManager = reactive({
+  items: [],
+  selectedItem: {},
+});
+
 provide("languageSelectManager", languageSelectManager);
 provide("vocabularySelectManager", vocabularySelectManager);
+provide("unitSelectManager", unitSelectManager);
 
 // Theme
 const showThemeDialog = ref(false);
@@ -230,7 +246,11 @@ const clearUnitGridManager = () => {
   unitGridManager.rowData = [];
   unitGridManager.selectedUnit = {};
   unitGridManager.searchedLanguage = "";
-  unitGridManager.searchedVocabularyTitle = "";
+
+  Object.assign(unitGridManager.searchedVocabulary, {
+    id: new Number(),
+    title: "",
+  });
 };
 
 const clearWordGridManager = () => {
@@ -270,7 +290,20 @@ const fetchVocabularySelectManager = async (language) => {
     vocabularyPageable.content[0] || "No data available";
 };
 
-const changeAdminTabItem = (item) => {
+// 단위 선택창을 조회한다.
+const fetchUnitSelectManager = async (vocabularyId) => {
+  const pageableParams = { page: 0, size: 2000 };
+  const unitPageable = await unitService.getPageable(
+    vocabularyId,
+    pageableParams
+  );
+
+  unitSelectManager.items = unitPageable.content;
+  unitSelectManager.selectedItem =
+    unitPageable.content[0] || "No data available";
+};
+
+const changeAdminTabItem = async (item) => {
   // 기존에 열린 관리자 탭 아이템 제거
   closeAdminTabItem();
 
@@ -280,8 +313,9 @@ const changeAdminTabItem = (item) => {
   // Grid 검색 상태 초기화
   clearAdminGridManager();
 
-  fetchLanguageSelectManager();
-  fetchVocabularySelectManager(LanguageType.ENGLISH);
+  await fetchLanguageSelectManager();
+  await fetchVocabularySelectManager(LanguageType.ENGLISH);
+  await fetchUnitSelectManager(vocabularySelectManager.selectedItem.id);
 
   nextTick(() => {
     currentTabItem.value = item;

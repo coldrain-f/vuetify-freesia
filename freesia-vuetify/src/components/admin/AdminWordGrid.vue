@@ -38,15 +38,12 @@
           label="Unit"
           variant="underlined"
           density="compact"
-          :modelValue="{ subject: '요리', unitId: 1 }"
-          :items="[
-            { subject: '요리', unitId: 1 },
-            { subject: '일상 1', unitId: 2 },
-          ]"
+          v-model="unitSelectManager.selectedItem"
+          :items="unitSelectManager.items"
           item-title="subject"
-          item-value="unitId"
-          hide-details
+          item-value="id"
           return-object
+          hide-details
         >
         </v-select>
       </v-col>
@@ -94,10 +91,22 @@
 
     <v-row>
       <v-col cols="12">
-        <h4 :class="`text-${themeStore.theme}`">
-          【 단어가 읽기다 기본편 】<span class="ms-2 me-2">》</span>【 요리 】
-          <span>- 3회독 √</span>
-        </h4>
+        <div :class="`text-${themeStore.theme}`" v-if="isSearchPerformed">
+          <p class="text-subtitle-1 font-weight-bold">
+            <span class="me-2">【 </span>
+            <span> {{ searchedLanguage }} </span>
+            <span class="ms-2"> 】</span>
+            <span class="ms-2 me-2"> 》</span>
+            <span class="me-2">【 </span>
+            <span class="me-2">{{ searchedVocabulary.title }}</span>
+            <span> 】</span>
+          </p>
+          <p class="text-subtitle-1">
+            <span class="me-2">▣</span>
+            <span> {{ searchedUnit.subject }}</span>
+            <span> - 0회독 </span>
+          </p>
+        </div>
         <ag-grid-vue
           style="width: 100%; height: 312px"
           class="ag-theme-alpine noto-sans"
@@ -153,8 +162,17 @@ const wordGridManager = inject("wordGridManager");
 
 const languageSelectManager = inject("languageSelectManager");
 const vocabularySelectManager = inject("vocabularySelectManager");
+const unitSelectManager = inject("unitSelectManager");
 
-const { isSearchPerformed, rowData, selectedWord } = toRefs(wordGridManager);
+// readonly
+const {
+  isSearchPerformed,
+  rowData,
+  selectedWord,
+  searchedLanguage,
+  searchedVocabulary,
+  searchedUnit,
+} = toRefs(wordGridManager);
 
 const showWordAddDialog = ref(false);
 const showWordUpdateDialog = ref(false);
@@ -162,6 +180,18 @@ const showWordDeleteDialog = ref(false);
 
 const performSearch = () => {
   rowData.value = fetchData();
+
+  wordGridManager.searchedLanguage = languageSelectManager.selectedItem;
+
+  wordGridManager.searchedVocabulary.id =
+    vocabularySelectManager.selectedItem.id;
+
+  wordGridManager.searchedVocabulary.title =
+    vocabularySelectManager.selectedItem.title;
+
+  // 임시
+  wordGridManager.searchedUnit.subject = "N5급 초등단어 300개";
+
   isSearchPerformed.value = true;
 };
 
