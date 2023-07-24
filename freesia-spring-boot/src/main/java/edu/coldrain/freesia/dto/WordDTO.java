@@ -19,11 +19,14 @@ public class WordDTO {
 
         private String nativeWord;
 
+        private String furigana;
+
         private String partOfSpeech;
 
-        public RegistrationRequest(String studyWord, String nativeWord, String partOfSpeech) {
+        public RegistrationRequest(String studyWord, String nativeWord, String furigana, String partOfSpeech) {
             this.studyWord = studyWord;
             this.nativeWord = nativeWord;
+            this.furigana = furigana;
             this.partOfSpeech = partOfSpeech;
         }
     }
@@ -54,6 +57,8 @@ public class WordDTO {
 
         private String nativeWord;
 
+        private String furigana;
+
         private String partOfSpeech;
 
         @JsonFormat(pattern = "yyyy. MM. dd. HH:mm")
@@ -64,10 +69,11 @@ public class WordDTO {
 
         @Builder
         @QueryProjection
-        public Response(Long id, String studyWord, String nativeWord, String partOfSpeech, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        public Response(Long id, String studyWord, String nativeWord, String furigana, String partOfSpeech, LocalDateTime createdAt, LocalDateTime modifiedAt) {
             this.id = id;
             this.studyWord = studyWord;
             this.nativeWord = nativeWord;
+            this.furigana = furigana;
             this.partOfSpeech = partOfSpeech;
             this.createdAt = createdAt;
             this.modifiedAt = modifiedAt;

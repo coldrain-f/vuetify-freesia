@@ -24,6 +24,9 @@ public class Word extends Timestamp {
     @Column(nullable = false)
     private String nativeWord;
 
+    @Column
+    private String furigana;
+
     @Column(nullable = false)
     private String partOfSpeech;
 
@@ -32,9 +35,10 @@ public class Word extends Timestamp {
     private Unit unit;
 
     @Builder
-    public Word(String studyWord, String nativeWord, String partOfSpeech, Unit unit) {
+    public Word(String studyWord, String nativeWord, String furigana, String partOfSpeech, Unit unit) {
         this.studyWord = studyWord;
         this.nativeWord = nativeWord;
+        this.furigana = furigana;
         this.partOfSpeech = partOfSpeech;
         this.unit = unit;
     }
@@ -49,5 +53,9 @@ public class Word extends Timestamp {
 
     public void changePartOfSpeech(String partOfSpeech) {
         this.partOfSpeech = partOfSpeech;
+    }
+
+    public void changeFurigana(String furigana) {
+        this.furigana = furigana;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class WordService {
         final Word word = Word.builder()
                 .studyWord(request.getStudyWord())
                 .nativeWord(request.getNativeWord())
+                .furigana(StringUtils.hasText(request.getFurigana()) ? request.getFurigana() : null)
                 .partOfSpeech(request.getPartOfSpeech())
                 .unit(unit)
                 .build();

@@ -28,6 +28,7 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
                         word.id,
                         word.studyWord,
                         word.nativeWord,
+                        word.furigana,
                         word.partOfSpeech,
                         word.createdAt,
                         word.modifiedAt
@@ -63,6 +64,7 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
                         word.id,
                         word.studyWord,
                         word.nativeWord,
+                        word.furigana,
                         word.partOfSpeech,
                         word.createdAt,
                         word.modifiedAt
