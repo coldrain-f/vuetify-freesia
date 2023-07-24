@@ -13,10 +13,11 @@ export const wordService = {
 
   /** 단어 등록 API */
   register: async (unitId, formData) => {
-    const { studyWord, nativeWord, partOfSpeech } = formData;
+    const { studyWord, nativeWord, furigana, partOfSpeech } = formData;
     const response = await $axios.post(`/units/${unitId}/words`, {
       studyWord,
       nativeWord,
+      furigana,
       partOfSpeech,
     });
 

@@ -130,6 +130,7 @@
     <AdminWordGridAddDialog
       v-model="showWordAddDialog"
       :unitId="searchedUnit.id"
+      :searchedLanguage="wordGridManager.searchedLanguage"
       @success="fetchRowData(searchedUnit.id)"
     />
 

@@ -11,6 +11,12 @@
       <v-card-text>
         <v-text-field label="Study Word" v-model="formData.studyWord">
         </v-text-field>
+        <v-text-field
+          label="Furigana"
+          v-model="formData.furigana"
+          v-show="props.searchedLanguage == LanguageType.JAPANESE"
+        >
+        </v-text-field>
         <v-text-field label="Native Word" v-model="formData.nativeWord">
         </v-text-field>
         <v-select
@@ -36,6 +42,7 @@ import { wordService } from "@/service/wordService";
 import { computed, reactive, ref } from "vue";
 
 import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+import { LanguageType } from "@/common/enum/languageType";
 
 const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
@@ -47,6 +54,12 @@ const props = defineProps({
   },
   unitId: {
     type: Number,
+  },
+  searchedLanguage: {
+    type: String,
+    validator: () => {
+      return [LanguageType.ENGLISH, LanguageType.JAPANESE].includes();
+    },
   },
 });
 
@@ -75,23 +88,26 @@ const partOfSpeechItems = ref([
 const formData = reactive({
   studyWord: "",
   nativeWord: "",
+  furigana: "",
   partOfSpeech: { title: "명사", value: "Noun" },
 });
 
 const clearFormData = () => {
   formData.studyWord = "";
   formData.nativeWord = "";
+  formData.furigana = "";
   formData.partOfSpeech = { title: "명사", value: "Noun" };
 };
 
 const onClick = async () => {
   const unitId = props.unitId;
-  const { studyWord, nativeWord, partOfSpeech } = formData;
+  const { studyWord, nativeWord, furigana, partOfSpeech } = formData;
 
   try {
     await wordService.register(unitId, {
       studyWord,
       nativeWord,
+      furigana,
       partOfSpeech: partOfSpeech.value,
     });
 
