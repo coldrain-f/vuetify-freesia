@@ -158,6 +158,7 @@ import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
 import { inject, ref, toRefs } from "vue";
 import { wordService } from "@/service/wordService";
+import { LanguageType } from "@/common/enum/languageType";
 
 // Utils
 const { isEmptyObject } = commonUtils;
@@ -190,6 +191,12 @@ const performSearch = () => {
   fetchRowData(unitSelectManager.selectedItem.id);
 
   wordGridManager.searchedLanguage = languageSelectManager.selectedItem;
+
+  if (wordGridManager.searchedLanguage == LanguageType.ENGLISH) {
+    columnDefs.value[3].hide = true;
+  } else if (wordGridManager.searchedLanguage == LanguageType.JAPANESE) {
+    columnDefs.value[3].hide = false;
+  }
 
   wordGridManager.searchedVocabulary.id =
     vocabularySelectManager.selectedItem.id;
@@ -265,7 +272,7 @@ const partOfSpeechCellRenderer = (params) => {
   }
 };
 
-const columnDefs = [
+const columnDefs = ref([
   {
     headerName: "선택",
     width: 70,
@@ -291,6 +298,12 @@ const columnDefs = [
     width: 155,
   },
   {
+    headerName: "후리가나",
+    field: "furigana",
+    width: 155,
+    hide: true,
+  },
+  {
     headerName: "모국 단어",
     field: "nativeWord",
     width: 155,
@@ -311,7 +324,7 @@ const columnDefs = [
     field: "modifiedAt",
     width: 160,
   },
-];
+]);
 </script>
 
 <style scoped></style>
