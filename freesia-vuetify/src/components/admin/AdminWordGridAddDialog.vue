@@ -57,9 +57,6 @@ const props = defineProps({
   },
   searchedLanguage: {
     type: String,
-    validator: () => {
-      return [LanguageType.ENGLISH, LanguageType.JAPANESE].includes();
-    },
   },
 });
 
