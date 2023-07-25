@@ -193,6 +193,8 @@ const showWordUpdateDialog = ref(false);
 const showWordDeleteDialog = ref(false);
 
 const performSearch = () => {
+  clearWordGridManagerSelectedWord();
+
   fetchRowData(unitSelectManager.selectedItem.id);
 
   wordGridManager.searchedLanguage = languageSelectManager.selectedItem;
@@ -213,6 +215,10 @@ const performSearch = () => {
   wordGridManager.searchedUnit.subject = unitSelectManager.selectedItem.subject;
 
   isSearchPerformed.value = true;
+};
+
+const clearWordGridManagerSelectedWord = () => {
+  wordGridManager.selectedWord = {};
 };
 
 const onSelectionChanged = (e) => {
