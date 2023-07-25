@@ -20,6 +20,8 @@
           label="Furigana"
           :model-value="props.selectedWord.furigana"
           v-show="props.searchedLanguage == LanguageType.JAPANESE"
+          readonly
+          append-inner-icon="mdi-read"
         >
         </v-text-field>
         <v-text-field
