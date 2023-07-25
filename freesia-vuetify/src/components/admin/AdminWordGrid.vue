@@ -253,26 +253,6 @@ const defaultColDef = {
   floatingFilter: false,
 };
 
-const partOfSpeechCellRenderer = (params) => {
-  if (params.value == "Noun") {
-    return "명사";
-  } else if (params.value == "Pronoun") {
-    return "대명사";
-  } else if (params.value == "Verb") {
-    return "동사";
-  } else if (params.value == "Adjective") {
-    return "형용사";
-  } else if (params.value == "Adverb") {
-    return "부사";
-  } else if (params.value == "Conjunction") {
-    return "접속사";
-  } else if (params.value == "Preposition") {
-    return "전치사";
-  } else if (params.value == "Interjection") {
-    return "감탄사";
-  }
-};
-
 const columnDefs = ref([
   {
     headerName: "선택",
@@ -313,7 +293,6 @@ const columnDefs = ref([
     headerName: "품사",
     field: "partOfSpeech",
     width: 130,
-    cellRenderer: partOfSpeechCellRenderer,
   },
   {
     headerName: "등록일",

@@ -23,9 +23,6 @@
           label="Part Of Speech"
           v-model="formData.partOfSpeech"
           :items="partOfSpeechItems"
-          item-title="title"
-          item-value="value"
-          return-object
         >
         </v-select>
       </v-card-text>
@@ -72,28 +69,28 @@ const showDialog = computed({
 });
 
 const partOfSpeechItems = ref([
-  { title: "명사", value: "Noun" },
-  { title: "대명사", value: "Pronoun" },
-  { title: "동사", value: "Verb" },
-  { title: "형용사", value: "Adjective" },
-  { title: "부사", value: "Adverb" },
-  { title: "접속사", value: "Conjunction" },
-  { title: "전치사", value: "Preposition" },
-  { title: "감탄사", value: "Interjection" },
+  "명사",
+  "대명사",
+  "동사",
+  "형용사",
+  "부사",
+  "접속사",
+  "전치사",
+  "감탄사",
 ]);
 
 const formData = reactive({
   studyWord: "",
   nativeWord: "",
   furigana: "",
-  partOfSpeech: { title: "명사", value: "Noun" },
+  partOfSpeech: "명사",
 });
 
 const clearFormData = () => {
   formData.studyWord = "";
   formData.nativeWord = "";
   formData.furigana = "";
-  formData.partOfSpeech = { title: "명사", value: "Noun" };
+  formData.partOfSpeech = "명사";
 };
 
 const onClick = async () => {
@@ -105,7 +102,7 @@ const onClick = async () => {
       studyWord,
       nativeWord,
       furigana,
-      partOfSpeech: partOfSpeech.value,
+      partOfSpeech,
     });
 
     showDialog.value = false;

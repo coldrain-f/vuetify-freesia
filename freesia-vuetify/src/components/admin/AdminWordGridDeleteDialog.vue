@@ -25,10 +25,11 @@
         </v-text-field>
         <v-select
           label="Part Of Speech"
-          :model-value="props.selectedWord.partOfSpeech"
-          :items="['명사', '형용사', '동사']"
-          readonly
-          append-inner-icon="mdi-read"
+          :modal-value="props.selectedWord.partOfSpeech"
+          :items="partOfSpeechItems"
+          item-title="title"
+          item-value="value"
+          return-object
         >
         </v-select>
       </v-card-text>
@@ -74,6 +75,17 @@ const showDialog = computed({
     emit("update:modelValue", value);
   },
 });
+
+const partOfSpeechItems = ref([
+  { title: "명사", value: "Noun" },
+  { title: "대명사", value: "Pronoun" },
+  { title: "동사", value: "Verb" },
+  { title: "형용사", value: "Adjective" },
+  { title: "부사", value: "Adverb" },
+  { title: "접속사", value: "Conjunction" },
+  { title: "전치사", value: "Preposition" },
+  { title: "감탄사", value: "Interjection" },
+]);
 
 const showDeleteConfirmDialog = ref(false);
 
