@@ -138,12 +138,15 @@
     <AdminWordGridUpdateDialog
       v-model="showWordUpdateDialog"
       :selectedWord="selectedWord"
+      :searchedLanguage="wordGridManager.searchedLanguage"
+      @success="fetchRowData(searchedUnit.id)"
     />
 
     <!-- 단어 삭제 다이얼로그 -->
     <AdminWordGridDeleteDialog
       v-model="showWordDeleteDialog"
       :selectedWord="selectedWord"
+      :searchedLanguage="wordGridManager.searchedLanguage"
       @success="fetchRowData(searchedUnit.id)"
     />
   </v-container>
@@ -228,6 +231,7 @@ const onSelectionChanged = (e) => {
     id: selectedData.id,
     studyWord: selectedData.studyWord,
     nativeWord: selectedData.nativeWord,
+    furigana: selectedData.furigana,
     partOfSpeech: selectedData.partOfSpeech,
     incorrectCount: selectedData.incorrectCount,
     correctCount: selectedData.correctCount,

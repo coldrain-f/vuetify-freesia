@@ -16,7 +16,7 @@
         <v-select
           label="Part Of Speech"
           v-model="formData.partOfSpeech"
-          :items="['명사', '형용사', '동사']"
+          :items="partOfSpeechItems"
         >
         </v-select>
       </v-card-text>
@@ -30,7 +30,7 @@
 
 <script setup>
 import { commonUtils } from "@/common/commonUtils";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 
 const { isEmptyObject } = commonUtils;
 
@@ -55,8 +55,22 @@ const showDialog = computed({
   },
 });
 
+const partOfSpeechItems = ref([
+  "명사",
+  "대명사",
+  "동사",
+  "형용사",
+  "부사",
+  "접속사",
+  "전치사",
+  "감탄사",
+]);
+
 const formData = reactive({
-  partOfSpeech: "명사", // Default
+  studyWord: "",
+  nativeWord: "",
+  furigana: "",
+  partOfSpeech: "명사",
 });
 
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.

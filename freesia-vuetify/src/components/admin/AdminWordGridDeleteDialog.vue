@@ -17,6 +17,12 @@
         >
         </v-text-field>
         <v-text-field
+          label="Furigana"
+          :model-value="props.selectedWord.furigana"
+          v-show="props.searchedLanguage == LanguageType.JAPANESE"
+        >
+        </v-text-field>
+        <v-text-field
           label="Native Word"
           :model-value="props.selectedWord.nativeWord"
           readonly
@@ -41,8 +47,11 @@
 <script setup>
 import { computed, ref } from "vue";
 
-import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
 import { wordService } from "@/service/wordService";
+
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+import { LanguageType } from "@/common/enum/languageType";
 
 const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
@@ -54,6 +63,9 @@ const props = defineProps({
   },
   selectedWord: {
     type: Object,
+  },
+  searchedLanguage: {
+    type: String,
   },
 });
 
