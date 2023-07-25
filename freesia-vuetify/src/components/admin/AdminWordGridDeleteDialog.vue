@@ -25,11 +25,8 @@
         </v-text-field>
         <v-select
           label="Part Of Speech"
-          :modal-value="props.selectedWord.partOfSpeech"
+          :model-value="props.selectedWord.partOfSpeech"
           :items="partOfSpeechItems"
-          item-title="title"
-          item-value="value"
-          return-object
         >
         </v-select>
       </v-card-text>
@@ -42,10 +39,13 @@
 </template>
 
 <script setup>
-import { commonUtils } from "@/common/commonUtils";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 
-const { isEmptyObject } = commonUtils;
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+import { wordService } from "@/service/wordService";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
@@ -57,15 +57,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
-// 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-watch(props.selectedWord, (w) => {
-  if (isEmptyObject(w)) {
-    showDialog.value = false;
-    return;
-  }
-});
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -77,20 +69,29 @@ const showDialog = computed({
 });
 
 const partOfSpeechItems = ref([
-  { title: "명사", value: "Noun" },
-  { title: "대명사", value: "Pronoun" },
-  { title: "동사", value: "Verb" },
-  { title: "형용사", value: "Adjective" },
-  { title: "부사", value: "Adverb" },
-  { title: "접속사", value: "Conjunction" },
-  { title: "전치사", value: "Preposition" },
-  { title: "감탄사", value: "Interjection" },
+  "명사",
+  "대명사",
+  "동사",
+  "형용사",
+  "부사",
+  "접속사",
+  "전치사",
+  "감탄사",
 ]);
 
-const showDeleteConfirmDialog = ref(false);
+const onClick = async () => {
+  try {
+    const wordId = props.selectedWord.id;
+    await wordService.removeById(wordId);
 
-const onClick = () => {
-  showDeleteConfirmDialog.value = true;
+    showDialog.value = false;
+    showCommonMessageDialog("단어 삭제를 완료했습니다.");
+
+    emit("success");
+  } catch (err) {
+    console.error(err);
+    showCommonMessageDialog("단어 삭제를 실패했습니다.");
+  }
 };
 </script>
 

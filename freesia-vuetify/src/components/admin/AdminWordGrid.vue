@@ -144,6 +144,7 @@
     <AdminWordGridDeleteDialog
       v-model="showWordDeleteDialog"
       :selectedWord="selectedWord"
+      @success="fetchRowData(searchedUnit.id)"
     />
   </v-container>
 </template>
@@ -224,6 +225,7 @@ const onSelectionChanged = (e) => {
   const selectedData = selectedNodes.map((node) => node.data)[0];
 
   Object.assign(wordGridManager.selectedWord, {
+    id: selectedData.id,
     studyWord: selectedData.studyWord,
     nativeWord: selectedData.nativeWord,
     partOfSpeech: selectedData.partOfSpeech,
@@ -272,6 +274,15 @@ const columnDefs = ref([
     valueGetter: (params) => {
       return rowData.value.length - params.node.rowIndex;
     },
+  },
+  {
+    headerName: "ID",
+    field: "id",
+    width: 70,
+    filter: false,
+    sortable: false,
+    resizable: false,
+    hide: true,
   },
   {
     headerName: "학습 단어",
