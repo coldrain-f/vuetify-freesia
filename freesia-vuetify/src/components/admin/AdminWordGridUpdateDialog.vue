@@ -11,6 +11,12 @@
       <v-card-text>
         <v-text-field label="Study Word" v-model="formData.studyWord">
         </v-text-field>
+        <v-text-field
+          label="Furigana"
+          v-model="formData.furigana"
+          v-show="props.searchedLanguage == LanguageType.JAPANESE"
+        >
+        </v-text-field>
         <v-text-field label="Native Word" v-model="formData.nativeWord">
         </v-text-field>
         <v-select
@@ -29,10 +35,15 @@
 </template>
 
 <script setup>
-import { commonUtils } from "@/common/commonUtils";
 import { computed, reactive, ref, watch } from "vue";
 
-const { isEmptyObject } = commonUtils;
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+import { LanguageType } from "@/common/enum/languageType";
+import { wordService } from "@/service/wordService";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
 
 const props = defineProps({
   modelValue: {
@@ -42,9 +53,12 @@ const props = defineProps({
   selectedWord: {
     type: Object,
   },
+  searchedLanguage: {
+    type: String,
+  },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "success"]);
 
 const showDialog = computed({
   get() {
@@ -74,19 +88,30 @@ const formData = reactive({
 });
 
 // props를 감시하여 넘어오는 값이 다를 때마다 formData를 갱신해준다.
-watch(props.selectedWord, (w) => {
-  // 혹시나 Grid Data가 선택되지 않은 상태로 Dialog 진입 시 강제로 Dialog를 닫아버린다.
-  if (isEmptyObject(w)) {
+watch(
+  () => props.selectedWord,
+  (selectedWord) => {
+    formData.studyWord = selectedWord.studyWord;
+    formData.nativeWord = selectedWord.nativeWord;
+    formData.furigana = selectedWord.furigana;
+    formData.partOfSpeech = selectedWord.partOfSpeech;
+  },
+  { deep: true }
+);
+
+const onClick = async () => {
+  try {
+    const wordId = props.selectedWord.id;
+    await wordService.modifyById(wordId, formData);
+
     showDialog.value = false;
-    return;
+    showCommonMessageDialog("단어 수정을 완료했습니다.");
+    emit("success");
+  } catch (err) {
+    console.error(err);
+    showCommonMessageDialog("단어 수정을 실패했습니다.");
   }
-
-  formData.studyWord = w.studyWord;
-  formData.nativeWord = w.nativeWord;
-  formData.partOfSpeech = w.partOfSpeech;
-});
-
-const onClick = () => {};
+};
 </script>
 
 <style scoped></style>

@@ -200,9 +200,9 @@ const performSearch = () => {
   wordGridManager.searchedLanguage = languageSelectManager.selectedItem;
 
   if (wordGridManager.searchedLanguage == LanguageType.ENGLISH) {
-    columnDefs.value[3].hide = true;
+    columnDefs.value[4].hide = true;
   } else if (wordGridManager.searchedLanguage == LanguageType.JAPANESE) {
-    columnDefs.value[3].hide = false;
+    columnDefs.value[4].hide = false;
   }
 
   wordGridManager.searchedVocabulary.id =

@@ -26,10 +26,11 @@ export const wordService = {
 
   /** 단어 수정 API */
   modifyById: async (wordId, formData) => {
-    const { studyWord, nativeWord, partOfSpeech } = formData;
+    const { studyWord, nativeWord, furigana, partOfSpeech } = formData;
     await $axios.patch(`/words/${wordId}`, {
       studyWord,
       nativeWord,
+      furigana,
       partOfSpeech,
     });
   },
