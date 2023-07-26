@@ -39,11 +39,14 @@ public class WordDTO {
 
         private String nativeWord;
 
+        private String furigana;
+
         private String partOfSpeech;
 
-        public ModifyRequest(String studyWord, String nativeWord, String partOfSpeech) {
+        public ModifyRequest(String studyWord, String nativeWord, String partOfSpeech, String furigana) {
             this.studyWord = studyWord;
             this.nativeWord = nativeWord;
+            this.furigana = furigana;
             this.partOfSpeech = partOfSpeech;
         }
     }

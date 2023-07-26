@@ -54,6 +54,7 @@ public class WordService {
         word.changeStudyWord(request.getStudyWord());
         word.changeNativeWord(request.getNativeWord());
         word.changePartOfSpeech(request.getPartOfSpeech());
+        word.changeFurigana(request.getFurigana());
     }
 
     public WordDTO.Response searchOneWordResponse(Long wordId) {
