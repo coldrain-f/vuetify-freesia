@@ -2,7 +2,7 @@ import { $axios } from "@/common/axios";
 
 export const wordService = {
   /** 단어 페이지 조회 API */
-  getPageable: async (unitId, pageable = { page: 0, size: 3 }) => {
+  getPageable: async (unitId = 0, pageable = { page: 0, size: 3 }) => {
     const { page, size } = pageable;
     const response = await $axios.get(
       `/units/${unitId}/words?page=${page}&size=${size}`

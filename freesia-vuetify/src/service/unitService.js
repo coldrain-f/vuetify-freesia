@@ -2,7 +2,7 @@ import { $axios } from "@/common/axios";
 
 export const unitService = {
   /** 단위 목록 페이지 조회 API */
-  getPageable: async (vocabularyId, pageable = { page: 0, size: 3 }) => {
+  getPageable: async (vocabularyId = 0, pageable = { page: 0, size: 3 }) => {
     const { page, size } = pageable;
     const response = await $axios.get(
       `/vocabulary/${vocabularyId}/units?page=${page}&size=${size}`

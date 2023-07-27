@@ -150,6 +150,11 @@ const unitGridManager = inject("unitGridManager");
 const languageSelectManager = inject("languageSelectManager");
 const vocabularySelectManager = inject("vocabularySelectManager");
 
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
+
 // readonly
 const {
   isSearchPerformed,
@@ -164,6 +169,11 @@ const showUnitUpdateDialog = ref(false);
 const showUnitDeleteDialog = ref(false);
 
 const performSearch = async () => {
+  // 단어장 선택 X
+  if (!vocabularySelectManager.selectedItem.id) {
+    showCommonMessageDialog("선택한 단어장이 없습니다.");
+    return;
+  }
   await fetchRowData(vocabularySelectManager.selectedItem.id);
 
   unitGridManager.searchedLanguage = languageSelectManager.selectedItem;

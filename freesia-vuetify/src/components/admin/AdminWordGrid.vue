@@ -168,6 +168,11 @@ import { LanguageType } from "@/common/enum/languageType";
 // Utils
 const { isEmptyObject } = commonUtils;
 
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
+
 const themeStore = useThemeStore();
 
 const emit = defineEmits(["handleLanguageChange", "handleVocabularyChange"]);
@@ -193,6 +198,14 @@ const showWordUpdateDialog = ref(false);
 const showWordDeleteDialog = ref(false);
 
 const performSearch = () => {
+  if (!vocabularySelectManager.selectedItem.id) {
+    showCommonMessageDialog("선택한 단어장이 없습니다.");
+    return;
+  }
+  if (!unitSelectManager.selectedItem.id) {
+    showCommonMessageDialog("선택한 유닛이 없습니다.");
+    return;
+  }
   clearWordGridManagerSelectedWord();
 
   fetchRowData(unitSelectManager.selectedItem.id);
