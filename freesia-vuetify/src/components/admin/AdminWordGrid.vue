@@ -199,11 +199,11 @@ const showWordDeleteDialog = ref(false);
 
 const performSearch = () => {
   if (!vocabularySelectManager.selectedItem.id) {
-    showCommonMessageDialog("선택한 단어장이 없습니다.");
+    showCommonMessageDialog("선택된 단어장이 없습니다.");
     return;
   }
   if (!unitSelectManager.selectedItem.id) {
-    showCommonMessageDialog("선택한 유닛이 없습니다.");
+    showCommonMessageDialog("선택된 유닛이 없습니다.");
     return;
   }
   clearWordGridManagerSelectedWord();
