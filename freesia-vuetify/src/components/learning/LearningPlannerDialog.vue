@@ -14,33 +14,32 @@
             <v-select
               label="Language"
               variant="underlined"
-              :model-value="{ name: 'English', id: 1 }"
-              :items="[
-                { name: 'English', id: 1 },
-                { name: 'Japanese', id: 2 },
-              ]"
-              :readonly="isEditMode"
+              :model-value="props.languageSelect.selectedItem"
+              :items="props.languageSelect.items"
               item-title="name"
-              item-value="id"
-              return-object
-              persistent-hint
-            />
+              item-value="name"
+              @update:model-value="
+                (changedLanguage) =>
+                  emit('handleLanguageChange', changedLanguage)
+              "
+            >
+            </v-select>
           </v-col>
           <v-col cols="3">
             <v-select
               label="Voca"
               variant="underlined"
-              :model-value="{ title: '단어가 읽기다 기본편', id: 1 }"
-              :items="[
-                { title: '단어가 읽기다 기본편', id: 1 },
-                { title: '단어가 읽기다 실력편', id: 2 },
-              ]"
-              :readonly="isEditMode"
+              :model-value="props.vocabularySelect.selectedItem"
+              :items="props.vocabularySelect.items"
               item-title="title"
               item-value="id"
               return-object
-              persistent-hint
-            />
+              @update:model-value="
+                (changedVocabulary) =>
+                  emit('handleVocabularyChange', changedVocabulary)
+              "
+            >
+            </v-select>
           </v-col>
           <v-col cols="2">
             <v-btn
@@ -50,7 +49,7 @@
               icon="mdi-magnify"
               variant="text"
               :disabled="isEditMode"
-              @click="showPlannerCreateDialog = true"
+              @click="performSearch"
             >
             </v-btn>
           </v-col>
@@ -60,7 +59,7 @@
               size="small"
               variant="flat"
               color="info"
-              :disabled="isEditMode"
+              :disabled="isEditMode || !isSearchPerformed"
               v-if="!isEditMode"
               @click="isEditMode = true"
             >
@@ -107,6 +106,7 @@
               variant="flat"
               color="success"
               v-if="!isEditMode"
+              :disabled="!isSearchPerformed"
             >
               <v-icon start icon="mdi-file-export-outline"></v-icon>
               EXPORT CSV
@@ -178,6 +178,7 @@ import { computed, onMounted, ref } from "vue";
 // Components
 import LearningPlannerCreateDialog from "./LearningPlannerCreateDialog.vue";
 import { storeToRefs } from "pinia";
+import { languageService } from "@/service/languageService";
 
 const learningStore = useLearningStore();
 const { isLearningStarted } = storeToRefs(learningStore);
@@ -187,9 +188,19 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  languageSelect: {
+    type: Object,
+  },
+  vocabularySelect: {
+    type: Object,
+  },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits([
+  "update:modelValue",
+  "handleLanguageChange",
+  "handleVocabularyChange",
+]);
 
 const showPlannerCreateDialog = ref(false);
 
@@ -203,10 +214,18 @@ const showDialog = computed({
   },
 });
 
+const performSearch = () => {
+  showPlannerCreateDialog.value = true;
+};
+
 const onLearnButtonClicked = () => {
   showDialog.value = false;
   isLearningStarted.value = true;
 };
+
+const languageItems = ref([]);
+
+const isSearchPerformed = ref(false);
 
 const isEditMode = ref(false);
 
@@ -305,24 +324,8 @@ const columnDefs = [
 // AG-Grid-Vue 데이터
 const rowData = ref([]);
 
-// AG-Grid-Vue 임시 데이터 생성 함수
-const makeTempRowData = () => {
-  const rowData = [];
-
-  for (let i = 1; i <= 100; i++) {
-    const data = {
-      studyDay: "Day " + i,
-      learningStatus: "미학습",
-    };
-
-    rowData.push(data);
-  }
-
-  return rowData;
-};
-
-onMounted(() => {
-  rowData.value = makeTempRowData();
+onMounted(async () => {
+  languageItems.value = await languageService.findAll();
 });
 </script>
 

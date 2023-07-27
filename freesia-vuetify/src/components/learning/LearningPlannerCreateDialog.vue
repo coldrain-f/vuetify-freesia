@@ -13,7 +13,7 @@
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="primary"> CONFIRM </v-btn>
-        <v-btn @click="showDialog = false"> CANCEL </v-btn>
+        <v-btn @click="showDialog = false" class="me-4"> CANCEL </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

@@ -18,40 +18,12 @@ public class Planner extends Timestamp {
     @Column(name = "PLANNER_ID")
     private Long id;
 
-    @Column(nullable = false, updatable = false, unique = true)
-    private String studyDay;
-
-    @Column(nullable = false)
-    private String learningStatus; // Finished, Ongoing
-
     @Column
-    private String today;
-
-    @Column
-    private String oneDayPrior;
-
-    @Column
-    private String threeDaysPrior;
-
-    @Column
-    private String sixDaysPrior;
-
-    @Column
-    private String thirteenDaysPrior;
+    private String name;
 
     @Builder
-    public Planner(String studyDay, String learningStatus) {
-        this.studyDay = studyDay;
-        this.learningStatus = learningStatus;
-    }
-
-    // 복습주기 설정 메서드
-    public void setTheReviewInterval(String today, String oneDayPrior, String threeDaysPrior, String sixDaysPrior, String thirteenDaysPrior) {
-        this.today = today;
-        this.oneDayPrior = oneDayPrior;
-        this.threeDaysPrior = threeDaysPrior;
-        this.sixDaysPrior = sixDaysPrior;
-        this.thirteenDaysPrior = thirteenDaysPrior;
+    public Planner(String name) {
+        this.name = name;
     }
 
 }
