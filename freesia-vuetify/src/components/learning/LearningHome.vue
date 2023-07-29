@@ -50,7 +50,6 @@ const vocabularySelect = reactive({
   },
 });
 
-// 이 부분부터 변경...
 provide("vocabularySelect", vocabularySelect);
 
 const handleLanguageChange = async (changedLanguage) => {

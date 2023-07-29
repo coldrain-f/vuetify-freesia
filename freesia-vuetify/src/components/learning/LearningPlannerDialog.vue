@@ -160,7 +160,30 @@
   </v-dialog>
 
   <!-- 플래너 등록 다이얼로그 -->
-  <LearningPlannerCreateDialog v-model="showPlannerCreateDialog" />
+  <v-dialog v-model="showPlannerCreateDialog" width="350">
+    <v-card>
+      <template #title>
+        <span class="text-primary noto-sans"> ※ 플래너 생성 </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="showPlannerCreateDialog = false"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="noto-sans">
+        생성된 학습 플래너가 없습니다. 새로 생성하시겠습니까?
+      </v-card-text>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn color="primary" @click="onConfirmClick"> CONFIRM </v-btn>
+        <v-btn @click="showPlannerCreateDialog = false" class="me-4">
+          CANCEL
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup>
@@ -176,9 +199,16 @@ import { useLearningStore } from "@/stores/learning";
 import { computed, onMounted, ref } from "vue";
 
 // Components
-import LearningPlannerCreateDialog from "./LearningPlannerCreateDialog.vue";
 import { storeToRefs } from "pinia";
 import { languageService } from "@/service/languageService";
+import { PlannerService } from "@/service/plannerService";
+
+import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+
+const commonMessageDialogStore = useCommonMessageDialogStore();
+const { showCommonMessageDialog } = commonMessageDialogStore;
+
+const plannerService = new PlannerService();
 
 const learningStore = useLearningStore();
 const { isLearningStarted } = storeToRefs(learningStore);
@@ -214,13 +244,39 @@ const showDialog = computed({
   },
 });
 
-const performSearch = () => {
+const performSearch = async () => {
+  const vocabularyId = props.vocabularySelect.selectedItem.id;
+  const isDuplicate = await plannerService.checkDuplicate(vocabularyId);
+
+  if (isDuplicate) {
+    // Load planner details...
+    rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
+    isSearchPerformed.value = true;
+    return;
+  }
+
   showPlannerCreateDialog.value = true;
 };
 
 const onLearnButtonClicked = () => {
   showDialog.value = false;
   isLearningStarted.value = true;
+};
+
+const onConfirmClick = async () => {
+  const vocabularyId = props.vocabularySelect.selectedItem.id;
+  try {
+    await plannerService.register(vocabularyId);
+    showDialog.value = false;
+    showPlannerCreateDialog.value = false;
+    isSearchPerformed.value = true;
+    showCommonMessageDialog("플래너 생성을 완료했습니다.");
+
+    rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
+  } catch (err) {
+    console.error(err);
+    showCommonMessageDialog("플래너 생성을 실패했습니다.");
+  }
 };
 
 const languageItems = ref([]);
@@ -295,9 +351,21 @@ const columnDefs = [
   {
     headerName: "완료 여부",
     field: "learningStatus",
-    cellStyle: {
-      color: "#B00020", // Priamry: #1867C0
-      fontWeight: "bold",
+    cellStyle: (params) => {
+      if (params.value == "Ongoing") {
+        return { color: "#B00020", fontWeight: "bold" };
+      } else if (params.value == "Finished") {
+        return { color: "#1867C0", fontWeight: "bold" };
+      }
+      return { fontWeight: "bold" };
+    },
+    cellRenderer: (params) => {
+      if (params.value == "Ongoing") {
+        return "미학습";
+      } else if (params.value == "Finished") {
+        return "학습 완료";
+      }
+      return params.value;
     },
     width: 100,
     pinned: true,
