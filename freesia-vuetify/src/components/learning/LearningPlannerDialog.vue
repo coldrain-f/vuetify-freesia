@@ -22,6 +22,7 @@
                 (changedLanguage) =>
                   emit('handleLanguageChange', changedLanguage)
               "
+              :readonly="isEditMode"
             >
             </v-select>
           </v-col>
@@ -38,6 +39,7 @@
                 (changedVocabulary) =>
                   emit('handleVocabularyChange', changedVocabulary)
               "
+              :readonly="isEditMode"
             >
             </v-select>
           </v-col>
@@ -196,7 +198,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { useLearningStore } from "@/stores/learning";
 
 // Vue
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 // Components
 import { storeToRefs } from "pinia";
@@ -286,9 +288,32 @@ const isSearchPerformed = ref(false);
 const isEditMode = ref(false);
 
 const gridApi = ref(null);
+const gridColumnApi = ref(null);
+
+watch(isEditMode, () => {
+  // 편집모드 인 경우 선택 컬럼 hide
+  if (isEditMode.value) {
+    gridColumnApi.value.applyColumnState({
+      state: [
+        { colId: "select", hide: true },
+        { colId: "today", width: 190 },
+        { colId: "oneDayPrior", width: 190 },
+        { colId: "threeDaysPrior", width: 190 },
+        { colId: "sixDaysPrior", width: 190 },
+        { colId: "thirteenDaysPrior", width: 190 },
+      ],
+    });
+
+    return;
+  }
+  gridColumnApi.value.applyColumnState({
+    state: [{ colId: "select", hide: false }],
+  });
+});
 
 const onGridReady = (params) => {
   gridApi.value = params.api;
+  gridColumnApi.value = params.columnApi;
 };
 
 const gridOptions = {
@@ -333,6 +358,7 @@ const defaultColDef = ref({
 const columnDefs = [
   {
     headerName: "선택",
+    field: "select",
     headerCheckboxSelection: false, // 헤더 체크박스 disable
     checkboxSelection: true,
     width: 70,
