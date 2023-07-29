@@ -154,7 +154,12 @@
       <v-card-actions>
         <v-row style="margin: 0">
           <v-col cols="3" style="padding: 0">
-            <v-btn class="ml-4 mt-1 border" size="small" :disabled="isEditMode">
+            <v-btn
+              class="ml-4 mt-1 border"
+              size="small"
+              :disabled="isEditMode"
+              @click="showLearningOptionDialog = true"
+            >
               <v-icon start icon="mdi-cog-outline"></v-icon>
               LEARNING OPTION
             </v-btn>
@@ -207,6 +212,32 @@
       <v-card-actions class="d-flex justify-end">
         <v-btn color="primary" @click="onConfirmClick"> CONFIRM </v-btn>
         <v-btn @click="showPlannerCreateDialog = false" class="me-4">
+          CANCEL
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- 학습 옵션 다이얼로그 -->
+  <v-dialog v-model="showLearningOptionDialog" width="350">
+    <v-card>
+      <template #title>
+        <span class="text-primary noto-sans"> ※ 학습 옵션 </span>
+      </template>
+      <template #append>
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="showLearningOptionDialog = false"
+        >
+        </v-btn>
+      </template>
+      <v-card-text class="noto-sans">
+        생성된 학습 플래너가 없습니다. 새로 생성하시겠습니까?
+      </v-card-text>
+      <v-card-actions class="d-flex justify-end">
+        <v-btn color="primary"> CONFIRM </v-btn>
+        <v-btn @click="showLearningOptionDialog = false" class="me-4">
           CANCEL
         </v-btn>
       </v-card-actions>
@@ -265,6 +296,8 @@ const emit = defineEmits([
 ]);
 
 const showPlannerCreateDialog = ref(false);
+
+const showLearningOptionDialog = ref(false);
 
 const searchedResult = reactive({
   language: "",
@@ -327,6 +360,8 @@ const onConfirmClick = async () => {
     await plannerService.register(vocabularyId);
     showPlannerCreateDialog.value = false;
     isSearchPerformed.value = true;
+    searchedResult.language = props.languageSelect.selectedItem;
+    searchedResult.vocabularyTitle = props.vocabularySelect.selectedItem.title;
     showCommonMessageDialog("플래너 생성을 완료했습니다.");
 
     rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
