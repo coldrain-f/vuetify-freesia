@@ -27,9 +27,6 @@
             <v-list-item @click="showThemeDialog = true">
               <v-list-item-title> Theme </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="showPlannerDialog = true">
-              <v-list-item-title> Planner </v-list-item-title>
-            </v-list-item>
           </v-list>
         </v-menu>
       </v-btn>
