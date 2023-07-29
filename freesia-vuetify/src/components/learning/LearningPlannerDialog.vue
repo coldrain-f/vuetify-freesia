@@ -116,7 +116,7 @@
 
         <ag-grid-vue
           style="width: 100%; height: 450px"
-          class="ag-theme-alpine"
+          class="ag-theme-alpine noto-sans"
           :columnDefs="columnDefs"
           :rowData="rowData"
           :defaultColDef="defaultColDef"
@@ -353,9 +353,15 @@ const columnDefs = [
     field: "learningStatus",
     cellStyle: (params) => {
       if (params.value == "Ongoing") {
-        return { color: "#B00020", fontWeight: "bold" };
+        return {
+          color: "#B00020",
+          fontWeight: "bold",
+        };
       } else if (params.value == "Finished") {
-        return { color: "#1867C0", fontWeight: "bold" };
+        return {
+          color: "#1867C0",
+          fontWeight: "bold",
+        };
       }
       return { fontWeight: "bold" };
     },
@@ -372,11 +378,19 @@ const columnDefs = [
   },
 
   {
-    headerName: "당일",
+    headerName: "당일 (Editable)",
     field: "today",
     width: 176,
-    editable: () => {
-      return isEditMode.value;
+    editable: (rowNode) => {
+      const learningStatus = rowNode.data.learningStatus;
+      if (!isEditMode.value) {
+        return false;
+      }
+      if (learningStatus == "Finished") {
+        return false;
+      } else if (learningStatus == "Ongoing") {
+        return true;
+      }
     },
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
