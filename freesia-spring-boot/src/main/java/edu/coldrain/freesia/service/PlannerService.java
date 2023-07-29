@@ -72,4 +72,9 @@ public class PlannerService {
 
         return plannerRepository.findByName(vocabulary.getTitle() + " Planner").isPresent();
     }
+
+    @Transactional
+    public void bulkUpdate(List<PlannerDetail> plannerDetails) {
+        plannerDetailRepository.saveAll(plannerDetails);
+    }
 }

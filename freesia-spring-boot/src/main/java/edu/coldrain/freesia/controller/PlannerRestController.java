@@ -3,10 +3,7 @@ package edu.coldrain.freesia.controller;
 import edu.coldrain.freesia.entity.PlannerDetail;
 import edu.coldrain.freesia.service.PlannerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +26,10 @@ public class PlannerRestController {
     @PostMapping("/vocabulary/{vocabularyId}/planner/checkDuplicate")
     public boolean checkDuplicate(@PathVariable Long vocabularyId) {
         return plannerService.checkDuplicate(vocabularyId);
+    }
+
+    @PatchMapping("/planner/planner-details")
+    public void bulkUpdate(@RequestBody List<PlannerDetail> plannerDetails) {
+        plannerService.bulkUpdate(plannerDetails);
     }
 }

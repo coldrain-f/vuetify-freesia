@@ -55,4 +55,15 @@ public class PlannerDetail extends Timestamp {
         this.thirteenDaysPrior = thirteenDaysPrior;
         this.planner = planner;
     }
+
+    public void updatePlannerDetail(String studyDay, String learningStatus, String today, String oneDayPrior, String threeDaysPrior,
+                               String sixDaysPrior, String thirteenDaysPrior) {
+        this.studyDay = studyDay;
+        this.learningStatus = learningStatus;
+        this.today = today;
+        this.oneDayPrior = oneDayPrior;
+        this.threeDaysPrior = threeDaysPrior;
+        this.sixDaysPrior = sixDaysPrior;
+        this.thirteenDaysPrior = thirteenDaysPrior;
+    }
 }
