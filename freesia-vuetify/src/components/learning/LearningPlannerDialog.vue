@@ -116,6 +116,23 @@
           </v-col>
         </v-row>
 
+        <div
+          :class="`text-${themeStore.theme} mb-1`"
+          v-if="isSearchPerformed"
+          style="cursor: default"
+        >
+          <p>
+            <span class="me-2">【 </span>
+            <span class="noto-sans"> {{ searchedResult.language }} </span>
+            <span class="ms-2"> 】</span>
+            <span class="ms-2 me-2"> 》</span>
+            <span class="me-2">【 </span>
+            <span class="me-2 noto-sans">
+              {{ searchedResult.vocabularyTitle }}
+            </span>
+            <span> 】</span>
+          </p>
+        </div>
         <ag-grid-vue
           style="width: 100%; height: 450px"
           class="ag-theme-alpine noto-sans"
@@ -132,7 +149,7 @@
       <v-card-actions>
         <v-row style="margin: 0">
           <v-col cols="3" style="padding: 0">
-            <v-btn class="ml-4 mt-1 border" variant="flat" size="small">
+            <v-btn class="ml-4 mt-1 border" size="small" :disabled="isEditMode">
               <v-icon start icon="mdi-cog-outline"></v-icon>
               LEARNING OPTION
             </v-btn>
@@ -151,7 +168,11 @@
               <v-icon start icon="mdi-school-outline"></v-icon>
               EXAM
             </v-btn>
-            <v-btn class="mr-5" @click="showDialog = false">
+            <v-btn
+              class="mr-5"
+              @click="showDialog = false"
+              :disabled="isEditMode"
+            >
               <v-icon start icon="mdi-close"></v-icon>
               CLOSE
             </v-btn>
@@ -198,7 +219,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { useLearningStore } from "@/stores/learning";
 
 // Vue
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 
 // Components
 import { storeToRefs } from "pinia";
@@ -206,6 +227,9 @@ import { languageService } from "@/service/languageService";
 import { PlannerService } from "@/service/plannerService";
 
 import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+import { useThemeStore } from "@/stores/theme";
+
+const themeStore = useThemeStore();
 
 const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
@@ -236,6 +260,11 @@ const emit = defineEmits([
 
 const showPlannerCreateDialog = ref(false);
 
+const searchedResult = reactive({
+  language: "",
+  vocabularyTitle: "",
+});
+
 // 왜 이렇게 해줘야하지만 v-dialog를 사용할 수 있는지 정리 필요.
 const showDialog = computed({
   get() {
@@ -253,6 +282,8 @@ const performSearch = async () => {
   if (isDuplicate) {
     // Load planner details...
     rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
+    searchedResult.language = props.languageSelect.selectedItem;
+    searchedResult.vocabularyTitle = props.vocabularySelect.selectedItem.title;
     isSearchPerformed.value = true;
     return;
   }
@@ -269,7 +300,6 @@ const onConfirmClick = async () => {
   const vocabularyId = props.vocabularySelect.selectedItem.id;
   try {
     await plannerService.register(vocabularyId);
-    showDialog.value = false;
     showPlannerCreateDialog.value = false;
     isSearchPerformed.value = true;
     showCommonMessageDialog("플래너 생성을 완료했습니다.");
