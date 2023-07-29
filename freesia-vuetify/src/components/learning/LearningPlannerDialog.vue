@@ -5,7 +5,12 @@
         <span class="text-primary"> ※ Planner </span>
       </template>
       <template #append>
-        <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
+        <v-btn
+          variant="text"
+          icon="mdi-close"
+          @click="showDialog = false"
+          :disabled="isEditMode"
+        >
         </v-btn>
       </template>
       <v-card-text class="mt-5">
@@ -256,6 +261,7 @@ const emit = defineEmits([
   "update:modelValue",
   "handleLanguageChange",
   "handleVocabularyChange",
+  "handleClose",
 ]);
 
 const showPlannerCreateDialog = ref(false);
@@ -319,6 +325,20 @@ const isEditMode = ref(false);
 
 const gridApi = ref(null);
 const gridColumnApi = ref(null);
+
+const clearLearningPlannerDialog = () => {
+  emit("handleClose");
+  searchedResult.language = "";
+  searchedResult.vocabularyTitle = "";
+  isSearchPerformed.value = false;
+  isEditMode.value = false;
+  rowData.value = [];
+};
+
+watch(showDialog, () => {
+  // 플래너 다이얼로그 close 시 데이터 초기화
+  clearLearningPlannerDialog();
+});
 
 watch(isEditMode, () => {
   // 편집모드 인 경우 선택 컬럼 hide

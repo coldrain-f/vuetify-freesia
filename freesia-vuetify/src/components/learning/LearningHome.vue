@@ -22,12 +22,13 @@
       @handleVocabularyChange="
         (changedVocabulary) => handleVocabularyChange(changedVocabulary)
       "
+      @handleClose="handleClose"
     />
   </div>
 </template>
 
 <script setup>
-import { provide, reactive, ref } from "vue";
+import { reactive, ref } from "vue";
 
 import titleBanner from "@/assets/images/titleBanner.png";
 import LearningPlannerDialog from "./LearningPlannerDialog.vue";
@@ -50,7 +51,10 @@ const vocabularySelect = reactive({
   },
 });
 
-provide("vocabularySelect", vocabularySelect);
+const handleClose = async () => {
+  languageSelect.selectedItem = LanguageType.ENGLISH;
+  await fetchVocabularySelect(LanguageType.ENGLISH);
+};
 
 const handleLanguageChange = async (changedLanguage) => {
   languageSelect.selectedItem = changedLanguage;
