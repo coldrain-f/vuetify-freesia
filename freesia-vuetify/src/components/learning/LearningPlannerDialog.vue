@@ -102,7 +102,7 @@
               variant="flat"
               :disabled="!isEditMode"
               v-if="isEditMode"
-              @click="isEditMode = false"
+              @click="onCancel"
             >
               <v-icon start icon="mdi-cancel"></v-icon>
               CANCEL
@@ -308,6 +308,12 @@ const onSave = async () => {
     console.error(err);
     showCommonMessageDialog("플래너 저장을 실패했습니다.");
   }
+};
+
+const onCancel = async () => {
+  const vocabularyId = props.vocabularySelect.selectedItem.id;
+  isEditMode.value = false;
+  rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
 };
 
 const onLearnButtonClicked = () => {
