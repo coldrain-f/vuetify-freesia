@@ -18,12 +18,17 @@ public class Planner extends Timestamp {
     @Column(name = "PLANNER_ID")
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "VOCABULARY_ID")
+    private Vocabulary vocabulary;
+
     @Builder
-    public Planner(String name) {
+    public Planner(String name, Vocabulary vocabulary) {
         this.name = name;
+        this.vocabulary = vocabulary;
     }
 
 }

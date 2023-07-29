@@ -16,4 +16,9 @@ public class PlannerRestController {
     public void createPlanner(@PathVariable Long vocabularyId) {
         plannerService.createPlanner(vocabularyId);
     }
+
+    @PostMapping("/vocabulary/{vocabularyId}/planner/checkDuplicate")
+    public boolean checkDuplicate(@PathVariable Long vocabularyId) {
+        return plannerService.checkDuplicate(vocabularyId);
+    }
 }
