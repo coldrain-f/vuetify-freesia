@@ -80,7 +80,7 @@
               color="primary"
               :disabled="!isEditMode"
               v-if="isEditMode"
-              @click="isEditMode = false"
+              @click="onSave"
             >
               <v-icon start icon="mdi-content-save-all-outline"></v-icon>
               SAVE
@@ -297,6 +297,19 @@ const performSearch = async () => {
   showPlannerCreateDialog.value = true;
 };
 
+const onSave = async () => {
+  const vocabularyId = props.vocabularySelect.selectedItem.id;
+  try {
+    await plannerService.bulkUpdate(rowData.value);
+    isEditMode.value = false;
+    rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
+    showCommonMessageDialog("플래너 저장을 완료했습니다.");
+  } catch (err) {
+    console.error(err);
+    showCommonMessageDialog("플래너 저장을 실패했습니다.");
+  }
+};
+
 const onLearnButtonClicked = () => {
   showDialog.value = false;
   isLearningStarted.value = true;
@@ -357,7 +370,14 @@ watch(isEditMode, () => {
     return;
   }
   gridColumnApi.value.applyColumnState({
-    state: [{ colId: "select", hide: false }],
+    state: [
+      { colId: "select", hide: false },
+      { colId: "today", width: 176 },
+      { colId: "oneDayPrior", width: 176 },
+      { colId: "threeDaysPrior", width: 176 },
+      { colId: "sixDaysPrior", width: 176 },
+      { colId: "thirteenDaysPrior", width: 176 },
+    ],
   });
 });
 
@@ -406,6 +426,15 @@ const defaultColDef = ref({
 
 // AG-Grid-Vue 컬럼 설정
 const columnDefs = [
+  {
+    headerName: "ID",
+    field: "id",
+    width: 70,
+    editable: false,
+    resizable: false,
+    filter: false,
+    hide: true,
+  },
   {
     headerName: "선택",
     field: "select",

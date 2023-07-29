@@ -18,4 +18,8 @@ export class PlannerService {
     );
     return response.data;
   }
+
+  async bulkUpdate(plannerDetails) {
+    await $axios.patch(`/planner/planner-details`, plannerDetails);
+  }
 }
