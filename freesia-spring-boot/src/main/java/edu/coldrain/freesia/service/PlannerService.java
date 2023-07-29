@@ -10,6 +10,8 @@ import edu.coldrain.freesia.repository.VocabularyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,17 @@ public class PlannerService {
         }
 
         plannerDetailRepository.saveAll(plannerDetails);
+    }
+
+
+    public List<PlannerDetail> findAllByVocabularyId(Long vocabularyId) {
+        final Vocabulary vocabulary = vocabularyRepository.findById(vocabularyId)
+                .orElseThrow(() -> new VocabularyNotFoundException("vocabulary not found exception."));
+
+        final Planner planner = plannerRepository.findByName(vocabulary.getTitle() + " Planner")
+                .orElseThrow(() -> new IllegalArgumentException("planner not found exception."));
+
+        return plannerDetailRepository.findAllByPlannerId(planner.getId());
     }
 
     public boolean checkDuplicate(Long vocabularyId) {
