@@ -22,7 +22,7 @@ public class Planner extends Timestamp {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "VOCABULARY_ID")
+    @JoinColumn(name = "VOCABULARY_ID", nullable = false) // nullable 없으면 에러?
     private Vocabulary vocabulary;
 
     @Builder

@@ -40,7 +40,7 @@ public class PlannerDetail extends Timestamp {
     private String thirteenDaysPrior;
 
     @ManyToOne
-    @JoinColumn(name = "PLANNER_ID")
+    @JoinColumn(name = "PLANNER_ID", nullable = false)
     private Planner planner;
 
     @Builder

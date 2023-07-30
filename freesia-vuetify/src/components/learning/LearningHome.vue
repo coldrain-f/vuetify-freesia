@@ -30,7 +30,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 
-import titleBanner from "@/assets/images/titleBanner.png";
+import titleBanner from "@/assets/images/mapleBanner2.png";
 import LearningPlannerDialog from "./LearningPlannerDialog.vue";
 import { LanguageType } from "@/common/enum/languageType";
 import { languageService } from "@/service/languageService";

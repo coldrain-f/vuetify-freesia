@@ -2,16 +2,10 @@ package edu.coldrain.freesia.service;
 
 import edu.coldrain.freesia.dto.VocabularyDTO;
 import edu.coldrain.freesia.dto.VocabularySearchCondition;
-import edu.coldrain.freesia.entity.Language;
-import edu.coldrain.freesia.entity.Unit;
-import edu.coldrain.freesia.entity.Vocabulary;
-import edu.coldrain.freesia.entity.Word;
+import edu.coldrain.freesia.entity.*;
 import edu.coldrain.freesia.exception.LanguageNotFoundException;
 import edu.coldrain.freesia.exception.VocabularyNotFoundException;
-import edu.coldrain.freesia.repository.LanguageRepository;
-import edu.coldrain.freesia.repository.UnitRepository;
-import edu.coldrain.freesia.repository.VocabularyRepository;
-import edu.coldrain.freesia.repository.WordRepository;
+import edu.coldrain.freesia.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +25,10 @@ public class VocabularyService {
     private final UnitRepository unitRepository;
 
     private final WordRepository wordRepository;
+
+    private final PlannerRepository plannerRepository;
+
+    private final PlannerDetailRepository plannerDetailRepository;
 
     public Long register(VocabularyDTO.RegistrationRequest request) {
         final Language language = languageRepository.findByName(request.getLanguage())
@@ -58,6 +56,18 @@ public class VocabularyService {
 
     @Transactional
     public void removeById(Long vocabularyId) {
+        // Delete Planner And PlannerDetails
+        final Vocabulary vocabulary = vocabularyRepository.findById(vocabularyId)
+                .orElseThrow(() -> new VocabularyNotFoundException("vocabulary not found exception."));
+
+        final Planner planner = plannerRepository.findByName(vocabulary.getTitle() + " Planner")
+                .orElseThrow(() -> new IllegalArgumentException("planner not found exception."));
+
+        final List<PlannerDetail> plannerDetails = plannerDetailRepository.findAllByPlannerId(planner.getId());
+        plannerDetailRepository.deleteAllInBatch(plannerDetails);
+        plannerRepository.deleteById(planner.getId());
+
+        // Delete Units
         final List<Unit> units = unitRepository.findAllByParentId(vocabularyId);
         if (units.isEmpty()) {
             // Delete vocabulary
