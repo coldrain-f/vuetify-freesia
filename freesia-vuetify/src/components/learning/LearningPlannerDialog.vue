@@ -68,7 +68,7 @@
               color="info"
               :disabled="isEditMode || !isSearchPerformed"
               v-if="!isEditMode"
-              @click="isEditMode = true"
+              @click="onEdit"
             >
               <v-icon start icon="mdi-content-save-all-outline"></v-icon>
               EDIT
@@ -419,6 +419,12 @@ const performSearch = async () => {
   }
 
   showPlannerCreateDialog.value = true;
+};
+
+const onEdit = () => {
+  // 선택한 셀렉트 초기화
+  gridApi.value.deselectAll();
+  isEditMode.value = true;
 };
 
 const onSave = async () => {
