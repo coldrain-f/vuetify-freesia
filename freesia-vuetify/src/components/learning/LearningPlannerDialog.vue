@@ -268,7 +268,13 @@
           :items="synthStore.synthVoiceNames"
         >
         </v-select>
-        <v-text-field label="TTS Text" variant="underlined" v-model="ttsText">
+        <v-text-field
+          label="TTS Text"
+          variant="underlined"
+          v-model="ttsText"
+          placeholder="미리 들어볼 단어나 문장을 입력해주세요..."
+          persistent-placeholder
+        >
           <template v-slot:append-inner>
             <v-tooltip text="발음 듣기" location="top">
               <template v-slot:activator="{ props }">
