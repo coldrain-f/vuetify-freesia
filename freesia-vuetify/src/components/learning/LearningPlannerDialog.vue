@@ -551,7 +551,6 @@ const onSelectionChanged = (e) => {
 
   const selectedNodes = e.api.getSelectedNodes();
 
-  console.log(selectedNodes[0].data);
   if (
     !selectedNodes[0].data.today &&
     !selectedNodes[0].data.oneDayPrior &&
