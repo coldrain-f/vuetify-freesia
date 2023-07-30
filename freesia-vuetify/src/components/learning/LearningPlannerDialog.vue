@@ -545,6 +545,18 @@ const onSelectionChanged = (e) => {
 
   const selectedNodes = e.api.getSelectedNodes();
 
+  console.log(selectedNodes[0].data);
+  if (
+    !selectedNodes[0].data.today &&
+    !selectedNodes[0].data.oneDayPrior &&
+    !selectedNodes[0].data.threeDaysPrior &&
+    !selectedNodes[0].data.sixDaysPrior &&
+    !selectedNodes[0].data.thirteenDaysPrior
+  ) {
+    selectedPlannerDetail.value = {};
+    return;
+  }
+
   selectedPlannerDetail.value = selectedNodes.map((node) => node.data)[0];
 };
 
