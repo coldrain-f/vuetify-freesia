@@ -148,6 +148,8 @@
           :suppressMovableColumns="true"
           @grid-ready="onGridReady"
           @cellValueChanged="onCellValueChanged"
+          @selectionChanged="onSelectionChanged"
+          :getRowId="getRowIdCallback"
         >
         </ag-grid-vue>
       </v-card-text>
@@ -168,13 +170,21 @@
             <v-btn
               class="mr-5"
               color="primary"
-              :disabled="isEditMode"
+              :disabled="
+                isEditMode ||
+                !isSearchPerformed ||
+                isEmptyObject(selectedPlannerDetail)
+              "
               @click="onLearnButtonClicked"
             >
               <v-icon start icon="mdi-school-outline"></v-icon>
               LEARN
             </v-btn>
-            <v-btn class="mr-5" color="error" :disabled="isEditMode">
+            <v-btn
+              class="mr-5"
+              color="error"
+              :disabled="isEditMode || !isSearchPerformed || true"
+            >
               <v-icon start icon="mdi-school-outline"></v-icon>
               EXAM
             </v-btn>
@@ -324,6 +334,12 @@ import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
 import { useThemeStore } from "@/stores/theme";
 import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 
+import { commonUtils } from "@/common/commonUtils";
+import { unitService } from "@/service/unitService";
+
+// Utils
+const { isEmptyObject } = commonUtils;
+
 const themeStore = useThemeStore();
 const synthStore = useSpeechSynthesisStore();
 
@@ -357,6 +373,8 @@ const emit = defineEmits([
 
 const ttsText = ref("");
 
+const selectedPlannerDetail = ref({});
+
 const showPlannerCreateDialog = ref(false);
 
 const showLearningOptionDialog = ref(false);
@@ -383,8 +401,19 @@ const performSearch = async () => {
   if (isDuplicate) {
     // Load planner details...
     rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
+
+    const pageableParams = { page: 0, size: 2000 };
+    const unitPage = await unitService.getPageable(
+      vocabularyId,
+      pageableParams
+    );
+
+    const content = unitPage.content.map((u) => u.subject).reverse();
+    columnDefs.value[4].cellEditorParams.values = ["", ...content];
+
     searchedResult.language = props.languageSelect.selectedItem;
     searchedResult.vocabularyTitle = props.vocabularySelect.selectedItem.title;
+    selectedPlannerDetail.value = {};
     isSearchPerformed.value = true;
     return;
   }
@@ -397,6 +426,7 @@ const onSave = async () => {
   try {
     await plannerService.bulkUpdate(rowData.value);
     isEditMode.value = false;
+    selectedPlannerDetail.value = {};
     rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
     showCommonMessageDialog("플래너 저장을 완료했습니다.");
   } catch (err) {
@@ -408,6 +438,7 @@ const onSave = async () => {
 const onCancel = async () => {
   const vocabularyId = props.vocabularySelect.selectedItem.id;
   isEditMode.value = false;
+  selectedPlannerDetail.value = {};
   rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
 };
 
@@ -442,6 +473,10 @@ const isEditMode = ref(false);
 const gridApi = ref(null);
 const gridColumnApi = ref(null);
 
+const getRowIdCallback = (params) => {
+  return params.data.id;
+};
+
 const clearLearningPlannerDialog = () => {
   emit("handleClose");
   searchedResult.language = "";
@@ -449,6 +484,7 @@ const clearLearningPlannerDialog = () => {
   isSearchPerformed.value = false;
   isEditMode.value = false;
   rowData.value = [];
+  selectedPlannerDetail.value = {};
 };
 
 watch(showDialog, () => {
@@ -491,12 +527,25 @@ const onGridReady = (params) => {
 
 const gridOptions = {
   singleClickEdit: false,
+  onCellDoubleClicked: () => {},
 };
 
 // 그리드 셀 변경 이벤트
 const onCellValueChanged = (params) => {
   const { rowIndex, newValue } = params;
   setReviewCycle(rowIndex, newValue);
+};
+
+// 그리드 선택 변경 이벤트
+const onSelectionChanged = (e) => {
+  if (e.api.getSelectedNodes().length == 0) {
+    selectedPlannerDetail.value = {};
+    return;
+  }
+
+  const selectedNodes = e.api.getSelectedNodes();
+
+  selectedPlannerDetail.value = selectedNodes.map((node) => node.data)[0];
 };
 
 // 복습 주기 설정
@@ -513,7 +562,6 @@ const setReviewCycle = (rowIndex, newValue) => {
     } else if (rowIndex + 13 == index) {
       node.data.thirteenDaysPrior = newValue;
     }
-
     itemsToUpdate.push(node.data);
   });
 
@@ -528,7 +576,7 @@ const defaultColDef = ref({
 });
 
 // AG-Grid-Vue 컬럼 설정
-const columnDefs = [
+const columnDefs = ref([
   {
     headerName: "ID",
     field: "id",
@@ -602,14 +650,14 @@ const columnDefs = [
     },
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
-      values: ["", "일상 생활", "요리", "일상 1", "일상 2"],
+      values: [""],
     },
   },
   { headerName: "1일전", field: "oneDayPrior", width: 176 },
   { headerName: "3일전", field: "threeDaysPrior", width: 176 },
   { headerName: "6일전", field: "sixDaysPrior", width: 176 },
   { headerName: "13일전", field: "thirteenDaysPrior", width: 176 },
-];
+]);
 
 // AG-Grid-Vue 데이터
 const rowData = ref([]);

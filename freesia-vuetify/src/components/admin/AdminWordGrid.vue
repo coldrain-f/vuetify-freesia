@@ -158,12 +158,13 @@ import AdminWordGridUpdateDialog from "./AdminWordGridUpdateDialog.vue";
 import AdminWordGridDeleteDialog from "./AdminWordGridDeleteDialog.vue";
 
 // AG Grid Vue
-import { commonUtils } from "@/common/commonUtils";
 import { useThemeStore } from "@/stores/theme";
 import { AgGridVue } from "ag-grid-vue3";
 import { inject, ref, toRefs } from "vue";
 import { wordService } from "@/service/wordService";
 import { LanguageType } from "@/common/enum/languageType";
+
+import { commonUtils } from "@/common/commonUtils";
 
 // Utils
 const { isEmptyObject } = commonUtils;

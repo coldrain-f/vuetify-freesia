@@ -96,7 +96,7 @@ export const useSpeechSynthesisStore = defineStore("speechSynthesis", () => {
 
   const speakText = (synthText) => {
     if (!isInitialized || !synthText) {
-      console.error("The state value 'synthText' does not exist.");
+      //console.error("The state value 'synthText' does not exist.");
       return;
     }
 
