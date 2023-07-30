@@ -65,16 +65,18 @@ export const useSpeechSynthesisStore = defineStore("speechSynthesis", () => {
       // voiceNames에 음성 데이터 이름 배열 설정 -- 임시 제거
       // synthVoiceNames.value = voiceNames;
 
-      // 영어를 Default로 설정한다.
-      const voiceNames = synth.value
-        .getVoices()
-        .filter((v) => v.lang.startsWith("en"))
-        .map((v) => v.name);
+      // 영어를 Default로 설정한다. (영어만 할 경우 주석 해제)
+      // const voiceNames = synth.value
+      //   .getVoices()
+      //   .filter((v) => v.lang.startsWith("en"))
+      //   .map((v) => v.name);
+
+      // ALL
+      const voiceNames = synth.value.getVoices().map((v) => v.name);
 
       // 없으면 시스템 Default Voice로 설정
       if (!voiceNames) {
         synth.value.forEach((voice) => {
-          console.log(voice);
           if (voice.default) {
             synthDefaultVoiceName.value = voice.name;
           }

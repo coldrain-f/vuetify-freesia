@@ -2,7 +2,7 @@
   <v-dialog v-model="showDialog" width="1200">
     <v-card>
       <template #title>
-        <span class="text-primary"> ※ Planner </span>
+        <span class="text-primary noto-sans"> ※ 플래너 </span>
       </template>
       <template #append>
         <v-btn
@@ -219,7 +219,7 @@
   </v-dialog>
 
   <!-- 학습 옵션 다이얼로그 -->
-  <v-dialog v-model="showLearningOptionDialog" width="350">
+  <v-dialog v-model="showLearningOptionDialog" width="500">
     <v-card>
       <template #title>
         <span class="text-primary noto-sans"> ※ 학습 옵션 </span>
@@ -233,10 +233,62 @@
         </v-btn>
       </template>
       <v-card-text class="noto-sans">
-        생성된 학습 플래너가 없습니다. 새로 생성하시겠습니까?
+        <v-radio-group v-model="learningStore.learningStyle" inline>
+          <template v-slot:label>
+            <span>
+              <strong class="font-weight-medium"> 문제 학습 스타일 </strong>
+            </span>
+          </template>
+          <v-radio label="학습 단어 출제" value="studyWord" color="primary">
+          </v-radio>
+          <v-radio
+            label="모국 단어 출제"
+            value="nativeWord"
+            color="primary"
+            class="ms-10"
+          >
+          </v-radio>
+        </v-radio-group>
+        <v-radio-group v-model="learningStore.useLearning" inline>
+          <template v-slot:label>
+            <span>
+              <strong class="font-weight-medium">
+                1/4/7/14 학습법 적용 여부
+              </strong>
+            </span>
+          </template>
+          <v-radio label="적용" :value="true" color="primary"> </v-radio>
+          <v-radio label="미적용" :value="false" color="primary" class="ms-10">
+          </v-radio>
+        </v-radio-group>
+        <v-select
+          label="TTS"
+          variant="underlined"
+          v-model="synthStore.synthDefaultVoiceName"
+          :items="synthStore.synthVoiceNames"
+        >
+        </v-select>
+        <v-text-field label="TTS Text" variant="underlined" v-model="ttsText">
+          <template v-slot:append-inner>
+            <v-tooltip text="발음 듣기" location="top">
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  variant="flat"
+                  icon="mdi-volume-high"
+                  size="small"
+                  @click="synthStore.speakText(ttsText)"
+                  v-bind="props"
+                >
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </template>
+        </v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn color="primary"> CONFIRM </v-btn>
+        <v-btn color="primary" @click="showLearningOptionDialog = false">
+          APPLY
+        </v-btn>
         <v-btn @click="showLearningOptionDialog = false" class="me-4">
           CANCEL
         </v-btn>
@@ -264,8 +316,10 @@ import { PlannerService } from "@/service/plannerService";
 
 import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
 import { useThemeStore } from "@/stores/theme";
+import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 
 const themeStore = useThemeStore();
+const synthStore = useSpeechSynthesisStore();
 
 const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
@@ -294,6 +348,8 @@ const emit = defineEmits([
   "handleVocabularyChange",
   "handleClose",
 ]);
+
+const ttsText = ref("");
 
 const showPlannerCreateDialog = ref(false);
 

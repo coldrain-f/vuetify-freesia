@@ -11,8 +11,8 @@ export const useLearningStore = defineStore("learning", () => {
   // 1/4/7/14 학습법 적용 여부
   const useLearning = ref(true);
 
-  // 학습 스타일 설정 (문제 출제: 단어, 뜻)
-  const learningStyle = ref("Word");
+  // 학습 스타일 설정 (문제 출제: 학습 단어, 모국 단어)
+  const learningStyle = ref("studyWord");
 
   // 선택한 학습 언어
   const learningLanguage = ref("English");
