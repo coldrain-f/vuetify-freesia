@@ -1,10 +1,12 @@
 package edu.coldrain.freesia.service;
 
 import edu.coldrain.freesia.dto.WordDTO;
+import edu.coldrain.freesia.entity.PlannerDetail;
 import edu.coldrain.freesia.entity.Unit;
 import edu.coldrain.freesia.entity.Word;
 import edu.coldrain.freesia.exception.UnitNotFoundException;
 import edu.coldrain.freesia.exception.WordNotFoundException;
+import edu.coldrain.freesia.repository.PlannerDetailRepository;
 import edu.coldrain.freesia.repository.UnitRepository;
 import edu.coldrain.freesia.repository.WordRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WordService {
@@ -21,6 +25,8 @@ public class WordService {
     private final WordRepository wordRepository;
 
     private final UnitRepository unitRepository;
+
+    private final PlannerDetailRepository plannerDetailRepository;
 
     public Long registerWord(Long unitId, WordDTO.RegistrationRequest request) {
         final Unit unit = unitRepository.findById(unitId)
@@ -59,5 +65,17 @@ public class WordService {
 
     public WordDTO.Response searchOneWordResponse(Long wordId) {
         return wordRepository.searchOneWordResponse(wordId);
+    }
+
+    public List<WordDTO.LearningWordResponse> findLearningWords(List<String> unitList) {
+        return wordRepository.findLearningWords(unitList);
+    }
+
+    @Transactional
+    public void finish(Long plannerDetailId) {
+        final PlannerDetail plannerDetail = plannerDetailRepository.findById(plannerDetailId)
+                .orElseThrow(() -> new IllegalArgumentException("detail not found exception."));
+
+        plannerDetail.finish("Finished");
     }
 }

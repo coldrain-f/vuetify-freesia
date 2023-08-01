@@ -1,7 +1,6 @@
 package edu.coldrain.freesia.controller;
 
 import edu.coldrain.freesia.dto.WordDTO;
-import edu.coldrain.freesia.repository.WordRepository;
 import edu.coldrain.freesia.service.WordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,8 +15,6 @@ import java.util.List;
 public class WordRestController {
 
     private final WordService wordService;
-
-    private final WordRepository wordRepository;
 
     @PostMapping("/units/{unitId}/words")
     public Long registerWord(@PathVariable Long unitId, @RequestBody WordDTO.RegistrationRequest request) {
@@ -42,5 +39,15 @@ public class WordRestController {
     @PatchMapping("/words/{wordId}")
     public void modifyWord(@PathVariable Long wordId, @RequestBody WordDTO.ModifyRequest request) {
         wordService.modifyWord(wordId, request);
+    }
+
+    @GetMapping("/words/learning")
+    public List<WordDTO.LearningWordResponse> findLearningWords(@RequestParam List<String> unitList) {
+        return wordService.findLearningWords(unitList);
+    }
+
+    @PostMapping("/words/learning/{plannerDetailId}/finished")
+    public void finishLearning(@PathVariable Long plannerDetailId) {
+        wordService.finish(plannerDetailId);
     }
 }

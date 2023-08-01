@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class WordDTO {
 
@@ -52,6 +53,16 @@ public class WordDTO {
     }
 
     @Data
+    public static class LearningWordParams {
+
+        private List<String> unitList;
+
+        public LearningWordParams(List<String> unitList) {
+            this.unitList = unitList;
+        }
+    }
+
+    @Data
     public static class Response {
 
         private Long id;
@@ -80,6 +91,24 @@ public class WordDTO {
             this.partOfSpeech = partOfSpeech;
             this.createdAt = createdAt;
             this.modifiedAt = modifiedAt;
+        }
+    }
+
+
+
+    @Data
+    public static class LearningWordResponse {
+        private String studyWord;
+        private String nativeWord;
+        private String furigana;
+        private String partOfSpeech;
+
+        @QueryProjection
+        public LearningWordResponse(String studyWord, String nativeWord, String furigana, String partOfSpeech) {
+            this.studyWord = studyWord;
+            this.nativeWord = nativeWord;
+            this.furigana = furigana;
+            this.partOfSpeech = partOfSpeech;
         }
     }
 }

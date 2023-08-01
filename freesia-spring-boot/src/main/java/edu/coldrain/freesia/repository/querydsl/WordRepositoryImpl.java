@@ -1,6 +1,7 @@
 package edu.coldrain.freesia.repository.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import edu.coldrain.freesia.dto.QWordDTO_LearningWordResponse;
 import edu.coldrain.freesia.dto.QWordDTO_Response;
 import edu.coldrain.freesia.dto.WordDTO;
 import edu.coldrain.freesia.entity.Word;
@@ -72,5 +73,19 @@ public class WordRepositoryImpl implements WordRepositoryQuerydsl {
                 .from(word)
                 .where(word.id.eq(wordId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<WordDTO.LearningWordResponse> findLearningWords(List<String> unitList) {
+        return query.select(new QWordDTO_LearningWordResponse(
+                        word.studyWord,
+                        word.nativeWord,
+                        word.furigana,
+                        word.partOfSpeech
+                ))
+                .from(word)
+                .innerJoin(word.unit, unit)
+                .where(unit.subject.in(unitList))
+                .fetch();
     }
 }

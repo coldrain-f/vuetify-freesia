@@ -14,4 +14,6 @@ public interface WordRepositoryQuerydsl {
     WordDTO.Response searchOneWordResponse(Long wordId);
 
     List<Word> findAllByParentId(Long unitId);
+
+    List<WordDTO.LearningWordResponse> findLearningWords(List<String> unitList);
 }

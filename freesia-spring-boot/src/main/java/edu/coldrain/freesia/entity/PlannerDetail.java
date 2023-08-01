@@ -66,4 +66,8 @@ public class PlannerDetail extends Timestamp {
         this.sixDaysPrior = sixDaysPrior;
         this.thirteenDaysPrior = thirteenDaysPrior;
     }
+
+    public void finish(String learningStatus) {
+        this.learningStatus = learningStatus;
+    }
 }
