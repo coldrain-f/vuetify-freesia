@@ -35,8 +35,8 @@
         </v-col>
         <v-col cols="2">
           <p class="text-center">
-            <span>{{ currentWordNumber }}/</span
-            ><span>{{ totalWordCount }}개</span>
+            <span>{{ currentWordNumber }}/</span>
+            <span>{{ totalWordCount }}개</span>
           </p>
         </v-col>
       </v-row>
@@ -72,13 +72,13 @@
             persistent-placeholder
             prepend-icon="mdi-school"
           >
-            <span v-if="currentLearningWord.lang == 'en'">
-              {{ currentLearningWord.name }}
+            <span v-if="learningStore.language == LanguageType.ENGLISH">
+              {{ currentLearningWord.studyWord }}
             </span>
 
-            <ruby v-if="currentLearningWord.lang == 'ja'">
+            <ruby v-if="learningStore.language == LanguageType.JAPANESE">
               <h6 class="noto-sans-jp text-h6-jp">
-                {{ currentLearningWord.name }}
+                {{ currentLearningWord.studyWord }}
               </h6>
 
               <rp v-show="showFurigana">(</rp>
@@ -116,7 +116,7 @@
                     variant="flat"
                     icon="mdi-volume-high"
                     size="small"
-                    @click="speakText(currentLearningWord.name)"
+                    @click="speakText(currentLearningWord.studyWord)"
                     v-bind="props"
                   >
                   </v-btn>
@@ -126,7 +126,7 @@
               <v-tooltip
                 text="후리가나"
                 location="top"
-                v-if="currentLearningWord.lang == 'ja'"
+                v-if="learningStore.language == LanguageType.JAPANESE"
               >
                 <template v-slot:activator="{ props }">
                   <v-btn
@@ -252,7 +252,10 @@ import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 import { useLearningStore } from "@/stores/learning";
 import { useThemeStore } from "@/stores/theme";
 import { storeToRefs } from "pinia";
+import { LanguageType } from "@/common/enum/languageType";
+
 import _ from "underscore";
+import { wordService } from "@/service/wordService";
 
 // Pinia stores
 const synthStore = useSpeechSynthesisStore();
@@ -309,23 +312,11 @@ function showDialogMessage(
   }
 }
 
-/** TODO: DB에서 조회하도록 변경 후 삭제 예정 */
-const words = ref([
-  { id: 1, name: "spice", meaning: "양념", lang: "en" },
-  { id: 2, name: "delicious", meaning: "맛있는", lang: "en" },
-  { id: 3, name: "hot", meaning: "뜨거운", lang: "en" },
-  { id: 4, name: "家庭", meaning: "가정", lang: "ja", furigana: "かてい" },
-  { id: 5, name: "民族", meaning: "민족", lang: "ja", furigana: "みんぞく" },
-]);
-
 /** 학습 브레드크럼  */
 const breadcrumbsItems = ["단어가 읽기다 기본편", "Day 1"];
 
 /** 틀린 단어 목록 */
 const incorrectWords = ref([]);
-
-/** 학습 단어 목록 */
-const learningWords = ref(_.shuffle(words.value));
 
 /** 출제 단어 옆 아이콘 표시 여부 */
 const showSuccessIcon = ref(false);
@@ -341,7 +332,7 @@ const inputMeaning = ref(null);
 const tryCount = ref(0);
 
 /** 총 단어 수 */
-const totalWordCount = ref(learningWords.value.length);
+const totalWordCount = ref(learningStore.learningWords.length);
 
 /** 현재 학습중인 단어 번호 */
 const currentWordNumber = ref(0);
@@ -358,8 +349,8 @@ const incorrectWordCount = computed(() => {
  */
 const currentLearningWord = computed(() => {
   return currentWordNumber.value < totalWordCount.value
-    ? learningWords.value[currentWordNumber.value]
-    : learningWords.value[currentWordNumber.value - 1];
+    ? learningStore.learningWords[currentWordNumber.value]
+    : learningStore.learningWords[currentWordNumber.value - 1];
 });
 
 /** 학습 진행도 - 백분율 계산
@@ -371,7 +362,7 @@ const progress = computed(() => {
 
 /** 첫 글자를 제외한 나머지 글자를 '_ '로 마스킹하는 함수 */
 const maskMeaning = computed(() => {
-  const meaning = currentLearningWord.value.meaning;
+  const meaning = currentLearningWord.value.nativeWord;
   if (meaning.length === 1) {
     return "_";
   }
@@ -404,8 +395,8 @@ function processIncorrectAnswer() {
   showFailIcon.value = true;
 
   // 이미 틀렸던 단어라면 중복으로 추가하지 않는다.
-  if (!incorrectWords.value.includes(currentLearningWord.value.name)) {
-    incorrectWords.value.push(currentLearningWord.value.name);
+  if (!incorrectWords.value.includes(currentLearningWord.value.studyWord)) {
+    incorrectWords.value.push(currentLearningWord.value.studyWord);
   }
 
   setTimeout(() => {
@@ -434,17 +425,16 @@ function resetIncorrectAnswer() {
  * 틀린 단어의 목록을 가지고 재학습을 진행할 때 필요한 처리들을 진행한다.
  */
 function processNextLearningStart() {
-  words.value = _.shuffle(incorrectWords.value);
+  learningStore.words = _.shuffle(incorrectWords.value);
   currentWordNumber.value = 0;
-  totalWordCount.value = words.value.length;
+  totalWordCount.value = learningStore.words.length;
   incorrectWords.value = [];
   tryCount.value += 1;
 }
 
 /** 정답 입력창에서 엔터키를 눌렀을 경우 이벤트를 처리하는 핸들러 */
 function handleEnter() {
-  const meaning = currentLearningWord.value.meaning;
-
+  const meaning = currentLearningWord.value.nativeWord;
   if (meaning === inputMeaning.value) {
     processCorrectAnswer();
   } else {
@@ -454,12 +444,12 @@ function handleEnter() {
 
 /** 도움말 버튼을 클릭헀을 경우 이벤트를 처리하는 핸들러 */
 function handleHelpButtonClick() {
-  inputMeaning.value = currentLearningWord.value.meaning;
+  inputMeaning.value = currentLearningWord.value.nativeWord;
   inputMeaningField.value.focus();
 
   // 이미 틀렸던 단어라면 중복으로 추가하지 않는다.
-  if (!incorrectWords.value.includes(currentLearningWord.value.name)) {
-    incorrectWords.value.push(currentLearningWord.value.name);
+  if (!incorrectWords.value.includes(currentLearningWord.value.studyWord)) {
+    incorrectWords.value.push(currentLearningWord.value.studyWord);
   }
 }
 
@@ -471,7 +461,8 @@ watch(
       if (incorrectWords.value.length <= 0) {
         showDialogMessage(
           "학습을 종료합니다.",
-          () => {
+          async () => {
+            await wordService.finish(learningStore.plannerDetailId);
             learningStore.isLearningStarted = false;
             messageDialog.showDialog = false;
           },

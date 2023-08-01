@@ -4,7 +4,7 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 // Utilities
 import { defineConfig } from "vite";
-import { fileURLToPath, URL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 
 // https://vitejs.dev/config/

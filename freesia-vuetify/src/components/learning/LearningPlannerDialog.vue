@@ -326,7 +326,6 @@ import { useLearningStore } from "@/stores/learning";
 import { computed, onMounted, reactive, ref, watch } from "vue";
 
 // Components
-import { storeToRefs } from "pinia";
 import { languageService } from "@/service/languageService";
 import { PlannerService } from "@/service/plannerService";
 
@@ -336,6 +335,9 @@ import { useSpeechSynthesisStore } from "@/stores/speechSynthesis";
 
 import { commonUtils } from "@/common/commonUtils";
 import { unitService } from "@/service/unitService";
+import { wordService } from "@/service/wordService";
+
+import _ from "underscore";
 
 // Utils
 const { isEmptyObject } = commonUtils;
@@ -349,7 +351,6 @@ const { showCommonMessageDialog } = commonMessageDialogStore;
 const plannerService = new PlannerService();
 
 const learningStore = useLearningStore();
-const { isLearningStarted } = storeToRefs(learningStore);
 
 const props = defineProps({
   modelValue: {
@@ -448,9 +449,33 @@ const onCancel = async () => {
   rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
 };
 
-const onLearnButtonClicked = () => {
+// 학습 시작 버튼 클릭
+const onLearnButtonClicked = async () => {
+  const unitList = [
+    selectedPlannerDetail.value.today,
+    selectedPlannerDetail.value.oneDayPrior,
+    selectedPlannerDetail.value.threeDaysPrior,
+    selectedPlannerDetail.value.sixDaysPrior,
+    selectedPlannerDetail.value.thirteenDaysPrior,
+  ];
+
+  // 학습법 적용인 경우 모든 Unit으로 단어 조회
+  if (learningStore.useLearning) {
+    learningStore.learningWords = await wordService.findLearningWords(unitList);
+    learningStore.words = await wordService.findLearningWords(unitList);
+  } else {
+    // 미적용인 경우 당일 Unit으로만 단어 조회
+    learningStore.learningWords = await wordService.findLearningWords([
+      unitList[0],
+    ]);
+    learningStore.words = await wordService.findLearningWords([unitList[0]]);
+  }
+
+  learningStore.language = searchedResult.language;
+  learningStore.learningWords = _.shuffle(learningStore.learningWords);
+
   showDialog.value = false;
-  isLearningStarted.value = true;
+  learningStore.isLearningStarted = true;
 };
 
 const onConfirmClick = async () => {
@@ -562,6 +587,7 @@ const onSelectionChanged = (e) => {
     return;
   }
 
+  learningStore.plannerDetailId = selectedNodes[0].id;
   selectedPlannerDetail.value = selectedNodes.map((node) => node.data)[0];
 };
 

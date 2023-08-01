@@ -35,6 +35,7 @@ import LearningPlannerDialog from "./LearningPlannerDialog.vue";
 import { LanguageType } from "@/common/enum/languageType";
 import { languageService } from "@/service/languageService";
 import { vocabularyService } from "@/service/vocabularyService";
+import { useLearningStore } from "@/stores/learning";
 
 const showPlannerDialog = ref(false);
 
@@ -51,6 +52,8 @@ const vocabularySelect = reactive({
   },
 });
 
+const learningStore = useLearningStore();
+
 const handleClose = async () => {
   languageSelect.selectedItem = LanguageType.ENGLISH;
   await fetchVocabularySelect(LanguageType.ENGLISH);
@@ -58,6 +61,8 @@ const handleClose = async () => {
 
 const handleLanguageChange = async (changedLanguage) => {
   languageSelect.selectedItem = changedLanguage;
+  // 학습 언어 설정
+  learningStore.language = changedLanguage;
   await fetchVocabularySelect(changedLanguage);
 };
 

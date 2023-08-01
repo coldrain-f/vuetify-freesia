@@ -11,6 +11,20 @@ export const wordService = {
     return response.data;
   },
 
+  /** 학습 단어 조회 API */
+  findLearningWords: async (unitList) => {
+    const response = await $axios.get(`/words/learning`, {
+      params: {
+        unitList: unitList.join(","),
+      },
+    });
+    return response.data;
+  },
+
+  finish: async (plannerDetailId) => {
+    await $axios.post(`/words/learning/${plannerDetailId}/finished`);
+  },
+
   /** 단어 등록 API */
   register: async (unitId, formData) => {
     const { studyWord, nativeWord, furigana, partOfSpeech } = formData;
