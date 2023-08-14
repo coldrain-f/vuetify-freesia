@@ -41,6 +41,15 @@ export default class VocabularyService {
     const response = await this.axios.post<number>("/vocabulary", formData);
     return response.data;
   }
+
+  /**
+   * 단어장 번호로 삭제 API
+
+   * @param vocabularyId
+   */
+  public async deleteById(vocabularyId: number): Promise<void> {
+    await this.axios.delete(`/vocabulary/${vocabularyId}`);
+  }
 }
 
 type SearchCondition = {
