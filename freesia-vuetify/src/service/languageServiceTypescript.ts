@@ -1,6 +1,6 @@
-import { $axios } from "@/common/axios";
 import type { Language } from "@/@types/language";
 import type { AxiosInstance } from "axios";
+import { $axios } from "@/common/axios";
 
 export default class LanguageService {
   private axios: AxiosInstance;
@@ -10,7 +10,7 @@ export default class LanguageService {
   }
 
   public async findAll(): Promise<Language[]> {
-    const response = await this.axios.get("/language");
-    return response.data as Language[];
+    const response = await this.axios.get<Language[]>("/language");
+    return response.data;
   }
 }
