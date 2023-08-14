@@ -27,25 +27,25 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
   // 선택한 단어장(Vocabulary) v-model
   const selectedVocabulary = ref({
     title: null,
-    value: null,
+    value: null
   });
 
   // 선택한 단위(Unit) v-model
   const selectedUnit = ref({
     subject: null,
-    value: null,
+    value: null
   });
 
   const initialize = async () => {
     const vocaPageTemp = await vocabularyService.searchVocabularyResponsePage({
       page: 0,
-      size: 2000,
+      size: 2000
     });
 
     vocabularyItems.value = vocaPageTemp.content.map((v) => {
       return {
         title: v.title,
-        value: v.id,
+        value: v.id
       };
     });
 
@@ -54,7 +54,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
       selectedUnit.value.subject = "No data available";
       Object.assign(selectedVocabulary.value, {
         title: "No data available",
-        value: null,
+        value: null
       });
       return;
     }
@@ -64,22 +64,19 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
 
     Object.assign(selectedVocabulary.value, {
       title: firstVocabulary.title,
-      value: firstVocabulary.value,
+      value: firstVocabulary.value
     });
 
     // 설정한 단어장의 소속된 UnitList를 셀렉트 박스에 설정한다.
-    const unitPageTemp = await unitService.searchUnitResponsePage(
-      firstVocabulary.value,
-      {
-        page: 0,
-        size: 2000,
-      }
-    );
+    const unitPageTemp = await unitService.searchUnitResponsePage(firstVocabulary.value, {
+      page: 0,
+      size: 2000
+    });
 
     unitItems.value = unitPageTemp.content.map((u) => {
       return {
         subject: u.subject,
-        value: u.id,
+        value: u.id
       };
     });
 
@@ -87,7 +84,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     if (utils.isEmptyArray(unitPageTemp.content)) {
       Object.assign(selectedUnit.value, {
         subject: "No data available",
-        value: null,
+        value: null
       });
       return;
     }
@@ -95,7 +92,7 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     const firstUnit = unitItems.value[0];
     Object.assign(selectedUnit.value, {
       subject: firstUnit.subject,
-      value: firstUnit.value,
+      value: firstUnit.value
     });
   };
 
@@ -109,6 +106,6 @@ export const useAdminHomeStore = defineStore("adminHome", () => {
     vocabularyPage,
     unitPage,
     wordPage,
-    initialize,
+    initialize
   };
 });
