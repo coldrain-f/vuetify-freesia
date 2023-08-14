@@ -73,7 +73,12 @@
             prepend-icon="mdi-school"
           >
             <span v-if="learningStore.language == LanguageType.ENGLISH">
-              {{ currentLearningWord.studyWord }}
+              <span v-if="learningStore.learningStyle == 'studyWord'">
+                {{ currentLearningWord.studyWord }}
+              </span>
+              <span v-if="learningStore.learningStyle == 'nativeWord'">
+                {{ currentLearningWord.nativeWord }}
+              </span>
             </span>
 
             <ruby v-if="learningStore.language == LanguageType.JAPANESE">
@@ -116,7 +121,7 @@
                     variant="flat"
                     icon="mdi-volume-high"
                     size="small"
-                    @click="speakText(currentLearningWord.studyWord)"
+                    @click="handleSpeakText"
                     v-bind="props"
                   >
                   </v-btn>
@@ -265,6 +270,15 @@ const themeStore = useThemeStore();
 // the action can just be destructured
 const { speakText } = synthStore;
 
+const handleSpeakText = () => {
+  speakText(currentLearningWord.value.studyWord);
+  // if (learningStore.learningStyle == "studyWord") {
+  //   speakText(currentLearningWord.value.studyWord);
+  // } else if (learningStore.learningStyle == "nativeWord") {
+  //   speakText(currentLearningWord.value.nativeWord);
+  // }
+};
+
 const showFurigana = ref(false);
 
 const { isLearningStarted, showLearningTerminationDialog } =
@@ -362,7 +376,13 @@ const progress = computed(() => {
 
 /** 첫 글자를 제외한 나머지 글자를 '_ '로 마스킹하는 함수 */
 const maskMeaning = computed(() => {
-  const meaning = currentLearningWord.value.nativeWord;
+  let meaning = "";
+  if (learningStore.learningStyle == "studyWord") {
+    meaning = currentLearningWord.value.nativeWord;
+  } else if (learningStore.learningStyle == "nativeWord") {
+    meaning = currentLearningWord.value.studyWord;
+  }
+
   if (meaning.length === 1) {
     return "_";
   }
@@ -394,9 +414,17 @@ function processIncorrectAnswer() {
   currentCatImage.value = catNoImage;
   showFailIcon.value = true;
 
-  // 이미 틀렸던 단어라면 중복으로 추가하지 않는다.
-  if (!incorrectWords.value.includes(currentLearningWord.value.studyWord)) {
-    incorrectWords.value.push(currentLearningWord.value.studyWord);
+  let incorrectWord = "";
+  if (learningStore.learningStyle == "studyWord") {
+    incorrectWord = currentLearningWord.value.studyWord;
+  } else if (learningStore.learningStyle == "nativeWord") {
+    incorrectWord = currentLearningWord.value.nativeWord;
+  }
+
+  // 틀린 단어 리스트에 추가되어 있지 않다면
+  if (!incorrectWords.value.includes(incorrectWord)) {
+    // 틀린 단어 리스트에 틀린 단어 추가
+    incorrectWords.value.push(incorrectWord);
   }
 
   setTimeout(() => {
@@ -434,7 +462,13 @@ function processNextLearningStart() {
 
 /** 정답 입력창에서 엔터키를 눌렀을 경우 이벤트를 처리하는 핸들러 */
 function handleEnter() {
-  const meaning = currentLearningWord.value.nativeWord;
+  let meaning = "";
+  if (learningStore.learningStyle == "studyWord") {
+    meaning = currentLearningWord.value.nativeWord;
+  } else if (learningStore.learningStyle == "nativeWord") {
+    meaning = currentLearningWord.value.studyWord;
+  }
+
   if (meaning === inputMeaning.value) {
     processCorrectAnswer();
   } else {
@@ -444,14 +478,28 @@ function handleEnter() {
 
 /** 도움말 버튼을 클릭헀을 경우 이벤트를 처리하는 핸들러 */
 function handleHelpButtonClick() {
-  inputMeaning.value = currentLearningWord.value.nativeWord;
+  let incorrectWord = "";
+  if (learningStore.learningStyle == "studyWord") {
+    inputMeaning.value = currentLearningWord.value.nativeWord;
+    incorrectWord = currentLearningWord.value.studyWord;
+  } else if (learningStore.learningStyle == "nativeWord") {
+    inputMeaning.value = currentLearningWord.value.studyWord;
+    incorrectWord = currentLearningWord.value.nativeWord;
+  }
+
   inputMeaningField.value.focus();
 
-  // 이미 틀렸던 단어라면 중복으로 추가하지 않는다.
-  if (!incorrectWords.value.includes(currentLearningWord.value.studyWord)) {
-    incorrectWords.value.push(currentLearningWord.value.studyWord);
+  // 틀린 단어 리스트에 추가되어 있지 않다면
+  if (!incorrectWords.value.includes(incorrectWord)) {
+    // 틀린 단어 리스트에 틀린 단어 추가
+    incorrectWords.value.push(incorrectWord);
   }
 }
+
+// 모니터링
+watch(incorrectWords.value, () => {
+  console.log(incorrectWords.value);
+});
 
 /** 학습 진행도가 100%인 경우 처리하는 감시자 */
 watch(
