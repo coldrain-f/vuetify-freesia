@@ -5,12 +5,7 @@
         <span class="text-primary noto-sans"> ※ 플래너 </span>
       </template>
       <template #append>
-        <v-btn
-          variant="text"
-          icon="mdi-close"
-          @click="showDialog = false"
-          :disabled="isEditMode"
-        >
+        <v-btn variant="text" icon="mdi-close" @click="showDialog = false" :disabled="isEditMode">
         </v-btn>
       </template>
       <v-card-text class="mt-5">
@@ -24,8 +19,7 @@
               item-title="name"
               item-value="name"
               @update:model-value="
-                (changedLanguage) =>
-                  emit('handleLanguageChange', changedLanguage)
+                (changedLanguage) => emit('handleLanguageChange', changedLanguage)
               "
               :readonly="isEditMode"
             >
@@ -41,8 +35,7 @@
               item-value="id"
               return-object
               @update:model-value="
-                (changedVocabulary) =>
-                  emit('handleVocabularyChange', changedVocabulary)
+                (changedVocabulary) => emit('handleVocabularyChange', changedVocabulary)
               "
               :readonly="isEditMode"
             >
@@ -170,29 +163,17 @@
             <v-btn
               class="mr-5"
               color="primary"
-              :disabled="
-                isEditMode ||
-                !isSearchPerformed ||
-                isEmptyObject(selectedPlannerDetail)
-              "
+              :disabled="isEditMode || !isSearchPerformed || isEmptyObject(selectedPlannerDetail)"
               @click="onLearnButtonClicked"
             >
               <v-icon start icon="mdi-school-outline"></v-icon>
               LEARN
             </v-btn>
-            <v-btn
-              class="mr-5"
-              color="error"
-              :disabled="isEditMode || !isSearchPerformed || true"
-            >
+            <v-btn class="mr-5" color="error" :disabled="isEditMode || !isSearchPerformed || true">
               <v-icon start icon="mdi-school-outline"></v-icon>
               EXAM
             </v-btn>
-            <v-btn
-              class="mr-5"
-              @click="showDialog = false"
-              :disabled="isEditMode"
-            >
+            <v-btn class="mr-5" @click="showDialog = false" :disabled="isEditMode">
               <v-icon start icon="mdi-close"></v-icon>
               CLOSE
             </v-btn>
@@ -209,21 +190,14 @@
         <span class="text-primary noto-sans"> ※ 플래너 생성 </span>
       </template>
       <template #append>
-        <v-btn
-          variant="text"
-          icon="mdi-close"
-          @click="showPlannerCreateDialog = false"
-        >
-        </v-btn>
+        <v-btn variant="text" icon="mdi-close" @click="showPlannerCreateDialog = false"> </v-btn>
       </template>
       <v-card-text class="noto-sans">
         생성된 학습 플래너가 없습니다. 새로 생성하시겠습니까?
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="primary" @click="onConfirmClick"> CONFIRM </v-btn>
-        <v-btn @click="showPlannerCreateDialog = false" class="me-4">
-          CANCEL
-        </v-btn>
+        <v-btn @click="showPlannerCreateDialog = false" class="me-4"> CANCEL </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -235,12 +209,7 @@
         <span class="text-primary noto-sans"> ※ 학습 옵션 </span>
       </template>
       <template #append>
-        <v-btn
-          variant="text"
-          icon="mdi-close"
-          @click="showLearningOptionDialog = false"
-        >
-        </v-btn>
+        <v-btn variant="text" icon="mdi-close" @click="showLearningOptionDialog = false"> </v-btn>
       </template>
       <v-card-text class="noto-sans">
         <v-radio-group v-model="learningStore.learningStyle" inline>
@@ -249,27 +218,18 @@
               <strong class="font-weight-medium"> 문제 학습 스타일 </strong>
             </span>
           </template>
-          <v-radio label="학습 단어 출제" value="studyWord" color="primary">
-          </v-radio>
-          <v-radio
-            label="모국 단어 출제"
-            value="nativeWord"
-            color="primary"
-            class="ms-10"
-          >
+          <v-radio label="학습 단어 출제" value="studyWord" color="primary"> </v-radio>
+          <v-radio label="모국 단어 출제" value="nativeWord" color="primary" class="ms-10">
           </v-radio>
         </v-radio-group>
         <v-radio-group v-model="learningStore.useLearning" inline>
           <template v-slot:label>
             <span>
-              <strong class="font-weight-medium">
-                1/4/7/14 학습법 적용 여부
-              </strong>
+              <strong class="font-weight-medium"> 1/4/7/14 학습법 적용 여부 </strong>
             </span>
           </template>
           <v-radio label="적용" :value="true" color="primary"> </v-radio>
-          <v-radio label="미적용" :value="false" color="primary" class="ms-10">
-          </v-radio>
+          <v-radio label="미적용" :value="false" color="primary" class="ms-10"> </v-radio>
         </v-radio-group>
         <v-select
           label="TTS"
@@ -302,12 +262,8 @@
         </v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn color="primary" @click="showLearningOptionDialog = false">
-          APPLY
-        </v-btn>
-        <v-btn @click="showLearningOptionDialog = false" class="me-4">
-          CANCEL
-        </v-btn>
+        <v-btn color="primary" @click="showLearningOptionDialog = false"> APPLY </v-btn>
+        <v-btn @click="showLearningOptionDialog = false" class="me-4"> CANCEL </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -404,10 +360,7 @@ const performSearch = async () => {
     rowData.value = await plannerService.findAllByVocabularyId(vocabularyId);
 
     const pageableParams = { page: 0, size: 2000 };
-    const unitPage = await unitService.getPageable(
-      vocabularyId,
-      pageableParams
-    );
+    const unitPage = await unitService.getPageable(vocabularyId, pageableParams);
 
     const content = unitPage.content.map((u) => u.subject).reverse();
     columnDefs.value[4].cellEditorParams.values = ["", ...content];
@@ -465,9 +418,7 @@ const onLearnButtonClicked = async () => {
     learningStore.words = await wordService.findLearningWords(unitList);
   } else {
     // 미적용인 경우 당일 Unit으로만 단어 조회
-    learningStore.learningWords = await wordService.findLearningWords([
-      unitList[0],
-    ]);
+    learningStore.learningWords = await wordService.findLearningWords([unitList[0]]);
     learningStore.words = await wordService.findLearningWords([unitList[0]]);
   }
 

@@ -18,11 +18,7 @@
 
       <v-btn icon>
         <v-icon icon="mdi-dots-vertical"></v-icon>
-        <v-menu
-          activator="parent"
-          location="end"
-          transition="slide-x-transition"
-        >
+        <v-menu activator="parent" location="end" transition="slide-x-transition">
           <v-list>
             <v-list-item @click="showThemeDialog = true">
               <v-list-item-title> Theme </v-list-item-title>
@@ -100,21 +96,15 @@
       <v-window-item value="UNIT">
         <AdminUnitGrid
           class="mt-5"
-          @handleLanguageChange="
-            (changedLanguage) => handleLanguageChange(changedLanguage)
-          "
+          @handleLanguageChange="(changedLanguage) => handleLanguageChange(changedLanguage)"
         />
       </v-window-item>
 
       <v-window-item value="WORD">
         <AdminWordGrid
           class="mt-5"
-          @handleLanguageChange="
-            (changedLanguage) => handleLanguageChange(changedLanguage)
-          "
-          @handleVocabularyChange="
-            (changedVocabulary) => handleVocabularyChange(changedVocabulary)
-          "
+          @handleLanguageChange="(changedLanguage) => handleLanguageChange(changedLanguage)"
+          @handleVocabularyChange="(changedVocabulary) => handleVocabularyChange(changedVocabulary)"
         />
       </v-window-item>
     </v-window>
@@ -285,27 +275,19 @@ const fetchLanguageSelectManager = async () => {
 const fetchVocabularySelectManager = async (language) => {
   const pageableParams = { page: 0, size: 2000 };
   const searchCondition = { language };
-  const vocabularyPageable = await vocabularyService.getPageable(
-    pageableParams,
-    searchCondition
-  );
+  const vocabularyPageable = await vocabularyService.getPageable(pageableParams, searchCondition);
 
   vocabularySelectManager.items = vocabularyPageable.content;
-  vocabularySelectManager.selectedItem =
-    vocabularyPageable.content[0] || "No data available";
+  vocabularySelectManager.selectedItem = vocabularyPageable.content[0] || "No data available";
 };
 
 // 단위 선택창을 조회한다.
 const fetchUnitSelectManager = async (vocabularyId) => {
   const pageableParams = { page: 0, size: 2000 };
-  const unitPageable = await unitService.getPageable(
-    vocabularyId,
-    pageableParams
-  );
+  const unitPageable = await unitService.getPageable(vocabularyId, pageableParams);
 
   unitSelectManager.items = unitPageable.content;
-  unitSelectManager.selectedItem =
-    unitPageable.content[0] || "No data available";
+  unitSelectManager.selectedItem = unitPageable.content[0] || "No data available";
 };
 
 const changeAdminTabItem = async (item) => {

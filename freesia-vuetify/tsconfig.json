@@ -9,7 +9,9 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "types": ["vuetify"],
+    "allowJs": true
   },
   "files": [],
   "references": [

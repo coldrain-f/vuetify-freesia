@@ -5,8 +5,7 @@
         <span class="text-primary noto-sans"> ※ 단어장 등록 </span>
       </template>
       <template #append>
-        <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
-        </v-btn>
+        <v-btn variant="text" icon="mdi-close" @click="showDialog = false"> </v-btn>
       </template>
       <v-card-text>
         <v-text-field label="Title" v-model="formData.title"> </v-text-field>
@@ -27,15 +26,18 @@
   </v-dialog>
 </template>
 
-<script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref, type Ref } from "vue";
 
-import { languageService } from "@/service/languageService";
 import { vocabularyService } from "@/service/vocabularyService";
 
 import { LanguageType } from "@/common/enum/languageType";
 
 import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+import LanguageService from "@/service/languageServiceTypescript";
+import type { Language } from "@/@types/language";
+
+const languageService = new LanguageService();
 
 const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
@@ -63,7 +65,7 @@ const formData = reactive({
   language: LanguageType.ENGLISH,
 });
 
-const languageItems = ref([]);
+const languageItems: Ref<Language[]> = ref([]);
 
 const clearFormData = () => {
   formData.title = null;
@@ -86,7 +88,7 @@ const onClick = async () => {
 };
 
 onMounted(async () => {
-  Object.assign(languageItems.value, await languageService.findAll());
+  languageItems.value = await languageService.findAll();
 });
 </script>
 
