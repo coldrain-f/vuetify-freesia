@@ -35,7 +35,7 @@ export default class VocabularyService {
    * 단어장 등록 API
    *
    * @param {VocaRegistrationFormData}
-   * @returns {number} 등록 완료된 단어장의 PK
+   * @returns {number} 등록 완료된 단어장의 고유 번호 - VOCABULARY_ID
    */
   public async register(formData: VocaRegistrationFormData): Promise<number> {
     const response = await this.axios.post<number>("/vocabulary", formData);
