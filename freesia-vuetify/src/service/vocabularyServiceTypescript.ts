@@ -43,12 +43,22 @@ export default class VocabularyService {
   }
 
   /**
-   * 단어장 번호로 삭제 API
+   * 번호에 해당하는 단어장 삭제 API
 
-   * @param vocabularyId
+   * @param {number}
    */
-  public async deleteById(vocabularyId: number): Promise<void> {
+  public async removeById(vocabularyId: number): Promise<void> {
     await this.axios.delete(`/vocabulary/${vocabularyId}`);
+  }
+
+  /**
+   * 번호에 해당하는 단어장 수정 API
+   *
+   * @param {number}
+   * @param {VocaModificationFormData}
+   */
+  public async modifyById(vocabularyId: number, formData: VocaModificationFormData): Promise<void> {
+    await $axios.patch(`/vocabulary/${vocabularyId}`, formData);
   }
 }
 
@@ -57,6 +67,11 @@ type SearchCondition = {
 };
 
 type VocaRegistrationFormData = {
+  title: string;
+  language: string;
+};
+
+type VocaModificationFormData = {
   title: string;
   language: string;
 };
