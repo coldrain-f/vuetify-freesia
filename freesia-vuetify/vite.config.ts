@@ -31,7 +31,7 @@ export default defineConfig({
       // "@": fileURLToPath(new URL("./src", import.meta.url)),
       "@": resolve(__dirname, "src"),
     },
-    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue", ".d.ts"],
+    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".d.ts", ".tsx", ".vue"],
   },
   server: {
     port: 3001,

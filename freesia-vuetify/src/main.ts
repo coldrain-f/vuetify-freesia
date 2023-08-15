@@ -12,14 +12,9 @@ import { createApp } from "vue";
 
 // Plugins
 import { registerPlugins } from "@/plugins";
-import { createPinia } from "pinia";
 
-// 전역 상태 관리를 위한 pinia 생성
-const pinia = createPinia();
 const app = createApp(App);
 
 registerPlugins(app);
 
-// app에 pinia 등록
-app.use(pinia);
 app.mount("#app");

@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "target": "es5",
     "module": "esnext",
-    "baseUrl": "./",
+    "useDefineForClassFields": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -10,10 +15,19 @@
       "@/*": ["src/*"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-    "types": ["vuetify"],
+    "types": ["node", "vuetify"],
+    // "typeRoots": ["./node_modules/@types", "./node_modules/vuetify/types"],
     "allowJs": true
   },
-  "include": ["./src/@types"],
+  "include": [
+    "./src/@types",
+    "./src/**/*.ts",
+    "./src/**/*.d.ts",
+    "./src/**/*.tsx",
+    "./src/**/*.vue",
+    "./vite.config.ts",
+    "./scripts"
+  ],
   "files": [],
   "references": [
     {
