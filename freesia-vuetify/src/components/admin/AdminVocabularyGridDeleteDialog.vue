@@ -5,8 +5,7 @@
         <span class="text-error noto-sans"> ※ 단어장 삭제 </span>
       </template>
       <template #append>
-        <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
-        </v-btn>
+        <v-btn variant="text" icon="mdi-close" @click="showDialog = false"> </v-btn>
       </template>
       <v-card-text>
         <v-text-field
@@ -56,12 +55,7 @@
           <span class="text-error noto-sans"> ※ Alert </span>
         </template>
         <template #append>
-          <v-btn
-            variant="text"
-            icon="mdi-close"
-            @click="showDeleteConfirmDialog = false"
-          >
-          </v-btn>
+          <v-btn variant="text" icon="mdi-close" @click="showDeleteConfirmDialog = false"> </v-btn>
         </template>
         <v-card-text> 정말 삭제하시겠습니까? </v-card-text>
         <v-card-actions class="d-flex justify-end">

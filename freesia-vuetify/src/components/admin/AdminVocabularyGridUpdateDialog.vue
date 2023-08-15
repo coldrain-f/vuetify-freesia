@@ -5,12 +5,10 @@
         <span class="text-info noto-sans"> ※ 단어장 수정 </span>
       </template>
       <template #append>
-        <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
-        </v-btn>
+        <v-btn variant="text" icon="mdi-close" @click="showDialog = false"> </v-btn>
       </template>
       <v-card-text>
-        <v-text-field label="Title" v-model="formData.title" required>
-        </v-text-field>
+        <v-text-field label="Title" v-model="formData.title" required> </v-text-field>
         <v-select
           label="Language"
           :items="languageItems"
@@ -19,9 +17,7 @@
           item-value="name"
           :readonly="!isUnitCountZero()"
           :messages="
-            !isUnitCountZero()
-              ? '언어는 소속된 Unit 개수가 0개인 경우에만 변경할 수 있습니다.'
-              : ''
+            !isUnitCountZero() ? '언어는 소속된 Unit 개수가 0개인 경우에만 변경할 수 있습니다.' : ''
           "
           :class="!isUnitCountZero() ? 'mb-4' : ''"
           :append-inner-icon="!isUnitCountZero() ? 'mdi-read' : 'mdi-menu-down'"
@@ -90,7 +86,7 @@ watch(
     formData.language = selectedVocabulary.language;
     formData.unitCount = selectedVocabulary.unitCount;
   },
-  { deep: true }
+  { deep: true },
 );
 
 const isUnitCountZero = () => {

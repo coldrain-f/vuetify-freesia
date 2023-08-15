@@ -35,9 +35,9 @@ import type { Language } from "@/@types/language";
 import type { VocaRegistrationFormData } from "vocabularyTypes";
 
 /** Props */
-type Props = {
+interface Props {
   modelValue: boolean;
-};
+}
 
 const props = defineProps<Props>();
 
@@ -53,7 +53,7 @@ const vocabularyService = new VocabularyService();
 
 /** Stores */
 const commonMessageDialogStore = useCommonMessageDialogStore();
-const { VDialog } = commonMessageDialogStore;
+const { VAlert } = commonMessageDialogStore;
 
 /** Data */
 const formData: VocaRegistrationFormData = reactive({
@@ -64,7 +64,7 @@ const formData: VocaRegistrationFormData = reactive({
 const languageItems: Ref<Language[]> = ref([]);
 
 /** Computed */
-const showDialog = computed<boolean>({
+const showDialog = computed({
   get() {
     return props.modelValue;
   },
@@ -83,10 +83,10 @@ async function handleAddClick(): Promise<void> {
   try {
     await vocabularyService.register(formData);
     resetFormData();
-    VDialog("단어장 등록을 완료했습니다.");
+    VAlert("단어장 등록을 완료했습니다.");
     emit("success");
   } catch (err) {
-    VDialog("단어장 등록을 실패했습니다.");
+    VAlert("단어장 등록을 실패했습니다.");
     console.error(err);
   }
 }

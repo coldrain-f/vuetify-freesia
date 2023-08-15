@@ -5,12 +5,10 @@
         <span class="text-primary noto-sans"> ※ 유닛 등록 </span>
       </template>
       <template #append>
-        <v-btn variant="text" icon="mdi-close" @click="showDialog = false">
-        </v-btn>
+        <v-btn variant="text" icon="mdi-close" @click="showDialog = false"> </v-btn>
       </template>
       <v-card-text>
-        <v-text-field label="Subject" v-model="formData.subject">
-        </v-text-field>
+        <v-text-field label="Subject" v-model="formData.subject"> </v-text-field>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn color="primary" @click="onClick"> ADD </v-btn>

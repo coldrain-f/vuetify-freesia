@@ -60,10 +60,7 @@
     </v-row>
 
     <!-- 단어장 등록 다이얼로그 -->
-    <AdminVocabularyGridAddDialog
-      v-model="showAddDialog"
-      @success="fetchRowData"
-    />
+    <AdminVocabularyGridAddDialog v-model="showAddDialog" @success="fetchRowData" />
 
     <!-- 단어장 수정 다이얼로그 -->
     <AdminVocabularyGridUpdateDialog
@@ -107,9 +104,7 @@ const onGridReady = (params) => {
 const vocabularyGridManager = inject("vocabularyGridManager");
 
 // reactive 구조 분해 할당 -> readonly
-const { isSearchPerformed, rowData, selectedVocabulary } = toRefs(
-  vocabularyGridManager
-);
+const { isSearchPerformed, rowData, selectedVocabulary } = toRefs(vocabularyGridManager);
 
 const performSearch = async () => {
   await fetchRowData();
