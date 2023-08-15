@@ -1,5 +1,10 @@
 import type { PageableParams } from "@/@types/pageableParams";
-import type { Vocabulary } from "@/@types/vocabulary";
+import type {
+  VocaModificationFormData,
+  VocaRegistrationFormData,
+  VocaSearchCondition,
+  Vocabulary,
+} from "@/@types/vocabulary";
 import type { AxiosInstance } from "axios";
 import { $axios } from "@/common/axios";
 
@@ -14,12 +19,12 @@ export default class VocabularyService {
    * 단어장 검색 API
    *
    * @param {PageableParams}
-   * @param {searchCondition}
+   * @param {VocaSearchCondition}
    * @returns {Vocabulary[]}
    */
   public async search(
     pageableParams: PageableParams = { page: 0, size: 3 },
-    searchCondition: SearchCondition = { language: "English" },
+    searchCondition: VocaSearchCondition = { language: "English" },
   ): Promise<Vocabulary[]> {
     const response = await this.axios.get<Vocabulary[]>("/vocabulary", {
       params: {
@@ -61,17 +66,3 @@ export default class VocabularyService {
     await $axios.patch(`/vocabulary/${vocabularyId}`, formData);
   }
 }
-
-type SearchCondition = {
-  language?: string;
-};
-
-type VocaRegistrationFormData = {
-  title: string;
-  language: string;
-};
-
-type VocaModificationFormData = {
-  title: string;
-  language: string;
-};

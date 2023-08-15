@@ -27,17 +27,15 @@
 </template>
 
 <script setup lang="ts">
+import type { Language } from "@/@types/language";
 import { computed, onMounted, reactive, ref, type Ref } from "vue";
-
-import { vocabularyService } from "@/service/vocabularyService";
-
 import { LanguageType } from "@/common/enum/languageType";
-
 import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
 import LanguageService from "@/service/languageServiceTypescript";
-import type { Language } from "@/@types/language";
+import VocabularyService from "@/service/vocabularyServiceTypescript";
 
 const languageService = new LanguageService();
+const vocabularyService = new VocabularyService();
 
 const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
