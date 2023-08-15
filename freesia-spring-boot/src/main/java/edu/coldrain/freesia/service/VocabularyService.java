@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -60,12 +61,12 @@ public class VocabularyService {
         final Vocabulary vocabulary = vocabularyRepository.findById(vocabularyId)
                 .orElseThrow(() -> new VocabularyNotFoundException("vocabulary not found exception."));
 
-        final Planner planner = plannerRepository.findByName(vocabulary.getTitle() + " Planner")
-                .orElseThrow(() -> new IllegalArgumentException("planner not found exception."));
-
-        final List<PlannerDetail> plannerDetails = plannerDetailRepository.findAllByPlannerId(planner.getId());
-        plannerDetailRepository.deleteAllInBatch(plannerDetails);
-        plannerRepository.deleteById(planner.getId());
+        final Optional<Planner> planner = plannerRepository.findByName(vocabulary.getTitle() + " Planner");
+        if (planner.isPresent()) {
+            final List<PlannerDetail> plannerDetails = plannerDetailRepository.findAllByPlannerId(planner.get().getId());
+            plannerDetailRepository.deleteAllInBatch(plannerDetails);
+            plannerRepository.deleteById(planner.get().getId());
+        }
 
         // Delete Units
         final List<Unit> units = unitRepository.findAllByParentId(vocabularyId);
