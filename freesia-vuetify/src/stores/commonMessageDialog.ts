@@ -16,14 +16,16 @@ export const useCommonMessageDialogStore = defineStore("commonMessageDialog", ()
     messageDialogText.value = "";
   };
 
-  const VAlert = (message?: string) => {
+  const VAlert = (message: string) => {
     resetMessageDialog();
     showMessageDialog.value = true;
-    messageDialogText.value = message || "";
+    messageDialogText.value = message;
   };
 
   return {
     showCommonMessageDialog, // 미사용 - 나중에 제거 필요
+    showMessageDialog,
+    messageDialogText,
     VAlert,
   };
 });

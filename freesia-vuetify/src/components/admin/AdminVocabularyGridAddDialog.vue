@@ -83,6 +83,7 @@ async function handleAddClick(): Promise<void> {
   try {
     await vocabularyService.register(formData);
     resetFormData();
+    showDialog.value = false;
     VAlert("단어장 등록을 완료했습니다.");
     emit("success");
   } catch (err) {
