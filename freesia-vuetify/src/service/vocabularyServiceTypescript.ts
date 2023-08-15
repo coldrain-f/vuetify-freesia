@@ -1,12 +1,12 @@
 import type { PageableParams } from "@/@types/pageableParams";
+import type { AxiosInstance } from "axios";
+import { $axios } from "@/common/axios";
 import type {
   VocaModificationFormData,
   VocaRegistrationFormData,
   VocaSearchCondition,
   Vocabulary,
-} from "@/@types/vocabulary";
-import type { AxiosInstance } from "axios";
-import { $axios } from "@/common/axios";
+} from "vocabularyTypes";
 
 export default class VocabularyService {
   private axios: AxiosInstance;

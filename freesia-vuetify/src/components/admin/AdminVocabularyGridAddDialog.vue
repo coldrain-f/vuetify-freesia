@@ -27,29 +27,44 @@
 </template>
 
 <script setup lang="ts">
-import type { Language } from "@/@types/language";
 import { computed, onMounted, reactive, ref, type Ref } from "vue";
-import { LanguageType } from "@/common/enum/languageType";
 import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
 import LanguageService from "@/service/languageServiceTypescript";
 import VocabularyService from "@/service/vocabularyServiceTypescript";
+import type { Language } from "@/@types/language";
+import type { VocaRegistrationFormData } from "vocabularyTypes";
 
+/** Props */
+type Props = {
+  modelValue: boolean;
+};
+
+const props = defineProps<Props>();
+
+/** Emits */
+const emit = defineEmits<{
+  (e: "update:modelValue", value: boolean): void;
+  (e: "success"): void;
+}>();
+
+/** Services */
 const languageService = new LanguageService();
 const vocabularyService = new VocabularyService();
 
+/** Stores */
 const commonMessageDialogStore = useCommonMessageDialogStore();
-const { showCommonMessageDialog } = commonMessageDialogStore;
+const { VDialog } = commonMessageDialogStore;
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    required: true,
-  },
+/** Data */
+const formData: VocaRegistrationFormData = reactive({
+  title: "",
+  language: "English",
 });
 
-const emit = defineEmits(["update:modelValue", "success"]);
+const languageItems: Ref<Language[]> = ref([]);
 
-const showDialog = computed({
+/** Computed */
+const showDialog = computed<boolean>({
   get() {
     return props.modelValue;
   },
@@ -58,33 +73,25 @@ const showDialog = computed({
   },
 });
 
-const formData = reactive({
-  title: null,
-  language: LanguageType.ENGLISH,
-});
+/** Actions */
+function resetFormData(): void {
+  formData.title = "";
+  formData.language = "English";
+}
 
-const languageItems: Ref<Language[]> = ref([]);
-
-const clearFormData = () => {
-  formData.title = null;
-  formData.language = LanguageType.ENGLISH;
-};
-
-const onClick = async () => {
+async function onClick(): Promise<void> {
   try {
     await vocabularyService.register(formData);
-    showDialog.value = false;
-
-    showCommonMessageDialog("단어장 등록을 완료했습니다.");
-    clearFormData();
-
+    resetFormData();
+    VDialog("단어장 등록을 완료했습니다.");
     emit("success");
   } catch (err) {
+    VDialog("단어장 등록을 실패했습니다.");
     console.error(err);
-    showCommonMessageDialog("단어장 등록을 실패했습니다.");
   }
-};
+}
 
+/** Events */
 onMounted(async () => {
   languageItems.value = await languageService.findAll();
 });
