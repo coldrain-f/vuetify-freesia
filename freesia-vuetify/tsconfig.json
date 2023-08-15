@@ -13,6 +13,7 @@
     "types": ["vuetify"],
     "allowJs": true
   },
+  "include": ["./src/@types"],
   "files": [],
   "references": [
     {
