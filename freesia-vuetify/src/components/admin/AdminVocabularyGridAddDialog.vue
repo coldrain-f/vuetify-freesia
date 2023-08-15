@@ -19,7 +19,7 @@
         </v-select>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn color="primary" @click="onClick"> ADD </v-btn>
+        <v-btn color="primary" @click="handleAddClick"> ADD </v-btn>
         <v-btn @click="showDialog = false" class="me-4"> CANCEL </v-btn>
       </v-card-actions>
     </v-card>
@@ -79,7 +79,7 @@ function resetFormData(): void {
   formData.language = "English";
 }
 
-async function onClick(): Promise<void> {
+async function handleAddClick(): Promise<void> {
   try {
     await vocabularyService.register(formData);
     resetFormData();
