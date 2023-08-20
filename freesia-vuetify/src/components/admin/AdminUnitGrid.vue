@@ -11,9 +11,7 @@
           item-title="name"
           item-value="name"
           hide-details
-          @update:model-value="
-            (changedLanguage) => emit('handleLanguageChange', changedLanguage)
-          "
+          @update:model-value="(changedLanguage) => emit('handleLanguageChange', changedLanguage)"
         >
         </v-select>
       </v-col>
@@ -74,17 +72,23 @@
 
     <v-row>
       <v-col cols="12">
-        <div :class="`text-${themeStore.theme} mb-1`" v-if="isSearchPerformed">
-          <p class="noto-sans">
-            <span class="me-2">【 </span>
-            <span> {{ searchedLanguage }} </span>
-            <span class="ms-2"> 】</span>
-            <span class="ms-2 me-2"> 》</span>
-            <span class="me-2">【 </span>
-            <span class="me-2">{{ searchedVocabulary.title }}</span>
-            <span> 】</span>
-          </p>
-        </div>
+        <v-breadcrumbs
+          v-if="isSearchPerformed"
+          :items="[
+            { title: searchedLanguage, disabled: false },
+            { title: searchedVocabulary.title, disabled: false },
+          ]"
+          :bg-color="themeStore.theme"
+          density="comfortable"
+          class="noto-sans"
+        >
+          <template v-slot:prepend>
+            <v-icon size="small" icon="mdi-circle-medium"></v-icon>
+          </template>
+          <template v-slot:divider>
+            <v-icon icon="mdi-chevron-right"></v-icon>
+          </template>
+        </v-breadcrumbs>
         <ag-grid-vue
           style="width: 100%; height: 312px"
           class="ag-theme-alpine noto-sans"
@@ -156,13 +160,8 @@ const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
 
 // readonly
-const {
-  isSearchPerformed,
-  rowData,
-  selectedUnit,
-  searchedVocabulary,
-  searchedLanguage,
-} = toRefs(unitGridManager);
+const { isSearchPerformed, rowData, selectedUnit, searchedVocabulary, searchedLanguage } =
+  toRefs(unitGridManager);
 
 const showUnitAddDialog = ref(false);
 const showUnitUpdateDialog = ref(false);
@@ -178,11 +177,9 @@ const performSearch = async () => {
 
   unitGridManager.searchedLanguage = languageSelectManager.selectedItem;
 
-  unitGridManager.searchedVocabulary.title =
-    vocabularySelectManager.selectedItem.title;
+  unitGridManager.searchedVocabulary.title = vocabularySelectManager.selectedItem.title;
 
-  unitGridManager.searchedVocabulary.id =
-    vocabularySelectManager.selectedItem.id;
+  unitGridManager.searchedVocabulary.id = vocabularySelectManager.selectedItem.id;
 
   unitGridManager.isSearchPerformed = true;
 };
@@ -190,10 +187,7 @@ const performSearch = async () => {
 const fetchRowData = async (vocabularyId) => {
   const pageableParams = { page: 0, size: 2000 };
 
-  const unitPageable = await unitService.getPageable(
-    vocabularyId,
-    pageableParams
-  );
+  const unitPageable = await unitService.getPageable(vocabularyId, pageableParams);
 
   unitGridManager.rowData = unitPageable.content;
   unitGridManager.selectedUnit = {};
