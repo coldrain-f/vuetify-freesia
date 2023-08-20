@@ -11,9 +11,7 @@
           item-title="name"
           item-value="name"
           hide-details
-          @update:model-value="
-            (changedLanguage) => emit('handleLanguageChange', changedLanguage)
-          "
+          @update:model-value="(changedLanguage) => emit('handleLanguageChange', changedLanguage)"
         >
         </v-select>
       </v-col>
@@ -29,8 +27,7 @@
           return-object
           hide-details
           @update:model-value="
-            (changedVocabulary) =>
-              emit('handleVocabularyChange', changedVocabulary)
+            (changedVocabulary) => emit('handleVocabularyChange', changedVocabulary)
           "
         >
         </v-select>
@@ -55,8 +52,7 @@
     <v-row class="mt-5">
       <v-col cols="4">
         <v-btn size="small" class="w-100" @click="performSearch">
-          <v-icon start icon="mdi-note-search-outline" class="margin-top-1px">
-          </v-icon>
+          <v-icon start icon="mdi-note-search-outline" class="margin-top-1px"> </v-icon>
           SEARCH
         </v-btn>
       </v-col>
@@ -95,21 +91,21 @@
 
     <v-row>
       <v-col cols="12">
-        <div :class="`text-${themeStore.theme}`" v-if="isSearchPerformed">
-          <p class="noto-sans">
-            <span class="me-2">【 </span>
-            <span> {{ searchedLanguage }} </span>
-            <span class="ms-2"> 】</span>
-            <span class="ms-2 me-2"> 》</span>
-            <span class="me-2">【 </span>
-            <span class="me-2">{{ searchedVocabulary.title }}</span>
-            <span> 】</span>
-          </p>
-          <p class="noto-sans">
-            <span class="ms-1 me-2">▣</span>
-            <span> {{ searchedUnit.subject }}</span>
-          </p>
-        </div>
+        <v-breadcrumbs
+          v-if="isSearchPerformed"
+          :items="[
+            { title: searchedLanguage, disabled: false },
+            { title: searchedVocabulary.title, disabled: false },
+            { title: searchedUnit.subject, disabled: false },
+          ]"
+          :bg-color="themeStore.theme"
+          density="comfortable"
+          class="noto-sans text-subtitle-2"
+        >
+          <template v-slot:divider>
+            <v-icon icon="mdi-chevron-right"></v-icon>
+          </template>
+        </v-breadcrumbs>
         <ag-grid-vue
           style="width: 100%; height: 312px"
           class="ag-theme-alpine noto-sans"
@@ -219,11 +215,9 @@ const performSearch = () => {
     columnDefs.value[4].hide = false;
   }
 
-  wordGridManager.searchedVocabulary.id =
-    vocabularySelectManager.selectedItem.id;
+  wordGridManager.searchedVocabulary.id = vocabularySelectManager.selectedItem.id;
 
-  wordGridManager.searchedVocabulary.title =
-    vocabularySelectManager.selectedItem.title;
+  wordGridManager.searchedVocabulary.title = vocabularySelectManager.selectedItem.title;
 
   wordGridManager.searchedUnit.id = unitSelectManager.selectedItem.id;
   wordGridManager.searchedUnit.subject = unitSelectManager.selectedItem.subject;

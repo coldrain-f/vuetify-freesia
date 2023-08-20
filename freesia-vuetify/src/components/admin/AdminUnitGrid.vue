@@ -80,11 +80,8 @@
           ]"
           :bg-color="themeStore.theme"
           density="comfortable"
-          class="noto-sans"
+          class="noto-sans text-subtitle-2"
         >
-          <template v-slot:prepend>
-            <v-icon size="small" icon="mdi-circle-medium"></v-icon>
-          </template>
           <template v-slot:divider>
             <v-icon icon="mdi-chevron-right"></v-icon>
           </template>
