@@ -1,4 +1,4 @@
-export type PageableParams = {
+export interface PageableParams {
   page: number;
   size: number;
-};
+}

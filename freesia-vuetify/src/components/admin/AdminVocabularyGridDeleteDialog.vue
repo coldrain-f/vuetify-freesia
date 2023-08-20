@@ -67,25 +67,24 @@
   </v-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from "vue";
 
 import { vocabularyService } from "@/service/vocabularyService";
 
 import { useCommonMessageDialogStore } from "@/stores/commonMessageDialog";
+import { Vocabulary } from "vocabularyTypes";
 
 const commonMessageDialogStore = useCommonMessageDialogStore();
 const { showCommonMessageDialog } = commonMessageDialogStore;
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    required: true,
-  },
-  selectedVocabulary: {
-    type: Object,
-  },
-});
+/** Props */
+interface Props {
+  modelValue: boolean;
+  selectedVocabulary: Vocabulary;
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits(["update:modelValue", "success"]);
 

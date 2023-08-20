@@ -1,22 +1,22 @@
 declare module "vocabularyTypes" {
-  export type Vocabulary = {
+  export interface Vocabulary {
     id: number;
     title: string;
     language: string;
     unitCount: number;
-  };
+  }
 
-  export type VocaSearchCondition = {
+  export interface VocaSearchCondition {
     language?: string;
-  };
+  }
 
-  export type VocaRegistrationFormData = {
+  export interface VocaRegistrationFormData {
     title: string;
     language: string;
-  };
+  }
 
-  export type VocaModificationFormData = {
+  export interface VocaModificationFormData {
     title: string;
     language: string;
-  };
+  }
 }
