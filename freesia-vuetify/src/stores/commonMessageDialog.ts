@@ -16,7 +16,7 @@ export const useCommonMessageDialogStore = defineStore("commonMessageDialog", ()
     messageDialogText.value = "";
   };
 
-  const VAlert = (message: string) => {
+  const MessageDialog = (message: string) => {
     resetMessageDialog();
     showMessageDialog.value = true;
     messageDialogText.value = message;
@@ -26,6 +26,6 @@ export const useCommonMessageDialogStore = defineStore("commonMessageDialog", ()
     showCommonMessageDialog, // 미사용 - 나중에 제거 필요
     showMessageDialog,
     messageDialogText,
-    VAlert,
+    MessageDialog,
   };
 });

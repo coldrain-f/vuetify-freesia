@@ -1,131 +1,135 @@
 <template>
-  <v-card class="mx-auto" max-width="500">
-    <v-system-bar app :color="themeStore.theme" class="pt-3" absolute>
-      <v-icon icon="mdi-wifi-strength-4"></v-icon>
-      <v-icon icon="mdi-signal" class="ms-2"></v-icon>
-      <v-icon icon="mdi-battery" class="ms-2"></v-icon>
+  <v-container>
+    <v-card class="mx-auto" width="500">
+      <v-system-bar app absolute :color="themeStore.theme" class="pt-3">
+        <v-icon icon="mdi-wifi-strength-4"></v-icon>
+        <v-icon icon="mdi-signal" class="ms-2"></v-icon>
+        <v-icon icon="mdi-battery" class="ms-2"></v-icon>
 
-      <span class="ms-2 mr-4">{{ currentDateTime }}</span>
-    </v-system-bar>
-    <v-toolbar :color="themeStore.theme" class="mt-6">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <v-toolbar-title class="noto-sans">기묘한 보카</v-toolbar-title>
-      <v-spacer></v-spacer>
+        <span class="ms-2 mr-4">{{ currentDateTime }}</span>
+      </v-system-bar>
+      <v-toolbar :color="themeStore.theme" class="mt-6">
+        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+        <v-toolbar-title class="noto-sans">기묘한 보카</v-toolbar-title>
+        <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+        <v-btn icon>
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
 
-      <v-btn icon>
-        <v-icon icon="mdi-dots-vertical"></v-icon>
-        <v-menu activator="parent" location="end" transition="slide-x-transition">
-          <v-list>
-            <v-list-item @click="showThemeDialog = true">
-              <v-list-item-title> Theme </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-btn>
-
-      <template v-slot:extension>
-        <v-tabs v-model="currentTabItem" align-tabs="title">
-          <v-tab value="LEARN"> LEARN </v-tab>
-
-          <!-- Begin:: Admin Tab Items -->
-          <v-tab v-for="item in adminTabitems" :key="item" :value="item">
-            {{ item }}
-          </v-tab>
-
-          <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-btn
-                variant="plain"
-                rounded="0"
-                class="align-self-center"
-                height="100%"
-                v-bind="props"
-              >
-                ADMIN
-                <v-icon end> mdi-menu-down </v-icon>
-              </v-btn>
-            </template>
-
+        <v-btn icon>
+          <v-icon icon="mdi-dots-vertical"></v-icon>
+          <v-menu activator="parent" location="end" transition="slide-x-transition">
             <v-list>
-              <v-list-item @click="changeAdminTabItem('VOCABULARY')">
-                <v-list-item-title> Vocabulary </v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="changeAdminTabItem('UNIT')">
-                <v-list-item-title> Unit </v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="changeAdminTabItem('WORD')">
-                <v-list-item-title> Word </v-list-item-title>
+              <v-list-item @click="showThemeDialog = true">
+                <v-list-item-title> Theme </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
-          <!-- End:: Admin Tab Items -->
+        </v-btn>
 
-          <v-tab value="ANALYZE"> ANALYZE </v-tab>
-          <v-tab value="RANK"> RANK </v-tab>
-        </v-tabs>
-      </template>
-    </v-toolbar>
+        <template v-slot:extension>
+          <v-tabs v-model="currentTabItem" align-tabs="title">
+            <v-tab value="LEARN"> LEARN </v-tab>
 
-    <v-window v-model="currentTabItem">
-      <v-window-item value="LEARN">
-        <LearningStart v-if="isLearningStarted" />
-        <LearningHome v-else />
-      </v-window-item>
+            <!-- Begin:: Admin Tab Items -->
+            <v-tab v-for="item in adminTabitems" :key="item" :value="item">
+              {{ item }}
+            </v-tab>
 
-      <v-window-item value="ANALYZE">
-        <v-card flat>
-          <v-card-text>Under development.</v-card-text>
-          <v-card-actions> </v-card-actions>
-        </v-card>
-      </v-window-item>
-      <v-window-item value="RANK">
-        <v-card flat>
-          <v-card-text>Under development.</v-card-text>
-          <v-card-actions> </v-card-actions>
-        </v-card>
-      </v-window-item>
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  variant="plain"
+                  rounded="0"
+                  class="align-self-center"
+                  height="100%"
+                  v-bind="props"
+                >
+                  ADMIN
+                  <v-icon end> mdi-menu-down </v-icon>
+                </v-btn>
+              </template>
 
-      <v-window-item value="VOCABULARY">
-        <AdminVocabularyGrid class="mt-5" />
-      </v-window-item>
+              <v-list>
+                <v-list-item @click="changeAdminTabItem('VOCABULARY')">
+                  <v-list-item-title> Vocabulary </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="changeAdminTabItem('UNIT')">
+                  <v-list-item-title> Unit </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="changeAdminTabItem('WORD')">
+                  <v-list-item-title> Word </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+            <!-- End:: Admin Tab Items -->
 
-      <v-window-item value="UNIT">
-        <AdminUnitGrid
-          class="mt-5"
-          @handleLanguageChange="(changedLanguage) => handleLanguageChange(changedLanguage)"
-        />
-      </v-window-item>
+            <v-tab value="ANALYZE"> ANALYZE </v-tab>
+            <v-tab value="RANK"> RANK </v-tab>
+          </v-tabs>
+        </template>
+      </v-toolbar>
 
-      <v-window-item value="WORD">
-        <AdminWordGrid
-          class="mt-5"
-          @handleLanguageChange="(changedLanguage) => handleLanguageChange(changedLanguage)"
-          @handleVocabularyChange="(changedVocabulary) => handleVocabularyChange(changedVocabulary)"
-        />
-      </v-window-item>
-    </v-window>
+      <v-window v-model="currentTabItem">
+        <v-window-item value="LEARN">
+          <LearningStart v-if="isLearningStarted" />
+          <LearningHome v-else />
+        </v-window-item>
 
-    <v-footer :color="themeStore.theme" border>
-      <v-row>
-        <v-col class="text-center" cols="12">
-          <p>Copyright ⓒ 2023. coldrain-f. All rights reserved.</p>
-        </v-col>
-      </v-row>
-    </v-footer>
-  </v-card>
+        <v-window-item value="ANALYZE">
+          <v-card flat>
+            <v-card-text>Under development.</v-card-text>
+            <v-card-actions> </v-card-actions>
+          </v-card>
+        </v-window-item>
+        <v-window-item value="RANK">
+          <v-card flat>
+            <v-card-text>Under development.</v-card-text>
+            <v-card-actions> </v-card-actions>
+          </v-card>
+        </v-window-item>
 
-  <!-- Planner 다이얼로그 -->
-  <LearningPlannerDialog v-model="showPlannerDialog" />
+        <v-window-item value="VOCABULARY">
+          <AdminVocabularyGrid class="mt-5" />
+        </v-window-item>
 
-  <!-- Theme 설정 다이얼로그 -->
-  <MoreThemeSettingDialog v-model="showThemeDialog" />
+        <v-window-item value="UNIT">
+          <AdminUnitGrid
+            class="mt-5"
+            @handleLanguageChange="(changedLanguage) => handleLanguageChange(changedLanguage)"
+          />
+        </v-window-item>
 
-  <!-- 공통 메시지 다잉러로그 -->
-  <CommonMessageDialog />
+        <v-window-item value="WORD">
+          <AdminWordGrid
+            class="mt-5"
+            @handleLanguageChange="(changedLanguage) => handleLanguageChange(changedLanguage)"
+            @handleVocabularyChange="
+              (changedVocabulary) => handleVocabularyChange(changedVocabulary)
+            "
+          />
+        </v-window-item>
+      </v-window>
+
+      <v-footer :color="themeStore.theme" border>
+        <v-row>
+          <v-col class="text-center" cols="12">
+            <p>Copyright ⓒ 2023. coldrain-f. All rights reserved.</p>
+          </v-col>
+        </v-row>
+      </v-footer>
+    </v-card>
+
+    <!-- Planner 다이얼로그 -->
+    <LearningPlannerDialog v-model="showPlannerDialog" />
+
+    <!-- Theme 설정 다이얼로그 -->
+    <MoreThemeSettingDialog v-model="showThemeDialog" />
+
+    <!-- 공통 메시지 다잉러로그 -->
+    <CommonMessageDialog />
+  </v-container>
 </template>
 
 <script setup>
