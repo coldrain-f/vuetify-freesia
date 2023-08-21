@@ -80,7 +80,7 @@
           ]"
           :bg-color="themeStore.theme"
           density="comfortable"
-          class="noto-sans text-subtitle-2"
+          class="noto-sans text-subtitle-2 font-weight-bold"
         >
           <template v-slot:divider>
             <v-icon icon="mdi-chevron-right"></v-icon>

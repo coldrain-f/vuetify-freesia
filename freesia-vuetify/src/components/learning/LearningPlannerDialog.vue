@@ -114,23 +114,20 @@
           </v-col>
         </v-row>
 
-        <div
-          :class="`text-${themeStore.theme} mb-1`"
+        <v-breadcrumbs
           v-if="isSearchPerformed"
-          style="cursor: default"
+          :items="[
+            { title: searchedResult.language, disabled: false },
+            { title: searchedResult.vocabularyTitle, disabled: false },
+          ]"
+          :bg-color="themeStore.theme"
+          density="comfortable"
+          class="noto-sans text-subtitle-2 font-weight-bold"
         >
-          <p>
-            <span class="me-2">【 </span>
-            <span class="noto-sans"> {{ searchedResult.language }} </span>
-            <span class="ms-2"> 】</span>
-            <span class="ms-2 me-2"> 》</span>
-            <span class="me-2">【 </span>
-            <span class="me-2 noto-sans">
-              {{ searchedResult.vocabularyTitle }}
-            </span>
-            <span> 】</span>
-          </p>
-        </div>
+          <template v-slot:divider>
+            <v-icon icon="mdi-chevron-right"></v-icon>
+          </template>
+        </v-breadcrumbs>
         <ag-grid-vue
           style="width: 100%; height: 450px"
           class="ag-theme-alpine noto-sans"
